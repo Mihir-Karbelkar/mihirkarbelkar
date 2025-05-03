@@ -1,23 +1,34 @@
 import type { MiddlewareHandler } from 'astro';
 
-const HOSTNAME = process.env.ASTRO_ENV !== 'DEV' ? 'mihirkarbelkar.com' : 'localhost:4321';
+const IS_DEV = process.env.ASTRO_ENV === 'DEV';
+const HOSTNAME = IS_DEV ? 'localhost:4321' : 'mihirkarbelkar.com';
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
   const { request, url } = context;
-  const hostname = url.host;
 
-  // Handle subdomains
-  const subdomain = hostname.split('.')[0];
-
-
-  const rootHost = HOSTNAME.slice(HOSTNAME.indexOf('.') + 1)
-  const newUrl = `${url.protocol}//${rootHost}/${subdomain}`
-  console.log(url, hostname, HOSTNAME, newUrl, 'here')
-  // Handle main domain
-  if (hostname === HOSTNAME) {
+  // If request is to main host, pass through
+  if (url.host === HOSTNAME) {
     return next();
   }
 
-  // Rewrite any subdomain to its corresponding path
-  return context.rewrite(newUrl);
+  // Check if this is a subdomain request and not already rewritten
+  if (!request.headers.get('X-Astro-Rewrite')) {
+    const subdomain = url.host.split('.')[0];
+    const path = url.pathname;
+
+    // Construct the target URL
+    const targetUrl = new URL(url);
+    targetUrl.host = HOSTNAME;
+    targetUrl.pathname = `/${subdomain}`;
+    console.log(targetUrl.toString(), HOSTNAME, path, subdomain, url);
+    return context.rewrite(new Request(targetUrl.toString(), {
+      headers: {
+        'X-Astro-Rewrite': 'true'
+      }
+    }));
+
+  }
+
+  // If we're already rewritten or no subdomain, proceed normally
+  return next();
 }; 
