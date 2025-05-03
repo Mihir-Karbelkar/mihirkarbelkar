@@ -1,0 +1,29 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const title = 'Technology Blog';
+const description = 'Latest in tech, software development, and digital innovation';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+	</head>
+	<body>
+		<Header />
+		<main class="container mx-auto px-4 py-8">
+			<h1 class="text-4xl font-bold mb-8">💻 {title}</h1>
+			<p class="text-xl mb-8">{description}</p>
+			
+			<div class="prose max-w-none">
+				<p>Welcome to my technology blog. Here you'll find articles about software development, tech trends, and digital innovation.</p>
+				<p>Content coming soon...</p>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html> 
