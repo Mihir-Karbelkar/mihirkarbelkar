@@ -15,4 +15,7 @@ export default defineConfig({
     },
   }),
   output: "server",
+  build: {
+    assetsPrefix: 'https://mihirkarbelkar.com',
+  }
 });
