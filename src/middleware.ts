@@ -11,6 +11,16 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     return next();
   }
 
+  const pathname = url.pathname;
+
+  // Regex to detect static files (images, scripts, styles, fonts, etc.)
+  const isAsset = pathname.match(/\.(css|js|png|jpe?g|svg|gif|webp|ico|woff2?|ttf|eot|otf|mp4|mp3|txt|xml|json|webmanifest)$/i);
+
+  // Skip middleware if it's a static asset
+  if (isAsset) {
+    return next(); // Or just let it pass without modification
+  }
+
   // Check if this is a subdomain request and not already rewritten
   if (!request.headers.get('X-Astro-Rewrite')) {
     const subdomain = url.host.split('.')[0];
