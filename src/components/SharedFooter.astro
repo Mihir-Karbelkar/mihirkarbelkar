@@ -1,0 +1,116 @@
+---
+const domains = [
+  { name: 'Tech', url: 'https://tech.mihirkarbelkar.com' },
+  { name: 'Politics', url: 'https://politics.mihirkarbelkar.com' },
+  { name: 'Fit', url: 'https://fit.mihirkarbelkar.com' },
+];
+---
+
+<footer class="shared-footer">
+  <div class="footer-content">
+    <div class="footer-belief">
+      <p class="belief-text">"You don't find meaning. You build it."</p>
+    </div>
+    
+    <nav class="cross-site-nav">
+      <ul>
+        {domains.map((domain) => (
+          <li>
+            <a 
+              href={domain.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="domain-link"
+            >
+              {domain.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    
+    <div class="footer-meta">
+      <p>© {new Date().getFullYear()} Mihir Karbelkar. All thoughts are my own.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .shared-footer {
+    padding: var(--space-12) 0;
+    margin-top: var(--space-12);
+    border-top: 1px solid rgba(var(--gray), 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .footer-content {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 var(--container-padding);
+  }
+
+  .footer-belief {
+    margin-bottom: var(--space-8);
+  }
+
+  .belief-text {
+    font-size: var(--text-xl);
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0.9;
+  }
+
+  .cross-site-nav ul {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-8) 0;
+  }
+
+  .domain-link {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--space-2);
+    transition: all var(--transition-fast);
+    opacity: 0.8;
+  }
+
+  .domain-link:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+    opacity: 1;
+  }
+
+  .footer-meta {
+    font-size: var(--text-sm);
+    color: var(--text);
+    opacity: 0.7;
+  }
+
+  @media (max-width: 720px) {
+    .shared-footer {
+      padding: var(--space-8) 0;
+    }
+
+    .cross-site-nav ul {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .domain-link {
+      display: block;
+      padding: var(--space-4) var(--space-6);
+    }
+  }
+
+  @media (hover: none) {
+    .domain-link {
+      padding: var(--space-4) var(--space-6);
+    }
+  }
+</style> 

@@ -1,0 +1,207 @@
+---
+interface Props {
+  domain: 'tech' | 'politics' | 'fit';
+  currentPage?: string;
+}
+
+const { domain, currentPage } = Astro.props;
+
+const domainConfig = {
+  tech: {
+    tagline: "Code should sprint like I do.",
+    pages: ['Posts', 'Lab', 'Snippets', 'Philosophy'],
+  },
+  politics: {
+    tagline: "Informed dissent is self-respect.",
+    pages: ['Essays', 'Commentary', 'Manifesto', 'Resources'],
+  },
+  fit: {
+    tagline: "Strength through consistency.",
+    pages: ['Workouts', 'Nutrition', 'Progress', 'Philosophy'],
+  },
+};
+
+const config = domainConfig[domain];
+---
+
+<header class="domain-header" data-domain={domain}>
+  <div class="header-content">
+    <h1 class="domain-title">{domain.charAt(0).toUpperCase() + domain.slice(1)}</h1>
+    <p class="domain-tagline">{config.tagline}</p>
+  </div>
+  
+  <nav class="domain-nav">
+    <button class="mobile-menu-button" aria-label="Toggle navigation menu">
+      <span class="menu-icon"></span>
+    </button>
+    <ul class="nav-links">
+      {config.pages.map((page) => (
+        <li>
+          <a
+            href={`/${page.toLowerCase()}`}
+            class={currentPage === page.toLowerCase() ? 'active' : ''}
+          >
+            {page}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .domain-header {
+    padding: var(--space-8) 0;
+    margin-bottom: var(--space-12);
+    position: relative;
+  }
+
+  .header-content {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .domain-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-2);
+    color: var(--text);
+  }
+
+  .domain-tagline {
+    font-size: var(--text-xl);
+    color: var(--accent);
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .domain-nav {
+    position: relative;
+  }
+
+  .mobile-menu-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--space-2);
+    margin: 0 auto;
+  }
+
+  .menu-icon {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: var(--accent);
+    position: relative;
+    transition: background-color var(--transition-fast);
+  }
+
+  .menu-icon::before,
+  .menu-icon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background-color: var(--accent);
+    transition: transform var(--transition-fast);
+  }
+
+  .menu-icon::before {
+    top: -8px;
+  }
+
+  .menu-icon::after {
+    bottom: -8px;
+  }
+
+  .nav-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    transition: transform var(--transition-normal);
+  }
+
+  .nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--space-2);
+    transition: all var(--transition-fast);
+    opacity: 0.8;
+  }
+
+  .nav-links a:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+    opacity: 1;
+  }
+
+  .nav-links a.active {
+    background-color: var(--accent);
+    color: var(--primary);
+    opacity: 1;
+  }
+
+  @media (max-width: 720px) {
+    .mobile-menu-button {
+      display: block;
+    }
+
+    .nav-links {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--primary);
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--space-2);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .nav-links.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav-links a {
+      width: 100%;
+      text-align: center;
+      padding: var(--space-4) var(--space-6);
+    }
+  }
+
+  @media (hover: none) {
+    .nav-links a {
+      padding: var(--space-4) var(--space-6);
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const menuButton = document.querySelector('.mobile-menu-button');
+  const navLinks = document.querySelector('.nav-links');
+
+  menuButton?.addEventListener('click', () => {
+    navLinks?.classList.toggle('open');
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener('click', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (!target?.closest('.domain-nav')) {
+      navLinks?.classList.remove('open');
+    }
+  });
+</script> 

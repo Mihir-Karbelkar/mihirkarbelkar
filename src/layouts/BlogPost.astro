@@ -1,13 +1,16 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import DomainHeader from '../components/DomainHeader.astro';
+import SharedFooter from '../components/SharedFooter.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	domain: 'tech' | 'politics' | 'fit' | 'poetry';
+	currentPage?: string;
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, domain, currentPage } = Astro.props;
 ---
 
 <html lang="en">
@@ -15,63 +18,92 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<BaseHead title={title} description={description} />
 		<style>
 			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
+				width: var(--container-width);
+				max-width: calc(100% - 2 * var(--container-padding));
+				margin: 0 auto;
 			}
+			
 			.hero-image {
 				width: 100%;
+				margin-bottom: var(--space-8);
 			}
+			
 			.hero-image img {
 				display: block;
 				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+				border-radius: var(--space-4);
+				box-shadow: var(--shadow-lg);
+				max-width: 100%;
+				height: auto;
 			}
+			
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
+				width: 100%;
+				margin: 0 auto;
+				padding: var(--space-4);
+				color: var(--accent);
 			}
+			
 			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
+				margin-bottom: var(--space-8);
+				padding: var(--space-8) 0;
 				text-align: center;
-				line-height: 1;
 			}
+			
 			.title h1 {
-				margin: 0 0 0.5em 0;
+				margin: 0 0 var(--space-4) 0;
+				font-size: var(--text-4xl);
+				line-height: 1.2;
 			}
+			
 			.date {
-				margin-bottom: 0.5em;
+				margin-bottom: var(--space-4);
 				color: rgb(var(--gray));
+				font-size: var(--text-sm);
 			}
+			
 			.last-updated-on {
 				font-style: italic;
+				margin-top: var(--space-2);
+			}
+			
+			hr {
+				border: none;
+				border-top: 1px solid var(--accent);
+				margin: var(--space-8) 0;
+				opacity: 0.2;
+			}
+			
+			@media (max-width: 720px) {
+				main {
+					padding: var(--space-4);
+				}
+				
+				.title h1 {
+					font-size: var(--text-3xl);
+				}
 			}
 		</style>
 	</head>
 
-	<body>
-		<Header />
+	<body data-domain={domain}>
+		<DomainHeader domain={domain} currentPage={currentPage} />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <img width={1020} height={510} src={heroImage} alt="" />}
-				</div>
+				{heroImage && (
+					<div class="hero-image">
+						<img width={1020} height={510} src={heroImage} alt="" />
+					</div>
+				)}
 				<div class="prose">
 					<div class="title">
 						<div class="date">
 							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+							{updatedDate && (
+								<div class="last-updated-on">
+									Last updated on <FormattedDate date={updatedDate} />
+								</div>
+							)}
 						</div>
 						<h1>{title}</h1>
 						<hr />
@@ -80,6 +112,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				</div>
 			</article>
 		</main>
-		<Footer />
+		<SharedFooter />
 	</body>
 </html>
