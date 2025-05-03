@@ -5,39 +5,53 @@
  */
 
 :root {
-  /* Base Typography */
-  --font-primary: "Atkinson", sans-serif;
-  --font-size-base: 20px;
-  --line-height-base: 1.7;
-  
-  /* Grid System */
-  --grid-gap: 2rem;
-  --container-width: 720px;
-  --container-padding: 1rem;
-  
-  /* Domain-specific Colors - Dark Mode */
-  /* Tech */
-  --tech-primary: #1A1A1A; /* Darker Charcoal */
-  --tech-accent: #2ECC71; /* Neon Green */
+  /* Base colors */
+  --primary: #FFFFFF;
+  --accent: #000000;
+  --text: #000000;
+  --gray: 100, 100, 100;
+  --background: #FFFFFF;
+
+  /* Domain-specific colors */
+  --tech-primary: #000000;
+  --tech-accent: #00FF9D;
   --tech-text: #FFFFFF;
-  
-  /* Politics */
-  --politics-primary: #121212; /* Dark Ivory */
-  --politics-accent: #E74C3C; /* Red */
-  --politics-text: #F5F5F5;
-  
-  /* Fit */
-  --fit-primary: #0A0F2E; /* Darker Deep Blue */
-  --fit-accent: #FFFFFF; /* White */
-  --fit-text: #FFFFFF;
-  
-  /* Shared Colors - Dark Mode */
-  --black: 255, 255, 255; /* White text */
-  --gray: 200, 200, 200; /* Light gray */
-  --gray-light: 40, 40, 40; /* Dark background */
-  --gray-dark: 255, 255, 255; /* White text */
-  
-  /* Typography Scale */
+  --tech-background: #000000;
+  --tech-gradient: linear-gradient(135deg, #00FF9D 0%, #00B8FF 100%);
+
+  --politics-primary: #000000;
+  --politics-accent: #FF3366;
+  --politics-text: #FFFFFF;
+  --politics-background: #000000;
+  --politics-gradient: linear-gradient(135deg, #FF3366 0%, #FF6B6B 100%);
+
+  --fit-primary: #FFFFFF;
+  --fit-accent: #000000;
+  --fit-text: #000000;
+  --fit-background: #FFFFFF;
+  --fit-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', 'Andale Mono', 'Ubuntu Mono', monospace;
+  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', Times, serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Container */
+  --container-width: 1200px;
+  --container-padding: var(--space-4);
+  --content-width: 800px;
+
+  /* Typography scale */
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
   --text-base: 1rem;
@@ -47,145 +61,322 @@
   --text-3xl: 1.875rem;
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
-  
-  /* Spacing Scale */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  
+  --text-6xl: 3.75rem;
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
   /* Transitions */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --header-height: 30px;
 }
 
-/* Base Styles */
-body {
-  font-family: var(--font-primary);
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #000000;
+    --accent: #FFFFFF;
+    --text: #FFFFFF;
+    --gray: 200, 200, 200;
+    --background: #000000;
+
+    --tech-primary: #000000;
+    --tech-accent: #00FF9D;
+    --tech-text: #FFFFFF;
+    --tech-background: #000000;
+    --tech-gradient: linear-gradient(135deg, #00FF9D 0%, #00B8FF 100%);
+
+    --politics-primary: #000000;
+    --politics-accent: #FF3366;
+    --politics-text: #FFFFFF;
+    --politics-background: #000000;
+    --politics-gradient: linear-gradient(135deg, #FF3366 0%, #FF6B6B 100%);
+
+    --fit-primary: #FFFFFF;
+    --fit-accent: #000000;
+    --fit-text: #000000;
+    --fit-background: #FFFFFF;
+    --fit-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
+  }
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  text-align: left;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  font-size: var(--font-size-base);
-  line-height: var(--line-height-base);
-  color: rgb(var(--gray-dark));
-  background-color: rgb(var(--gray-light));
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background-color: var(--background);
   transition: background-color var(--transition-normal), color var(--transition-normal);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background-color: var(--background);
 }
 
 /* Container */
 main {
-  width: var(--container-width);
+  width: var(--content-width);
   max-width: calc(100% - 2 * var(--container-padding));
   margin: 0 auto;
-  padding: var(--space-12) var(--container-padding);
+  margin-top: var(--header-height);
+  padding: var(--space-24) var(--container-padding);
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
   margin: 0 0 var(--space-4) 0;
-  color: rgb(var(--black));
+  color: var(--text);
   line-height: 1.2;
   font-weight: 700;
 }
 
-h1 { font-size: var(--text-5xl); }
-h2 { font-size: var(--text-4xl); }
-h3 { font-size: var(--text-3xl); }
-h4 { font-size: var(--text-2xl); }
-h5 { font-size: var(--text-xl); }
-h6 { font-size: var(--text-lg); }
+h1 { 
+  font-size: var(--text-5xl);
+  letter-spacing: -0.025em;
+}
+
+h2 { 
+  font-size: var(--text-4xl);
+  letter-spacing: -0.025em;
+}
+
+h3 { 
+  font-size: var(--text-3xl);
+  letter-spacing: -0.025em;
+}
+
+h4 { 
+  font-size: var(--text-2xl);
+}
+
+h5 { 
+  font-size: var(--text-xl);
+}
+
+h6 { 
+  font-size: var(--text-lg);
+}
+
+p {
+  margin-bottom: var(--space-4);
+  line-height: 1.7;
+}
 
 /* Links */
 a {
   color: var(--accent);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  position: relative;
 }
 
 a:hover {
-  color: var(--primary);
-}
-
-/* Domain-specific Styles */
-[data-domain="tech"] {
-  --primary: var(--tech-primary);
-  --accent: var(--tech-accent);
-  --text: var(--tech-text);
-  background-color: var(--primary);
   color: var(--text);
 }
 
-[data-domain="politics"] {
-  --primary: var(--politics-primary);
-  --accent: var(--politics-accent);
-  --text: var(--politics-text);
-  background-color: var(--primary);
-  color: var(--text);
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-fast);
 }
 
-[data-domain="fit"] {
-  --primary: var(--fit-primary);
-  --accent: var(--fit-accent);
-  --text: var(--fit-text);
-  background-color: var(--primary);
-  color: var(--text);
+a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 /* Code Blocks */
 pre {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
   padding: var(--space-4);
-  border-radius: var(--space-2);
+  border-radius: var(--radius-md);
   overflow-x: auto;
+  margin: var(--space-6) 0;
 }
 
 code {
-  background-color: rgba(0, 0, 0, 0.2);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background-color: rgba(0, 0, 0, 0.1);
   padding: var(--space-1) var(--space-2);
-  border-radius: var(--space-1);
-  font-family: monospace;
+  border-radius: var(--radius-sm);
 }
 
 /* Blockquotes */
 blockquote {
   border-left: 4px solid var(--accent);
   padding: var(--space-4);
-  margin: var(--space-4) 0;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 0 var(--space-2) var(--space-2) 0;
+  margin: var(--space-6) 0;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
 }
 
 /* Images */
 img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--space-2);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  margin: var(--space-6) 0;
+}
+
+/* Lists */
+ul, ol {
+  margin: var(--space-4) 0;
+  padding-left: var(--space-6);
+}
+
+li {
+  margin-bottom: var(--space-2);
+  line-height: 1.7;
+}
+
+/* Domain-specific styles */
+[data-domain="tech"] {
+  --primary: #000000;
+  --accent: #00FF9D;
+  --text: #FFFFFF;
+  --background: #000000;
+}
+
+[data-domain="tech"] body {
+  background-color: #000000;
+}
+
+[data-domain="tech"] .domain-header {
+  background-color: #000000;
+}
+
+[data-domain="politics"] {
+  --primary: #000000;
+  --accent: #FF3366;
+  --text: #FFFFFF;
+  --background: #000000;
+}
+
+[data-domain="politics"] body {
+  background-color: #000000;
+}
+
+[data-domain="politics"] .domain-header {
+  background-color: #000000;
+}
+
+[data-domain="fit"] {
+  --primary: #FFFFFF;
+  --accent: #000000;
+  --text: #000000;
+  --background: #FFFFFF;
+}
+
+[data-domain="fit"] body {
+  background-color: #FFFFFF;
+}
+
+[data-domain="fit"] .domain-header {
+  background-color: #FFFFFF;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text);
+}
+
+/* Selection styles */
+::selection {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+/* Focus styles */
+:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Print styles */
+@media print {
+  .domain-header,
+  .shared-footer {
+    display: none;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  a {
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+  }
 }
 
 /* Mobile Optimizations */
 @media (max-width: 720px) {
   :root {
-    --font-size-base: 18px;
     --container-padding: var(--space-4);
-    --space-12: var(--space-8);
+    --space-24: var(--space-12);
   }
   
   main {
-    padding: var(--space-6) var(--container-padding);
+    padding: var(--space-12) var(--container-padding);
   }
   
   h1 { font-size: var(--text-4xl); }
@@ -194,17 +385,6 @@ img {
   h4 { font-size: var(--text-xl); }
   h5 { font-size: var(--text-lg); }
   h6 { font-size: var(--text-base); }
-  
-  .domain-nav ul {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-  }
-  
-  .cross-site-nav ul {
-    flex-direction: column;
-    gap: var(--space-4);
-  }
 }
 
 /* Touch Optimizations */
@@ -219,23 +399,6 @@ img {
   }
 }
 
-/* Print Styles */
-@media print {
-  body {
-    background-color: white;
-    color: black;
-  }
-  
-  a {
-    color: black;
-    text-decoration: underline;
-  }
-  
-  .domain-header, .shared-footer {
-    display: none;
-  }
-}
-
 .sr-only {
   border: 0;
   padding: 0;
@@ -244,12 +407,8 @@ img {
   height: 1px;
   width: 1px;
   overflow: hidden;
-  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
   clip: rect(1px 1px 1px 1px);
-  /* maybe deprecated but we need to support legacy browsers */
   clip: rect(1px, 1px, 1px, 1px);
-  /* modern browsers, clip-path works inwards from each corner */
   clip-path: inset(50%);
-  /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
   white-space: nowrap;
 }

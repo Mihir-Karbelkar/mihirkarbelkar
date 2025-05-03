@@ -19,7 +19,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     // Construct the target URL
     const targetUrl = new URL(url);
     targetUrl.host = HOSTNAME;
-    targetUrl.pathname = `/${subdomain}`;
+    targetUrl.pathname = `/${subdomain}${path}`;
     console.log(targetUrl.toString(), HOSTNAME, path, subdomain, url);
     return context.rewrite(new Request(targetUrl.toString(), {
       headers: {

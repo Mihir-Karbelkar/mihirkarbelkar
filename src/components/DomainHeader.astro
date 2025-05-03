@@ -26,52 +26,84 @@ const config = domainConfig[domain];
 
 <header class="domain-header" data-domain={domain}>
   <div class="header-content">
-    <h1 class="domain-title">{domain.charAt(0).toUpperCase() + domain.slice(1)}</h1>
-    <p class="domain-tagline">{config.tagline}</p>
+    <div class="domain-info">
+      <h1 class="domain-title">{domain.charAt(0).toUpperCase() + domain.slice(1)}</h1>
+      <p class="domain-tagline">{config.tagline}</p>
+    </div>
+    
+    <nav class="domain-nav">
+      <button class="mobile-menu-button" aria-label="Toggle navigation menu">
+        <span class="menu-icon"></span>
+      </button>
+      <ul class="nav-links">
+        {config.pages.map((page) => (
+          <li>
+            <a
+              href={`/${page.toLowerCase()}`}
+              class={currentPage === page.toLowerCase() ? 'active' : ''}
+            >
+              {page}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   </div>
-  
-  <nav class="domain-nav">
-    <button class="mobile-menu-button" aria-label="Toggle navigation menu">
-      <span class="menu-icon"></span>
-    </button>
-    <ul class="nav-links">
-      {config.pages.map((page) => (
-        <li>
-          <a
-            href={`/${page.toLowerCase()}`}
-            class={currentPage === page.toLowerCase() ? 'active' : ''}
-          >
-            {page}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
 </header>
 
 <style>
   .domain-header {
-    padding: var(--space-8) 0;
-    margin-bottom: var(--space-12);
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition-normal);
+  }
+
+  [data-domain="tech"] .domain-header {
+    background-color: #000000;
+  }
+
+  [data-domain="politics"] .domain-header {
+    background-color: #000000;
+  }
+
+  [data-domain="fit"] .domain-header {
+    background-color: #FFFFFF;
   }
 
   .header-content {
-    text-align: center;
-    margin-bottom: var(--space-8);
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: var(--space-4) var(--container-padding);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .domain-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
   }
 
   .domain-title {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-2);
+    font-size: var(--text-2xl);
+    margin: 0;
     color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
   .domain-tagline {
-    font-size: var(--text-xl);
+    font-size: var(--text-sm);
     color: var(--accent);
     font-style: italic;
-    opacity: 0.9;
+    opacity: 0.8;
+    margin: 0;
   }
 
   .domain-nav {
@@ -84,16 +116,16 @@ const config = domainConfig[domain];
     border: none;
     cursor: pointer;
     padding: var(--space-2);
-    margin: 0 auto;
+    margin: 0;
   }
 
   .menu-icon {
     display: block;
     width: 24px;
     height: 2px;
-    background-color: var(--accent);
+    background-color: var(--text);
     position: relative;
-    transition: background-color var(--transition-fast);
+    transition: all var(--transition-fast);
   }
 
   .menu-icon::before,
@@ -102,8 +134,8 @@ const config = domainConfig[domain];
     position: absolute;
     width: 24px;
     height: 2px;
-    background-color: var(--accent);
-    transition: transform var(--transition-fast);
+    background-color: var(--text);
+    transition: all var(--transition-fast);
   }
 
   .menu-icon::before {
@@ -116,12 +148,10 @@ const config = domainConfig[domain];
 
   .nav-links {
     display: flex;
-    justify-content: center;
     gap: var(--space-6);
     list-style: none;
     padding: 0;
     margin: 0;
-    transition: transform var(--transition-normal);
   }
 
   .nav-links a {
@@ -129,24 +159,37 @@ const config = domainConfig[domain];
     text-decoration: none;
     font-weight: 500;
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--space-2);
+    border-radius: var(--radius-full);
     transition: all var(--transition-fast);
     opacity: 0.8;
+    position: relative;
   }
 
   .nav-links a:hover {
+    opacity: 1;
     background-color: var(--accent);
     color: var(--primary);
-    opacity: 1;
   }
 
   .nav-links a.active {
+    opacity: 1;
     background-color: var(--accent);
     color: var(--primary);
-    opacity: 1;
   }
 
   @media (max-width: 720px) {
+    .header-content {
+      padding: var(--space-2) var(--container-padding);
+    }
+
+    .domain-title {
+      font-size: var(--text-xl);
+    }
+
+    .domain-tagline {
+      font-size: var(--text-xs);
+    }
+
     .mobile-menu-button {
       display: block;
     }
@@ -154,18 +197,17 @@ const config = domainConfig[domain];
     .nav-links {
       position: absolute;
       top: 100%;
-      left: 0;
       right: 0;
       background-color: var(--primary);
       flex-direction: column;
-      align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-2);
       padding: var(--space-4);
-      border-radius: var(--space-2);
-      box-shadow: var(--shadow-md);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
       transform: translateY(-100%);
       opacity: 0;
       pointer-events: none;
+      transition: all var(--transition-normal);
     }
 
     .nav-links.open {
@@ -195,6 +237,7 @@ const config = domainConfig[domain];
 
   menuButton?.addEventListener('click', () => {
     navLinks?.classList.toggle('open');
+    menuButton?.classList.toggle('open');
   });
 
   // Close menu when clicking outside
@@ -202,6 +245,31 @@ const config = domainConfig[domain];
     const target = e.target as HTMLElement;
     if (!target?.closest('.domain-nav')) {
       navLinks?.classList.remove('open');
+      menuButton?.classList.remove('open');
     }
+  });
+
+  // Add scroll effect to header
+  let lastScroll = 0;
+  const header = document.querySelector('.domain-header');
+
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll <= 0) {
+      header?.classList.remove('scroll-up');
+      return;
+    }
+    
+    if (currentScroll > lastScroll && !header?.classList.contains('scroll-down')) {
+      // Scroll Down
+      header?.classList.remove('scroll-up');
+      header?.classList.add('scroll-down');
+    } else if (currentScroll < lastScroll && header?.classList.contains('scroll-down')) {
+      // Scroll Up
+      header?.classList.remove('scroll-down');
+      header?.classList.add('scroll-up');
+    }
+    lastScroll = currentScroll;
   });
 </script> 

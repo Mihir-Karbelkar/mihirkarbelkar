@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import DomainHeader from '../components/DomainHeader.astro';
 import SharedFooter from '../components/SharedFooter.astro';
+import DomainFavicon from '../components/DomainFavicon.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
@@ -16,6 +17,7 @@ const { title, description, pubDate, updatedDate, heroImage, domain, currentPage
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
+		<DomainFavicon domain={domain} />
 		<style>
 			main {
 				width: var(--container-width);
