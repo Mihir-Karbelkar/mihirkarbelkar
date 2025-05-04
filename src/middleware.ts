@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from "astro";
 
 const IS_DEV = process.env.ASTRO_ENV === "DEV";
-const HOSTNAME = IS_DEV ? "localhost:4321" : "localhost:8787";
+const HOSTNAME = IS_DEV ? "localhost:4321" : "mihirkarbelkar.com";
 
 export const onRequest: MiddlewareHandler = async (context, next) => {
   const { request, url } = context;
