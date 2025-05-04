@@ -1,0 +1,137 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const title = 'Submit Your Pun';
+const description = 'Think you have a punny joke? Share it with the world!';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.form-group {
+				margin-bottom: 1.5rem;
+			}
+			
+			.form-label {
+				display: block;
+				margin-bottom: 0.5rem;
+				font-weight: 500;
+			}
+			
+			.form-input,
+			.form-textarea,
+			.form-select {
+				width: 100%;
+				padding: 0.75rem;
+				border: 1px solid #d1d5db;
+				border-radius: 0.375rem;
+				background-color: #f9fafb;
+			}
+			
+			.form-textarea {
+				min-height: 120px;
+			}
+			
+			.example-pun {
+				background-color: #f3f4f6;
+				border-left: 4px solid #9ca3af;
+				padding: 1rem;
+				margin-bottom: 1rem;
+				border-radius: 0.25rem;
+			}
+		</style>
+	</head>
+	<body>
+		<Header domain='puns' />
+		<main class="container mx-auto px-4 py-8 mt-4 max-w-2xl">
+			<h1 class="text-4xl font-bold mb-2">✏️ {title}</h1>
+			<p class="text-xl mb-8 font-light italic">{description}</p>
+			
+			<div class="prose max-w-none mb-8">
+				<p>Have a punny joke that's too good not to share? Submit it below and it might be featured on the site! Just remember, we're looking for puns that are:</p>
+				<ul class="list-disc pl-6 mb-6">
+					<li>Original (or at least not overused)</li>
+					<li>Family-friendly</li>
+					<li>Actually a pun (not just any joke)</li>
+					<li><em>Pun</em>-derfully clever!</li>
+				</ul>
+				
+				<h3 class="text-lg font-medium mb-2">Need inspiration? Here are some examples:</h3>
+				<div class="example-pun">
+					<p class="font-semibold">Music Pun:</p>
+					<p>I used to be a pianist, but nobody was paying attention to my <em>key</em> performances.</p>
+				</div>
+				<div class="example-pun">
+					<p class="font-semibold">Food Pun:</p>
+					<p>I'm on a seafood diet. Every time I see food, I eat it!</p>
+				</div>
+			</div>
+			
+			<form class="bg-white p-6 rounded-lg shadow-md">
+				<div class="form-group">
+					<label class="form-label" for="name">Your Name (or Pen Name)</label>
+					<input class="form-input" type="text" id="name" name="name" placeholder="Anonymous Punster">
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label" for="email">Email (optional, for attribution)</label>
+					<input class="form-input" type="email" id="email" name="email" placeholder="your.email@example.com">
+					<p class="text-sm text-gray-500 mt-1">We'll never share your email with anyone else.</p>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label" for="category">Pun Category</label>
+					<select class="form-select" id="category" name="category">
+						<option value="">Select a category</option>
+						<option value="food">Food</option>
+						<option value="animals">Animals</option>
+						<option value="technology">Technology</option>
+						<option value="science">Science</option>
+						<option value="sports">Sports</option>
+						<option value="music">Music</option>
+						<option value="dad-jokes">Dad Jokes</option>
+						<option value="weather">Weather</option>
+						<option value="history">History</option>
+						<option value="mathematics">Mathematics</option>
+						<option value="literature">Literature</option>
+						<option value="medical">Medical</option>
+						<option value="other">Other</option>
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label" for="title">Pun Title</label>
+					<input class="form-input" type="text" id="title" name="title" placeholder="Give your pun a catchy title">
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label" for="pun">Your Pun</label>
+					<textarea class="form-textarea" id="pun" name="pun" placeholder="Type your pun here..."></textarea>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-label" for="explanation">Explanation (optional)</label>
+					<textarea class="form-textarea" id="explanation" name="explanation" placeholder="If your pun needs context or explanation, add it here."></textarea>
+				</div>
+				
+				<div class="mt-6">
+					<button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition">Submit Pun</button>
+				</div>
+				
+				<p class="mt-4 text-sm text-gray-600">By submitting, you agree that your pun may be displayed on the site with attribution if provided.</p>
+			</form>
+			
+			<div class="mt-10 bg-yellow-50 p-6 rounded-lg text-center">
+				<h3 class="text-xl font-semibold mb-3">Why did the pun go to college?</h3>
+				<p class="text-lg italic mb-4">To get a <em>play</em> on words degree!</p>
+				<a href="/puns" class="text-blue-600 font-medium hover:underline">Back to Pun Collection</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,77 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const title = 'Pun Categories';
+const description = 'Browse puns by category and find your favorite wordplay';
+
+const categories = [
+  { name: "Food", icon: "🍔", count: 12, color: "from-yellow-200 to-yellow-100" },
+  { name: "Animals", icon: "🐾", count: 15, color: "from-blue-200 to-blue-100" },
+  { name: "Technology", icon: "💻", count: 18, color: "from-gray-200 to-gray-100" },
+  { name: "Science", icon: "🔬", count: 10, color: "from-green-200 to-green-100" },
+  { name: "Sports", icon: "⚽", count: 8, color: "from-red-200 to-red-100" },
+  { name: "Music", icon: "🎵", count: 14, color: "from-purple-200 to-purple-100" },
+  { name: "Dad Jokes", icon: "👨", count: 22, color: "from-orange-200 to-orange-100" },
+  { name: "Weather", icon: "☔", count: 7, color: "from-cyan-200 to-cyan-100" },
+  { name: "History", icon: "📜", count: 9, color: "from-amber-200 to-amber-100" },
+  { name: "Mathematics", icon: "🔢", count: 11, color: "from-lime-200 to-lime-100" },
+  { name: "Literature", icon: "📚", count: 13, color: "from-pink-200 to-pink-100" },
+  { name: "Medical", icon: "🩺", count: 8, color: "from-teal-200 to-teal-100" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.category-card {
+				border-radius: 10px;
+				padding: 20px;
+				transition: all 0.3s ease;
+				cursor: pointer;
+			}
+			
+			.category-card:hover {
+				transform: scale(1.05);
+				box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+			}
+		</style>
+	</head>
+	<body>
+		<Header domain='puns' />
+		<main class="container mx-auto px-4 py-8 mt-4">
+			<h1 class="text-4xl font-bold mb-2">🔍 {title}</h1>
+			<p class="text-xl mb-8 font-light italic">{description}</p>
+			
+			<div class="prose max-w-none mb-12">
+				<p>Choose a category below to explore puns by topic. Each category contains a curated collection of my best (or worst, depending on your sense of humor) wordplay.</p>
+				<p class="font-medium text-lg">Total Categories: {categories.length}</p>
+			</div>
+
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+				{categories.map(category => (
+					<div class={`category-card bg-gradient-to-br ${category.color}`}>
+						<div class="flex justify-between items-center mb-4">
+							<span class="text-4xl">{category.icon}</span>
+							<span class="bg-white bg-opacity-50 rounded-full px-3 py-1 text-sm font-medium">{category.count} puns</span>
+						</div>
+						<h3 class="text-xl font-semibold">{category.name}</h3>
+						<p class="text-sm mt-1 mb-4 text-gray-600">Click to see all {category.name.toLowerCase()} puns</p>
+						<a href={`/puns/category/${category.name.toLowerCase()}`} class="text-blue-600 font-medium hover:text-blue-800 text-sm">Browse {category.icon}</a>
+					</div>
+				))}
+			</div>
+			
+			<div class="mt-12 bg-blue-50 p-6 rounded-lg">
+				<h3 class="text-xl font-semibold mb-2">Can't find what you're looking for?</h3>
+				<p class="mb-4">Have a favorite pun category that's missing? Or want to add your own pun to the collection?</p>
+				<a href="/puns/submissions" class="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition">Submit a Pun</a>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

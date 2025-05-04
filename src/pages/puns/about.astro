@@ -1,0 +1,76 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const title = 'About Puns & Wordplay';
+const description = 'The story behind this punny corner of the internet';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.highlight-box {
+				background-color: #f9fafb;
+				border-radius: 8px;
+				padding: 1.5rem;
+				margin: 1.5rem 0;
+				border-left: 4px solid #60a5fa;
+			}
+		</style>
+	</head>
+	<body>
+		<Header domain='puns' />
+		<main class="container mx-auto px-4 py-8 mt-4 max-w-3xl">
+			<h1 class="text-4xl font-bold mb-2">ℹ️ {title}</h1>
+			<p class="text-xl mb-8 font-light italic">{description}</p>
+			
+			<div class="prose prose-lg max-w-none">
+				<h2>Why Puns?</h2>
+				<p>Welcome to the punny side of mihirkarbelkar.com! This site was born from my undying love for wordplay and my belief that even the groan-inducing pun has its place in the world of humor.</p>
+				
+				<p>I've always been fascinated by the way language can be twisted, turned, and transformed to create multiple layers of meaning. Puns represent the perfect intersection of linguistic creativity and humor - they make us think while making us smile (or cringe).</p>
+				
+				<div class="highlight-box">
+					<p class="text-lg font-medium mb-2">Did you know?</p>
+					<p>The pun is considered one of the oldest forms of humor in human history. Even Shakespeare was a huge fan of wordplay, incorporating over 3,000 puns throughout his works!</p>
+				</div>
+				
+				<h2>The Mission</h2>
+				<p>This site has one simple mission: to collect and share puns that are so bad they're good. Whether you're here to:</p>
+				
+				<ul>
+					<li>Find the perfect pun for your next presentation</li>
+					<li>Stock up on dad jokes</li>
+					<li>Submit your own wordplay creations</li>
+					<li>Simply enjoy a good groan</li>
+				</ul>
+				
+				<p>...you've come to the right place. Every pun here has been carefully selected for its clever wordplay, its groan-factor, and its ability to make you simultaneously roll your eyes and appreciate the linguistic genius behind it.</p>
+				
+				<h2>Community Guidelines</h2>
+				<p>The pun community is built on respect and good humor. When submitting or engaging with content on this site, please keep in mind:</p>
+				
+				<ul>
+					<li>Keep it clean and family-friendly</li>
+					<li>Give credit where credit is due</li>
+					<li>Remember that the best puns make people think, not hurt</li>
+					<li>Share freely, laugh loudly, groan appreciatively</li>
+				</ul>
+				
+				<div class="highlight-box">
+					<p class="font-medium">"The pun is mightier than the sword... and much funnier, too."</p>
+				</div>
+				
+				<h2>Contact</h2>
+				<p>Have suggestions for improving the site? Found a problem? Or just want to share a particularly excellent pun directly? Feel free to reach out through the <a href="/puns/submissions" class="text-blue-600 hover:underline">submissions page</a>.</p>
+				
+				<p class="mt-8 text-center italic">Remember: Life's too short for bad jokes, but never too short for bad puns!</p>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -9,15 +9,20 @@ const subdomains = [
 		name: 'Politics',
 		url: 'https://politics.mihirkarbelkar.com',
 		description: 'Analysis and commentary on political developments and current affairs',
-		icon: '🏛️'
+		icon: ''
 	},
 	{
 		name: 'Technology',
 		url: 'https://tech.mihirkarbelkar.com',
 		description: 'Latest in tech, software development, and digital innovation',
-		icon: '💻'
-	}
-];
+		icon: ''
+	},
+	{
+		name: 'Puns',
+		url: 'https://puns.mihirkarbelkar.com',
+		description: 'A collection of the most eye-rolling, groan-inducing puns you\'ll ever read',
+		icon: ''
+}];
 
 // Get the current hostname
 const hostname = Astro.request.headers.get('host') || '';
@@ -35,7 +40,7 @@ if (['politics', 'tech'].includes(subdomain) && hostname !== 'mihirkarbelkar.com
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
-		<Header domain="tech" />
+		<Header domain='default'/>
 		<main class="container mx-auto px-4 py-8">
 			<h1 class="text-4xl font-bold mb-8">Welcome to My Notebook</h1>
 			<p class="text-xl mb-8">

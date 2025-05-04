@@ -1,0 +1,55 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+
+const title = 'Puns & Wordplay';
+const description = 'A collection of the most eye-rolling, groan-inducing puns you\'ll ever read';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.pun-card {
+				border: 2px solid #ddd;
+				border-radius: 8px;
+				padding: 20px;
+				margin-bottom: 16px;
+				transition: all 0.3s ease;
+				background: #f9f9f9;
+			}
+			
+			.pun-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+				border-color: #9CA3AF;
+			}
+			
+			.pun-category {
+				display: inline-block;
+				background: #E5E7EB;
+				color: #4B5563;
+				border-radius: 20px;
+				padding: 4px 12px;
+				font-size: 0.8rem;
+				margin-right: 8px;
+			}
+		</style>
+	</head>
+	<body>
+		<Header domain='puns' />
+		<main class="container mx-auto px-4 py-8 mt-4">
+			<h1 class="text-4xl font-bold mb-2">{title}</h1>
+			<p class="text-xl mb-8 font-light italic">{description}</p>
+			
+			<div class="mt-16 bg-yellow-50 border-l-4 border-yellow-400 p-5 rounded">
+				<h3 class="font-medium text-lg mb-2">Pun of the Day</h3>
+				<p class="italic">"I'm reading a book about anti-gravity. It's impossible to put down!"</p>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

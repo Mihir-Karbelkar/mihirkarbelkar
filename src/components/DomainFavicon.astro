@@ -20,13 +20,13 @@ const faviconConfig = {
   },
 };
 
-const config = faviconConfig[domain];
+const config = faviconConfig?.[domain];
 ---
 
-<link rel="apple-touch-icon" sizes="180x180" href={`${config.path}/apple-touch-icon.png`}>
-<link rel="icon" type="image/png" sizes="32x32" href={`${config.path}/favicon-32x32.png`}>
-<link rel="icon" type="image/png" sizes="16x16" href={`${config.path}/favicon-16x16.png`}>
-<link rel="manifest" href={`${config.path}/site.webmanifest`}>
-<link rel="mask-icon" href={`${config.path}/safari-pinned-tab.svg`} color={config.color}>
-<meta name="msapplication-TileColor" content={config.color}>
-<meta name="theme-color" content={config.color}> 
+<link rel="apple-touch-icon" sizes="180x180" href={`${config?.path}/apple-touch-icon.png`}>
+<link rel="icon" type="image/png" sizes="32x32" href={`${config?.path}/favicon-32x32.png`}>
+<link rel="icon" type="image/png" sizes="16x16" href={`${config?.path}/favicon-16x16.png`}>
+<link rel="manifest" href={`${config?.path}/site.webmanifest`}>
+  <link rel="mask-icon" href={`${config?.path}/safari-pinned-tab.svg`} color={config?.color}>
+<meta name="msapplication-TileColor" content={config?.color}>
+<meta name="theme-color" content={config?.color}> 

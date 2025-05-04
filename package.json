@@ -32,7 +32,7 @@
     "check": "astro build && tsc && wrangler deploy --dry-run",
     "deploy": "astro build && wrangler deploy",
     "dev": "ASTRO_ENV=DEV astro dev",
-    "preview": "astro build && wrangler dev",
+    "preview": "PREVIEW=true astro build && wrangler dev",
     "generate-favicons": "node scripts/generate-favicons.js"
   },
   "type": "module"

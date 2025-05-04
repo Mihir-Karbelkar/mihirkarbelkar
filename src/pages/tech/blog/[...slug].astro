@@ -1,0 +1,16 @@
+---
+import { type CollectionEntry, getCollection, getEntry } from 'astro:content';
+import BlogPost from '../../../layouts/BlogPost.astro';
+import { render } from 'astro:content';
+const post = await getEntry('blog', Astro.params.slug)
+type Props = {
+	post: CollectionEntry<'blog'>;
+	domain: 'tech' | 'politics' | 'fit' | 'poetry';
+};
+const domain = Astro.url.host.split('.')[0];
+const { Content } = await render(post);
+---
+
+<BlogPost {...post.data} domain={domain} currentPage="blog">
+	<Content />
+</BlogPost> 

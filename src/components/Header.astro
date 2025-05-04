@@ -1,23 +1,23 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { SITE_TITLE } from '../consts';
-import { domainConfig } from '../config/domains';
+import { getDomainConfig } from '../config/domains';
 
 interface Props {
-	domain: 'tech' | 'politics' | 'fit';
+	domain: string;
 	currentPage?: string;
 }
 
 const { currentPage } = Astro.props;
-const domain = Astro.url.pathname.split('/')?.[1] || 'localhost';
-const config = domainConfig[domain];
+const domain = Astro.url.pathname.split('/')?.[1] || 'Localhost';
+const config = getDomainConfig(domain);
 ---
 
 <header class="domain-header" data-domain={domain}>
 	<div class="header-content">
 		<div class="domain-info">
 			<h1 class="domain-title">{domain?.charAt(0)?.toUpperCase() + domain?.slice(1)}</h1>
-			<p class="domain-tagline">{config?.tagline}</p>
+			<p class="domain-tagline">{config.tagline}</p>
 		</div>
 		
 		<nav class="domain-nav">
@@ -25,7 +25,7 @@ const config = domainConfig[domain];
 				<span class="menu-icon"></span>
 			</button>
 			<ul class="nav-links">
-				{config?.pages?.map((page: string) => (
+				{config.pages.map((page: string) => (
 					<li>
 						<a
 							href={`/${page.toLowerCase()}`}
