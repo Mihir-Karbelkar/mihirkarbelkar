@@ -1,55 +1,127 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
-import { SITE_TITLE } from '../../consts';
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE } from "../../consts";
+import * as fs from "fs";
+import * as path from "path";
 
-const title = 'Puns & Wordplay';
-const description = 'A collection of the most eye-rolling, groan-inducing puns you\'ll ever read';
+// Define the type for our pun data
+interface Pun {
+  id: number;
+  text: string;
+  category: string;
+  dateAdded: string;
+}
+
+const title = "Puns & Wordplay";
+const description =
+  "A collection of the most eye-rolling, groan-inducing puns you'll ever read";
+
+// Load puns from the JSON file
+const punsFilePath = path.join(process.cwd(), "src", "data", "puns.json");
+const punsData: Pun[] = JSON.parse(fs.readFileSync(punsFilePath, "utf-8"));
+
+// Get a random pun for "Pun of the Day"
+const randomIndex = Math.floor(Math.random() * punsData.length);
+const punOfTheDay = punsData[randomIndex];
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			.pun-card {
-				border: 2px solid #ddd;
-				border-radius: 8px;
-				padding: 20px;
-				margin-bottom: 16px;
-				transition: all 0.3s ease;
-				background: #f9f9f9;
-			}
-			
-			.pun-card:hover {
-				transform: translateY(-5px);
-				box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-				border-color: #9CA3AF;
-			}
-			
-			.pun-category {
-				display: inline-block;
-				background: #E5E7EB;
-				color: #4B5563;
-				border-radius: 20px;
-				padding: 4px 12px;
-				font-size: 0.8rem;
-				margin-right: 8px;
-			}
-		</style>
-	</head>
-	<body>
-		<Header domain='puns' />
-		<main class="container mx-auto px-4 py-8 mt-4">
-			<h1 class="text-4xl font-bold mb-2">{title}</h1>
-			<p class="text-xl mb-8 font-light italic">{description}</p>
-			
-			<div class="mt-16 bg-yellow-50 border-l-4 border-yellow-400 p-5 rounded">
-				<h3 class="font-medium text-lg mb-2">Pun of the Day</h3>
-				<p class="italic">"I'm reading a book about anti-gravity. It's impossible to put down!"</p>
-			</div>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={title} description={description} />
+    <style>
+      .pun-card {
+        border: 2px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+        background: #334155;
+        color: #f8fafc;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .pun-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border-color: #94a3b8;
+      }
+
+      .pun-category {
+        display: inline-block;
+        background: #2563eb;
+        color: white;
+        font-weight: 500;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        margin-right: 8px;
+      }
+
+      .pun-text {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin-top: 12px;
+      }
+
+      .pun-date {
+        color: #cbd5e1;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .pun-of-day {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border-left: 4px solid #f59e0b;
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .pun-of-day h3 {
+        color: #92400e;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 1.25rem;
+      }
+
+      .pun-of-day p {
+        color: #78350f;
+        font-size: 1.1rem;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <Header domain="puns" />
+    <main class="container mx-auto px-4 py-8 mt-4">
+      <h1 class="text-4xl font-bold mb-2">{title}</h1>
+      <p class="text-xl mb-8 font-light italic">{description}</p>
+
+      <div class="pun-of-day mt-16 pb-6">
+        <h3>Pun of the Day</h3>
+        <p>"{punOfTheDay.text}"</p>
+      </div>
+      <div style="margin-top: 20px;">
+        <h2 class="text-2xl font-bold mb-6">Collection of Puns</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {
+            punsData.map((pun) => (
+              <div class="pun-card">
+                <div class="flex justify-between items-start">
+                  <span class="pun-category">{pun.category}</span>
+                  <span class="pun-date">{pun.dateAdded}</span>
+                </div>
+                <p class="pun-text">"{pun.text}"</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </body>
 </html>
