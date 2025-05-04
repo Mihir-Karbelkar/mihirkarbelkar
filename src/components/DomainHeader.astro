@@ -1,6 +1,6 @@
 ---
 interface Props {
-  domain: 'tech' | 'politics' | 'fit';
+  domain: "tech" | "politics" | "fit" | "puns";
   currentPage?: string;
 }
 
@@ -9,15 +9,19 @@ const { domain, currentPage } = Astro.props;
 const domainConfig = {
   tech: {
     tagline: "Code should sprint like I do.",
-    pages: ['Posts', 'Lab', 'Snippets', 'Philosophy'],
+    pages: ["Posts", "Lab", "Snippets", "Philosophy"],
   },
   politics: {
     tagline: "Informed dissent is self-respect.",
-    pages: ['Essays', 'Commentary', 'Manifesto', 'Resources'],
+    pages: ["Essays", "Commentary", "Manifesto", "Resources"],
   },
   fit: {
     tagline: "Strength through consistency.",
-    pages: ['Workouts', 'Nutrition', 'Progress', 'Philosophy'],
+    pages: ["Workouts", "Nutrition", "Progress", "Philosophy"],
+  },
+  puns: {
+    tagline: "Some of these dont even make sense.",
+    pages: ["Punchlines", "Categories", "Submissions", "About"],
   },
 };
 
@@ -27,25 +31,29 @@ const config = domainConfig[domain];
 <header class="domain-header" data-domain={domain}>
   <div class="header-content">
     <div class="domain-info">
-      <h1 class="domain-title">{domain.charAt(0).toUpperCase() + domain.slice(1)}</h1>
+      <h1 class="domain-title">
+        {domain.charAt(0).toUpperCase() + domain.slice(1)}
+      </h1>
       <p class="domain-tagline">{config.tagline}</p>
     </div>
-    
+
     <nav class="domain-nav">
       <button class="mobile-menu-button" aria-label="Toggle navigation menu">
         <span class="menu-icon"></span>
       </button>
       <ul class="nav-links">
-        {config.pages.map((page) => (
-          <li>
-            <a
-              href={`/${page.toLowerCase()}`}
-              class={currentPage === page.toLowerCase() ? 'active' : ''}
-            >
-              {page}
-            </a>
-          </li>
-        ))}
+        {
+          config.pages.map((page) => (
+            <li>
+              <a
+                href={`/${page.toLowerCase()}`}
+                class={currentPage === page.toLowerCase() ? "active" : ""}
+              >
+                {page}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
   </div>
@@ -72,7 +80,11 @@ const config = domainConfig[domain];
   }
 
   [data-domain="fit"] .domain-header {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
+  }
+
+  [data-domain="puns"] .domain-header {
+    background-color: #334155;
   }
 
   .header-content {
@@ -130,7 +142,7 @@ const config = domainConfig[domain];
 
   .menu-icon::before,
   .menu-icon::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 24px;
     height: 2px;
@@ -232,44 +244,50 @@ const config = domainConfig[domain];
 
 <script>
   // Mobile menu toggle
-  const menuButton = document.querySelector('.mobile-menu-button');
-  const navLinks = document.querySelector('.nav-links');
+  const menuButton = document.querySelector(".mobile-menu-button");
+  const navLinks = document.querySelector(".nav-links");
 
-  menuButton?.addEventListener('click', () => {
-    navLinks?.classList.toggle('open');
-    menuButton?.classList.toggle('open');
+  menuButton?.addEventListener("click", () => {
+    navLinks?.classList.toggle("open");
+    menuButton?.classList.toggle("open");
   });
 
   // Close menu when clicking outside
-  document.addEventListener('click', (e: MouseEvent) => {
+  document.addEventListener("click", (e: MouseEvent) => {
     const target = e.target as HTMLElement;
-    if (!target?.closest('.domain-nav')) {
-      navLinks?.classList.remove('open');
-      menuButton?.classList.remove('open');
+    if (!target?.closest(".domain-nav")) {
+      navLinks?.classList.remove("open");
+      menuButton?.classList.remove("open");
     }
   });
 
   // Add scroll effect to header
   let lastScroll = 0;
-  const header = document.querySelector('.domain-header');
+  const header = document.querySelector(".domain-header");
 
-  window.addEventListener('scroll', () => {
+  window.addEventListener("scroll", () => {
     const currentScroll = window.pageYOffset;
-    
+
     if (currentScroll <= 0) {
-      header?.classList.remove('scroll-up');
+      header?.classList.remove("scroll-up");
       return;
     }
-    
-    if (currentScroll > lastScroll && !header?.classList.contains('scroll-down')) {
+
+    if (
+      currentScroll > lastScroll &&
+      !header?.classList.contains("scroll-down")
+    ) {
       // Scroll Down
-      header?.classList.remove('scroll-up');
-      header?.classList.add('scroll-down');
-    } else if (currentScroll < lastScroll && header?.classList.contains('scroll-down')) {
+      header?.classList.remove("scroll-up");
+      header?.classList.add("scroll-down");
+    } else if (
+      currentScroll < lastScroll &&
+      header?.classList.contains("scroll-down")
+    ) {
       // Scroll Up
-      header?.classList.remove('scroll-down');
-      header?.classList.add('scroll-up');
+      header?.classList.remove("scroll-down");
+      header?.classList.add("scroll-up");
     }
     lastScroll = currentScroll;
   });
-</script> 
+</script>

@@ -2,29 +2,14 @@
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
-import { SITE_TITLE } from "../../consts";
-import * as fs from "fs";
-import * as path from "path";
-
-// Define the type for our pun data
-interface Pun {
-  id: number;
-  text: string;
-  category: string;
-  dateAdded: string;
-}
+import { punsData, getRandomPun } from "../../data/punsData";
 
 const title = "Puns & Wordplay";
 const description =
   "A collection of the most eye-rolling, groan-inducing puns you'll ever read";
 
-// Load puns from the JSON file
-const punsFilePath = path.join(process.cwd(), "src", "data", "puns.json");
-const punsData: Pun[] = JSON.parse(fs.readFileSync(punsFilePath, "utf-8"));
-
 // Get a random pun for "Pun of the Day"
-const randomIndex = Math.floor(Math.random() * punsData.length);
-const punOfTheDay = punsData[randomIndex];
+const punOfTheDay = getRandomPun();
 ---
 
 <!doctype html>
