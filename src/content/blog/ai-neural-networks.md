@@ -3,6 +3,7 @@ title: "Neural Networks: Digital Minds in the Machine"
 description: "Exploring the cutting edge of artificial intelligence and how neural networks are evolving to mimic and potentially surpass human cognition."
 pubDate: "2024-03-10"
 heroImage: "/blog-placeholder-2.jpg"
+category: 'tech'
 ---
 
 In the depths of silicon and code, artificial minds are awakening. Neural networks, inspired by the biological circuitry of our own brains, are pushing the boundaries of what machines can perceive, learn, and create. Welcome to the age of artificial intelligence, where the line between human and machine intelligence grows increasingly blurred.

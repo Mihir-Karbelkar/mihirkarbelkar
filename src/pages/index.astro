@@ -24,45 +24,414 @@ const subdomains = [
 		icon: ''
 }];
 
-// Get the current hostname
-const hostname = Astro.request.headers.get('host') || '';
-const subdomain = hostname.split('.')[0];
-
-// If we're on a subdomain, redirect to the appropriate page
-if (['politics', 'tech'].includes(subdomain) && hostname !== 'mihirkarbelkar.com') {
-  return Astro.redirect(`/${subdomain}`);
-}
 ---
 
+<!doctype html>
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            /* Animated Background */
+            :root {
+                --kineses-bg: #ffffff;
+            }
+            [data-theme="dark"] {
+                --kineses-bg: #0f0f11;
+            }
+            body {
+                background-color: var(--kineses-bg);
+                overflow-x: hidden;
+            }
+            .mesh-gradient {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                z-index: -1;
+                filter: blur(80px); /* Creates the soft abstract look */
+                opacity: 0.6;
+                transition: opacity 1s ease;
+            }
+            .orb {
+                position: absolute;
+                border-radius: 50%;
+                opacity: 0.8;
+                animation: float 20s infinite ease-in-out;
+            }
+            .orb-1 {
+                top: -10%;
+                left: -10%;
+                width: 50vw;
+                height: 50vw;
+                background: radial-gradient(circle, rgba(255, 0, 51, 0.3), transparent 70%);
+                animation-delay: 0s;
+            }
+            .orb-2 {
+                bottom: -20%;
+                right: -10%;
+                width: 60vw;
+                height: 60vw;
+                background: radial-gradient(circle, rgba(204, 0, 255, 0.3), transparent 70%);
+                animation-delay: -5s;
+            }
+             .orb-3 {
+                top: 40%;
+                left: 40%;
+                width: 40vw;
+                height: 40vw;
+                background: radial-gradient(circle, rgba(0, 255, 242, 0.2), transparent 70%);
+                animation-delay: -10s;
+            }
+
+            @keyframes float {
+                0%, 100% { transform: translate(0, 0); }
+                33% { transform: translate(30px, -50px); }
+                66% { transform: translate(-20px, 20px); }
+            }
+
+            /* Glass Card */
+            .glass-panel {
+                background: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            }
+            [data-theme="dark"] .glass-panel {
+                background: rgba(20, 20, 23, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            }
+
+            /* Animations */
+            .fade-in-up {
+                animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            .delay-1 { animation-delay: 0.1s; }
+            .delay-2 { animation-delay: 0.2s; }
+            .delay-3 { animation-delay: 0.3s; }
+
+            @keyframes fadeInUp {
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            /* Input styling */
+            .vibe-input {
+                font-family: inherit;
+                background: transparent;
+                border-bottom: 2px solid rgba(128, 128, 128, 0.3);
+                transition: all 0.3s ease;
+				color: var(--text);
+            }
+            .vibe-input:focus {
+                border-color: var(--accent);
+                box-shadow: 0 10px 20px -10px rgba(var(--accent-rgb), 0.2);
+            }
+
+            /* Gradient Text */
+            .gradient-text {
+                background: var(--pill-gradient, linear-gradient(135deg, #000, #333));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                color: transparent;
+                /* Fallback text color if gradient fails */ 
+                /* color: var(--accent); */ 
+            }
+            [data-theme="dark"] .gradient-text {
+                 background: var(--pill-gradient, linear-gradient(135deg, #fff, #bbb));
+                 -webkit-background-clip: text;
+                 -webkit-text-fill-color: transparent;
+            }
+
+        </style>
 	</head>
 	<body>
+        <!-- Animated Background -->
+        <div class="mesh-gradient">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+
 		<Header domain='default'/>
-		<main class="container mx-auto px-4 py-8">
-			<h1 class="text-4xl font-bold mb-8">Welcome to My Notebook</h1>
-			<p class="text-xl mb-8">
-				Where ideas find their page. Choose your chapter:
-			</p>
-			
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				{subdomains.map((subdomain) => (
-					<a 
-						href={subdomain.url}
-						class="block p-6 border rounded-lg hover:border-blue-500 transition-colors"
-					>
-						<div>
-							<h2 class="text-2xl font-semibold">
-								<span class="text-2xl">{subdomain.icon}</span> {subdomain.name}
-							</h2>
-							<p class="text-gray-600">{subdomain.description}</p>
-						</div>
-					</a>
-				))}
-			</div>
+		
+		<main class="container mx-auto px-4 min-h-[80vh] flex flex-col items-center justify-center">
+            
+            <div class="max-w-4xl w-full text-center relative z-10">
+                
+                <!-- Main Heading -->
+                <h1 class="text-6xl md:text-8xl font-black mb-6 tracking-tighter fade-in-up">
+                    Design Your <br />
+                    <span class="gradient-text">Universe</span>
+                </h1>
+                
+                <p class="text-2xl text-gray-500 dark:text-gray-400 mb-12 max-w-2xl mx-auto font-light fade-in-up delay-1">
+                    Describe your vibe. Our local AI will craft a unique theme that follows you everywhere.
+                </p>
+
+                <!-- Interactive Card -->
+                <div class="glass-panel p-1 rounded-3xl fade-in-up delay-2 mx-auto max-w-2xl relative group transition-all duration-500 hover:shadow-2xl">
+                    <!-- Glowing Border Gradient -->
+                    <div class="absolute -inset-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 rounded-3xl opacity-20 group-hover:opacity-40 blur-lg transition-opacity duration-500"></div>
+                    
+                    <div class="relative bg-white dark:bg-zinc-900 rounded-[22px] p-8 overflow-hidden">
+                        <textarea 
+                            id="user-prompt" 
+                            class="vibe-input w-full h-24 p-2 resize-none outline-none text-[#fff] text-2xl font-light bg-transparent text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-white border-b-2 border-gray-100 dark:border-zinc-800 focus:border-purple-500 transition-colors"
+                            placeholder="e.g. Neon rain in Tokyo..."
+                        ></textarea>
+
+                        <div class="flex items-center justify-between mt-8">
+                             <div id="status-msg" class="text-sm text-gray-400 font-medium">Ready to dream</div>
+                             
+                             <button 
+                                id="generate-btn"
+                                class="relative px-8 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-bold text-lg hover:scale-105 active:scale-95 transition-transform shadow-lg flex items-center gap-2 group/btn overflow-hidden"
+                            >
+                                <span class="relative z-10 flex items-center gap-2">
+                                    Generate <span class="text-xl">✨</span>
+                                </span>
+                                <!-- Shine effect -->
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:animate-shine"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Links -->
+                <div class="mt-12 fade-in-up delay-3">
+                    <a href="/blog" class="text-gray-500 hover:text-black dark:hover:text-white transition-colors border-b border-transparent hover:border-gray-500 text-lg">
+                        Skip to Blog &rarr;
+                    </a>
+                </div>
+
+                <!-- Theme Preview Area -->
+                <div id="preview-section" class="mt-20 opacity-0 transition-all duration-700 transform translate-y-10">
+                    <p class="text-sm uppercase tracking-widest text-gray-400 mb-6 font-bold">Your Generated Theme</p>
+                    <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                        <!-- Preview Card -->
+                        <div class="preview-card w-80 h-48 rounded-2xl shadow-2xl flex flex-col justify-end p-6 relative overflow-hidden group">
+                            <!-- Background mimics blog card hover -->
+                            <div class="absolute inset-0 z-0 bg-gray-100 dark:bg-zinc-800"></div>
+                            <div class="absolute inset-0 z-0 bg-gradient-to-br from-transparent to-black/5 opacity-50"></div>
+                            
+                            <!-- Bleed Effect Preview -->
+                            <div class="preview-bleed absolute top-1/2 left-1/2 w-full h-full -translate-x-1/2 -translate-y-1/2 bg-[var(--pill-gradient)] blur-3xl opacity-20 rounded-full"></div>
+
+                            <div class="relative z-10">
+                                <span class="preview-pill inline-block px-4 py-1 rounded-md text-xs font-bold text-white mb-2 transform skew-x-[-10deg]" style="background: var(--pill-gradient, #333);">
+                                    Technology
+                                </span>
+                                <div class="h-4 w-3/4 bg-gray-300 dark:bg-gray-600 rounded mb-2"></div>
+                                <div class="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 		</main>
 		<Footer />
+
+        <style>
+             @keyframes shine {
+                100% { transform: translateX(100%); }
+            }
+            .group-hover\/btn\:animate-shine:hover {
+                animation: shine 1s;
+            }
+        </style>
+
+        <script>
+            // Import Transformers.js from CDN to avoid build complexity in this environment
+            import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0';
+
+            // Configure to not load local models since we are running in browser without node backend
+            env.allowLocalModels = false;
+            env.useBrowserCache = true;
+
+            const generateBtn = document.getElementById('generate-btn');
+            const userPrompt = document.getElementById('user-prompt') as HTMLTextAreaElement;
+            const statusMsg = document.getElementById('status-msg');
+            const previewSection = document.getElementById('preview-section');
+
+            // --- Semantic MLP with Pre-Trained Weights ---
+            
+            const MSG_EMBEDDING_DIM = 384;
+            const MLP_OUTPUT_DIM = 4;
+            
+            // The Weight Matrix (384 x 4) loaded from server
+            let learnedWeights: number[][] | null = null;
+            let learnedBias: number[] = [0, 0, 0, 0];
+
+            // Sigmoid function
+            function sigmoid(x: number) {
+                return 1 / (1 + Math.exp(-x));
+            }
+
+            // Step 2 & 3 & 4 implementation
+            function embeddingToRGBA(embedding: number[]) {
+                if (!learnedWeights) return { r:128, g:128, b:128, a:1 }; // Fallback
+
+                // Step 3: Embedding -> raw color values (MLP)
+                // Output = W * Embedding + Bias
+                const rawOutput: number[] = [0, 0, 0, 0];
+                
+                // Weights are stored as [OutputDim][InputDim] in our JSON (Wy + b)
+                // Actually, PyTorch Linear weight is [Out, In]. 
+                // Let's assume standard matrix multiplication: y = Wx + b
+                for (let r = 0; r < MLP_OUTPUT_DIM; r++) {
+                    let dot = 0;
+                    for (let c = 0; c < MSG_EMBEDDING_DIM; c++) {
+                        dot += (learnedWeights[r][c] * embedding[c]);
+                    }
+                    rawOutput[r] = dot + learnedBias[r];
+                }
+
+                // Step 4: Constrain to valid RGBA
+                const r = Math.round(255 * sigmoid(rawOutput[0]));
+                const g = Math.round(255 * sigmoid(rawOutput[1]));
+                const b = Math.round(255 * sigmoid(rawOutput[2]));
+                const a = 0.5 + (0.5 * sigmoid(rawOutput[3])); // Bias alpha towards 1, min 0.5
+
+                return { r, g, b, a };
+            }
+
+            // --- Main Logic ---
+
+            let extractor: any = null;
+
+            async function loadModel() {
+                if (!extractor) {
+                    statusMsg!.textContent = "Loading Engine...";
+                    
+                    // Parallel load: Model + Weights
+                    const [pipelineReq, weightsReq] = await Promise.all([
+                        pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2'),
+                        fetch('/theme-weights.json').then(res => res.json())
+                    ]);
+
+                    extractor = pipelineReq;
+                    
+                    // Set weights
+                    learnedWeights = weightsReq.weights;
+                    learnedBias = weightsReq.bias;
+                    
+                    console.log("Model and Weights Loaded.");
+                }
+            }
+
+            generateBtn?.addEventListener('click', async () => {
+                const prompt = userPrompt.value.trim();
+                if (!prompt) {
+                    statusMsg!.textContent = "Enter a prompt first!";
+                    return;
+                }
+
+                statusMsg!.textContent = "Initializing Neural Network...";
+                generateBtn.classList.add('opacity-75', 'cursor-wait');
+
+                try {
+                    await loadModel();
+                    
+                    statusMsg!.textContent = "Generating Semantics...";
+                    
+                    // Step 1: Text -> Embedding
+                    // pooling='mean', normalize=true usually good for feature vectors
+                    const output = await extractor(prompt, { pooling: 'mean', normalize: true });
+                    const embedding = Array.from(output.data) as number[]; // Float32Array to Array
+
+                    if (embedding.length !== 384) {
+                        throw new Error(`Embedding dim mismatch: got ${embedding.length}, expected 384`);
+                    }
+
+                    // Generate Primary Color (Theme Accent)
+                    // Use a seed for variation if user clicks multiple times? 
+                    // User said "If seed is provided... Same seed + prompt always same".
+                    // Implies if I provide NO seed, it is deterministic (Base embedding).
+                    // To get a gradient, I need two colors.
+                    
+                    // Let's generate Color 1 (Accent) using pure embedding (deterministic)
+                    // Or actually, to make it interesting, let's use the prompt itself as seed for noise?
+                    // No, the embedding capture prompt semantics.
+                    // Let's generate:
+                    // Color 1: Base Embedding
+                    // Color 2: Embedding + Fixed "Variation" Noise or just shift inputs slightly?
+                    
+                    // Actually, let's use the "remix" capacity.
+                    // Generate a random seed for the *Session* to give unique flavor?
+                    // Or just use the math.
+                    
+                    // Let's try to generate RGBA 1 from raw embedding
+                    const c1 = embeddingToRGBA(embedding);
+                    console.log('%c Color 1 (Accent) ', `background: rgba(${c1.r}, ${c1.g}, ${c1.b}, ${c1.a}); color: #fff; font-weight: bold;`, c1);
+                    
+                    // For the gradient, we need a second color.
+                    // Implementation of Step 2: Add noise to embedding for variation
+                    // Seeded random for consistency
+                    const seedStr = "secondary-color-seed";
+                    // Simple hash/rand for noise
+                    const embeddingWithNoise = [...embedding];
+                    const STRENGTH = 0.5; // Enough noise to drift to a neighbor concept
+                    
+                    // Simple deterministic PRNG for noise
+                    let h = 0x811c9dc5;
+                    for (let i = 0; i < seedStr.length; i++) h ^= seedStr.charCodeAt(i) * 16777619;
+                    const noise = () => {
+                        h += h << 13; h ^= h >>> 7;
+                        h += h << 3; h ^= h >>> 17;
+                        return (h >>> 0) / 4294967296 * 2 - 1; // [-1, 1]
+                    };
+
+                    for(let i=0; i<embeddingWithNoise.length; i++) {
+                         embeddingWithNoise[i] += noise() * STRENGTH;
+                    }
+
+                    const c2 = embeddingToRGBA(embeddingWithNoise);
+                    console.log('%c Color 2 (Secondary) ', `background: rgba(${c2.r}, ${c2.g}, ${c2.b}, 1); color: #fff; font-weight: bold;`, c2);
+
+                    const accentHex = rgbToHex(c1.r, c1.g, c1.b);
+                    const gradientStr = `linear-gradient(135deg, rgba(${c1.r},${c1.g},${c1.b},${c1.a}), rgba(${c2.r},${c2.g},${c2.b},1))`; // Force c2 alpha to 1 for distinct end?
+
+                    statusMsg!.textContent = "Theme Synthesized via Embeddings ✨";
+                    statusMsg!.className = "text-sm text-green-500 font-medium";
+
+                    applyTheme(gradientStr, accentHex);
+                    saveTheme(gradientStr, accentHex);
+
+                    generateBtn.classList.remove('opacity-75', 'cursor-wait');
+                    previewSection!.classList.remove('opacity-0', 'translate-y-10');
+
+                } catch (e) {
+                    console.error(e);
+                    statusMsg!.textContent = "Error: " + (e as Error).message;
+                    generateBtn.classList.remove('opacity-75', 'cursor-wait');
+                }
+            });
+
+            function rgbToHex(r: number, g: number, b: number) {
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+
+            function applyTheme(gradient: string, accent: string) {
+                document.documentElement.style.setProperty('--pill-gradient', gradient);
+                document.documentElement.style.setProperty('--accent', accent);
+                
+                const previewPill = document.querySelector('.preview-pill') as HTMLElement;
+                const previewBleed = document.querySelector('.preview-bleed') as HTMLElement;
+                
+                if (previewPill) previewPill.style.background = gradient;
+                if (previewBleed) previewBleed.style.background = gradient;
+            }
+
+            function saveTheme(gradient: string, accent: string) {
+                localStorage.setItem('custom-theme-gradient', gradient);
+                localStorage.setItem('custom-theme-accent', accent);
+            }
+        </script>
 	</body>
 </html>

@@ -29,9 +29,11 @@ const posts = (await getCollection('blog')).sort(
 			}
 			ul li {
 				width: calc(50% - 1rem);
+				display: flex; /* Ensure equal height cards */
+				flex-direction: column;
 			}
 			ul li * {
-				text-decoration: none;
+				text-decoration: none !important; /* Force remove underline */
 				transition: 0.2s ease;
 			}
 			ul li:first-child {
@@ -46,59 +48,153 @@ const posts = (await getCollection('blog')).sort(
 				font-size: 2.369rem;
 			}
 			ul li img {
-				margin-bottom: 0.5rem;
 				border-radius: 12px;
-			}
-			ul li a {
 				display: block;
+				max-width: 100%;
+				height: auto;
 			}
+			.image-wrapper {
+				position: relative;
+				margin-bottom: 0.5rem;
+				z-index: 2; /* Keep image above title/date if needed, though title has z-index 2 too */
+			}
+			/* Bleeding Background Effect - Now on Image */
+			.image-wrapper::before {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 100%;
+				height: 100%;
+				transform: translate(-50%, -50%) scale(0.8);
+				background: var(--pill-gradient); /* Use dynamic theme */
+				border-radius: 12px;
+				opacity: 0;
+				filter: blur(25px);
+				transition: all 0.3s ease;
+				z-index: -1;
+			}
+			ul li a:hover .image-wrapper::before {
+				opacity: 0.4; /* Lower opacity since gradient is opaque */
+				transform: translate(-50%, -50%) scale(1.02);
+			}
+
+			ul li a {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
+				border-radius: 12px;
+				z-index: 1;
+				transition: transform 0.2s ease; /* Ensure card transitions smoothly */
+			}
+			/* Center elements for the featured (first) post */
+			ul li:first-child a {
+				align-items: center;
+			}
+
 			.title {
 				margin: 0;
 				color: rgb(var(--black));
 				line-height: 1;
+				z-index: 2;
 			}
 			.date {
 				margin: 0;
 				color: rgb(var(--gray));
+				z-index: 2;
 			}
+			/* Remove text color change on hover */
 			ul li a:hover h4,
 			ul li a:hover .date {
-				color: rgb(var(--accent));
+				color: rgb(var(--black));
+				text-decoration: none;
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			/* Card Lift - Applied to the anchor (full card) */
+			ul li a:hover {
+				transform: translateY(-4px);
 			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
+			/* Ensure image wrapper bleed effect still triggers */
+			ul li a:hover .image-wrapper::before {
+				opacity: 1;
+				transform: translate(-50%, -50%) scale(1.02);
+			}
+			
+			.filter-container {
+				display: flex;
+				justify-content: center;
+				gap: 1rem;
+				margin-bottom: 2rem;
+				align-items: center;
+			}
+			.filter-btn {
+				padding: 0.5rem 1rem;
+				border: 1px solid var(--accent);
+				background: transparent;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 1rem;
+				color: var(--accent);
+				transition: all 0.2s ease;
+				transform: skew(-15deg);
+				font-weight: bold;
+			}
+			.filter-btn:hover, .filter-btn.active {
+				background: var(--pill-gradient, linear-gradient(135deg, #ff0033, #cc00ff));
+				color: white;
+				border-color: transparent; 
+				border: none; 
+			}
+			.category-tag {
+				display: inline-block;
+				background: var(--pill-gradient, linear-gradient(135deg, #ff0033, #cc00ff));
+				color: white;
+				padding: 0.2rem 1rem;
+				border-radius: 4px;
+				font-size: 0.8rem;
+				margin-top: auto; /* Align to bottom */
+				align-self: flex-start;
+				text-transform: capitalize;
+				transform: skew(-15deg);
+				border: none;
+				font-weight: bold;
+				z-index: 2;
+				transition: transform 0.2s ease;
+			}
+			/* Special alignment for the featured post's tag */
+			ul li:first-child .category-tag {
+				align-self: center;
+			}
+			/* Dark mode override */
+			[data-theme="dark"] .category-tag {
+				color: white;
+				border: none;
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
+			<div class="filter-container">
+				<button class="filter-btn active" data-category="all">All</button>
+				<button class="filter-btn" data-category="politics">Politics</button>
+				<button class="filter-btn" data-category="tech">Tech</button>
+				<button class="filter-btn" data-category="puns">Puns</button>
+			</div>
+
 			<section>
-				<ul>
+				<ul id="post-list">
 					{
 						posts.map((post) => (
-							<li>
+							<li class="post-item" data-category={post.data.category}>
 								<a href={`/blog/${post.id}/`}>
-									<img width={720} height={360} src={post.data.heroImage} alt="" />
+									<div class="image-wrapper">
+										<img width={720} height={360} src={post.data.heroImage} alt="" />
+									</div>
 									<h4 class="title">{post.data.title}</h4>
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>
+									<span class="category-tag">{post.data.category}</span>
 								</a>
 							</li>
 						))
@@ -106,6 +202,31 @@ const posts = (await getCollection('blog')).sort(
 				</ul>
 			</section>
 		</main>
+
+		<script>
+			const filterBtns = document.querySelectorAll('.filter-btn');
+			const posts = document.querySelectorAll('.post-item');
+
+			filterBtns.forEach(btn => {
+				btn.addEventListener('click', () => {
+					// Remove active class from all buttons
+					filterBtns.forEach(b => b.classList.remove('active'));
+					// Add active class to clicked button
+					btn.classList.add('active');
+
+					const category = btn.getAttribute('data-category');
+
+					posts.forEach(post => {
+						const postCategory = post.getAttribute('data-category');
+						if (category === 'all' || category === postCategory) {
+							(post as HTMLElement).style.display = 'block';
+						} else {
+							(post as HTMLElement).style.display = 'none';
+						}
+					});
+				});
+			});
+		</script>
 		<Footer />
 	</body>
 </html>

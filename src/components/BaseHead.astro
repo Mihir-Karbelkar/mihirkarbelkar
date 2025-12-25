@@ -45,3 +45,35 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<script is:inline>
+  // Inline theme script to avoid FOUC and handle config
+  const theme = (() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+      return localStorage.getItem('theme');
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+    return 'light';
+  })();
+
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+
+  // Restore Custom Theme
+  if (typeof localStorage !== 'undefined') {
+    const customGradient = localStorage.getItem('custom-theme-gradient');
+    const customAccent = localStorage.getItem('custom-theme-accent');
+    
+    if (customGradient && customAccent) {
+      document.documentElement.style.setProperty('--pill-gradient', customGradient);
+      document.documentElement.style.setProperty('--accent', customAccent);
+    }
+  }
+</script>
+
+

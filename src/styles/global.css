@@ -5,31 +5,12 @@
  */
 
 :root {
-  /* Base colors */
-  --primary: #FFFFFF;
+  /* Base colors - Light Mode Default */
+  --primary: #ffffff;
   --accent: #000000;
   --text: #000000;
-  --gray: 100, 100, 100;
-  --background: #FFFFFF;
-
-  /* Domain-specific colors */
-  --tech-primary: #000000;
-  --tech-accent: #00FF9D;
-  --tech-text: #FFFFFF;
-  --tech-background: #000000;
-  --tech-gradient: linear-gradient(135deg, #00FF9D 0%, #00B8FF 100%);
-
-  --politics-primary: #000000;
-  --politics-accent: #FF3366;
-  --politics-text: #FFFFFF;
-  --politics-background: #000000;
-  --politics-gradient: linear-gradient(135deg, #FF3366 0%, #FF6B6B 100%);
-
-  --fit-primary: #FFFFFF;
-  --fit-accent: #000000;
-  --fit-text: #000000;
-  --fit-background: #FFFFFF;
-  --fit-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
+  --background: #ffffff;
+  --gray: #666666;
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -84,32 +65,22 @@
   --header-height: 30px;
 }
 
-/* Dark mode */
+/* Dark mode overrides - Applied via data-theme attribute or media query */
+[data-theme="dark"] {
+  --primary: #000000;
+  --accent: #ffffff;
+  --text: #ffffff;
+  --background: #000000;
+  --gray: #bbbbbb;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --primary: #000000;
-    --accent: #FFFFFF;
-    --text: #FFFFFF;
-    --gray: 200, 200, 200;
+    --accent: #ffffff;
+    --text: #ffffff;
     --background: #000000;
-
-    --tech-primary: #000000;
-    --tech-accent: #00FF9D;
-    --tech-text: #FFFFFF;
-    --tech-background: #000000;
-    --tech-gradient: linear-gradient(135deg, #00FF9D 0%, #00B8FF 100%);
-
-    --politics-primary: #000000;
-    --politics-accent: #FF3366;
-    --politics-text: #FFFFFF;
-    --politics-background: #000000;
-    --politics-gradient: linear-gradient(135deg, #FF3366 0%, #FF6B6B 100%);
-
-    --fit-primary: #FFFFFF;
-    --fit-accent: #000000;
-    --fit-text: #000000;
-    --fit-background: #FFFFFF;
-    --fit-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
+    --gray: #bbbbbb;
   }
 }
 
@@ -148,7 +119,12 @@ main {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif);
   margin: 0 0 var(--space-4) 0;
   color: var(--text);
@@ -156,30 +132,30 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
-h1 { 
+h1 {
   font-size: var(--text-5xl);
   letter-spacing: -0.025em;
 }
 
-h2 { 
+h2 {
   font-size: var(--text-4xl);
   letter-spacing: -0.025em;
 }
 
-h3 { 
+h3 {
   font-size: var(--text-3xl);
   letter-spacing: -0.025em;
 }
 
-h4 { 
+h4 {
   font-size: var(--text-2xl);
 }
 
-h5 { 
+h5 {
   font-size: var(--text-xl);
 }
 
-h6 { 
+h6 {
   font-size: var(--text-lg);
 }
 
@@ -200,23 +176,7 @@ a:hover {
   color: var(--text);
 }
 
-a::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--transition-fast);
-}
 
-a:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
 
 /* Code Blocks */
 pre {
@@ -255,7 +215,8 @@ img {
 }
 
 /* Lists */
-ul, ol {
+ul,
+ol {
   margin: var(--space-4) 0;
   padding-left: var(--space-6);
 }
@@ -348,6 +309,7 @@ li {
 
 /* Print styles */
 @media print {
+
   .domain-header,
   .shared-footer {
     display: none;
@@ -374,26 +336,45 @@ li {
     --container-padding: var(--space-4);
     --space-24: var(--space-12);
   }
-  
+
   main {
     padding: var(--space-12) var(--container-padding);
   }
-  
-  h1 { font-size: var(--text-4xl); }
-  h2 { font-size: var(--text-3xl); }
-  h3 { font-size: var(--text-2xl); }
-  h4 { font-size: var(--text-xl); }
-  h5 { font-size: var(--text-lg); }
-  h6 { font-size: var(--text-base); }
+
+  h1 {
+    font-size: var(--text-4xl);
+  }
+
+  h2 {
+    font-size: var(--text-3xl);
+  }
+
+  h3 {
+    font-size: var(--text-2xl);
+  }
+
+  h4 {
+    font-size: var(--text-xl);
+  }
+
+  h5 {
+    font-size: var(--text-lg);
+  }
+
+  h6 {
+    font-size: var(--text-base);
+  }
 }
 
 /* Touch Optimizations */
 @media (hover: none) {
-  a, button {
+
+  a,
+  button {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   .domain-nav a {
     padding: var(--space-4) var(--space-6);
   }

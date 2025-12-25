@@ -3,6 +3,7 @@ title: "The Quantum Computing Revolution: Breaking Reality's Code"
 description: "Dive into the mind-bending world of quantum computing, where bits exist in multiple states simultaneously and the impossible becomes possible."
 pubDate: "2024-03-15"
 heroImage: "/blog-placeholder-1.jpg"
+category: 'tech'
 ---
 
 In the neon-lit corridors of modern computing, a revolution is brewing. Quantum computers, once confined to theoretical physics papers, are now emerging from research labs into reality. But what makes these machines so special, and why are tech giants pouring billions into their development?

@@ -26,3 +26,8 @@ pnpm-debug.log*
 # wrangler files
 .wrangler
 .dev.vars
+
+# virtual env
+mlprac/
+model_training/
+color_dataset.json

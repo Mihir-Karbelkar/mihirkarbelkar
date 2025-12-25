@@ -3,6 +3,7 @@ title: "Digital Warfare: The Invisible Battle for Cyberspace"
 description: "An exploration of modern cybersecurity threats, zero-day exploits, and the constant battle between black hat hackers and security professionals."
 pubDate: "2024-03-05"
 heroImage: "/blog-placeholder-3.jpg"
+category: 'politics'
 ---
 
 In the gleaming corridors of the digital world, an invisible war rages on. Every second, millions of automated attacks probe our defenses, while state-sponsored hackers and cybercriminals orchestrate increasingly sophisticated campaigns. Welcome to the frontlines of cybersecurity, where the battlefield is virtual but the stakes are very real.
