@@ -51,14 +51,14 @@ export const sources: Source[] = [
     text: 'Tell me what you’re working on. I’d like to hear about it. Use the verified links in the contact section. Rates and availability are not published.',
   },
 ];
-const terms = (s: string): string[] =>
+export const terms = (s: string): string[] =>
   s
     .toLowerCase()
     .replace(/robots/g, 'robot')
     .replace(/agents/g, 'agent')
     .replace(/scaling|scaled/g, 'scale')
     .match(/[a-z0-9]+/g) ?? [];
-const stop = new Set([
+export const stopWords = new Set([
   'the',
   'a',
   'an',
@@ -87,7 +87,7 @@ export function searchContent(query: string, limit = 3): Source[] {
     .replace(/help|build|offer/gi, 'services')
     .replace(/robot[s]?/gi, 'robot')
     .replace(/agent[s]?/gi, 'agent');
-  const q = [...new Set(terms(expanded).filter((t) => !stop.has(t)))];
+  const q = [...new Set(terms(expanded).filter((t) => !stopWords.has(t)))];
   if (!q.length) return [];
   return sources
     .map((source) => ({
