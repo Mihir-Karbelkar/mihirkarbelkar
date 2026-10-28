@@ -1,0 +1,11 @@
+# Copy to .dev.vars for Astro/Cloudflare local runtime. Never commit real values.
+GROQ_API_KEY=""
+# Choose a model enabled for your account; the browser cannot override it.
+GROQ_MODEL=""
+INCEPTION_API_KEY=""
+INCEPTION_MODEL=""
+RESEND_API_KEY=""
+CONTACT_FROM=""
+CONTACT_TO=""
+BRAIN_API_URL=""
+BRAIN_API_TOKEN=""

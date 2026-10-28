@@ -1,0 +1,62 @@
+---
+interface Props {
+  kind: 'model' | 'brain' | 'maths';
+}
+const { kind } = Astro.props;
+---
+
+<svg
+  class="interest-art"
+  viewBox="0 0 140 100"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  {kind === 'model' && (
+    <g stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+      <rect x="29" y="19" width="61" height="57" rx="5" opacity=".32" />
+      <rect
+        x="39"
+        y="25"
+        width="61"
+        height="57"
+        rx="5"
+        fill="var(--lavender)"
+      />
+      <path d="M51 41h37M51 49h25M51 57h32" opacity=".6" />
+      <rect x="79" y="61" width="29" height="22" rx="4" fill="var(--paper)" />
+      <path d="m85 73 6-6 6 6M91 67v11" />
+    </g>
+  )}
+  {kind === 'brain' && (
+    <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <rect x="22" y="22" width="84" height="57" rx="8" />
+      <path d="m108 40 14-8v36l-14-8" />
+      <circle cx="63" cy="50" r="16" />
+      <circle cx="63" cy="50" r="6" />
+      <path d="M34 32h8M89 68h7" />
+      <path d="M41 85h49" opacity=".45" />
+    </g>
+  )}
+  {kind === 'maths' && (
+    <g
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M34 16h62l10 11v57H34z" />
+      <path d="M94 16v13h12M46 38h31M46 45h44" opacity=".4" />
+      <text
+        x="45"
+        y="69"
+        fill="currentColor"
+        stroke="none"
+        font-family="Georgia,serif"
+        font-size="20"
+      >
+        P(n)
+      </text>
+    </g>
+  )}
+</svg>

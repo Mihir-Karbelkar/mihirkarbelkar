@@ -1,0 +1,5 @@
+{
+  "moving-right": "/lab/moving-right.json",
+  "moving-left": "/lab/moving-left.json",
+  "stationary": "/lab/stationary.json"
+}

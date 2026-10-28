@@ -3,17 +3,18 @@ import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { render } from 'astro:content';
 
+export const prerender = true;
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { slug: post.id },
-		props: { post, domain: 'tech' },
-	}));
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, domain: 'tech' },
+  }));
 }
 
 type Props = {
-	post: CollectionEntry<'blog'>;
-	domain: 'tech' | 'politics' | 'fit' | 'poetry';
+  post: CollectionEntry<'blog'>;
+  domain: 'tech' | 'politics' | 'fit' | 'puns';
 };
 
 const { post, domain } = Astro.props;
@@ -21,5 +22,5 @@ const { Content } = await render(post);
 ---
 
 <BlogPost {...post.data} domain={domain} currentPage="blog">
-	<Content />
+  <Content />
 </BlogPost>

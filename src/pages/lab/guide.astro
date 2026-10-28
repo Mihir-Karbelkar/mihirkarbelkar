@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Portfolio.astro';
+import Assistant from '../../components/portfolio/Assistant';
+import Icon from '../../components/ui/Icon.astro';
+export const prerender = true;
+---
+
+<Layout
+  title="Model playground — Mihir Karbelkar"
+  description="A small experiment with local inference and searching the published portfolio content."
+>
+  <section class="section wrap guide-page">
+    <a class="back-link" href="/lab/brain">
+      <Icon name="left" />
+      Back to the Brain
+    </a>
+    <p class="eyebrow">Lab / local inference</p>
+    <h1>A model playground.</h1>
+    <p class="case-intro">
+      This is where I try browser inference and searching the work on this site.
+      The on-device Qwen model is pretrained; it isn’t the fine-tuned model from
+      my separate experiments.
+    </p>
+    <Assistant client:visible />
+  </section>
+</Layout>

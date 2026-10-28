@@ -31,3 +31,14 @@ pnpm-debug.log*
 mlprac/
 model_training/
 color_dataset.json
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env
+.env.local
+!.env.example
+services/brain/.venv/
+services/brain/references.json
+services/brain/.cache/
+__pycache__/
+*.pyc

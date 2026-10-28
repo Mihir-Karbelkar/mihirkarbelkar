@@ -1,0 +1,65 @@
+---
+interface Props {
+  slug: string;
+  large?: boolean;
+}
+const { slug, large = false } = Astro.props;
+---
+
+{slug === 'public-markets-agents' ? (
+  <figure class:list={['work-art', 'art-software', { large }]}>
+    <img
+      src="/projects/superstocks.webp"
+      width="1280"
+      height="720"
+      alt="Existing Superstocks.ai interface with a company search and research prompt"
+      loading={large ? 'eager' : 'lazy'}
+    />
+    <figcaption>Existing Superstocks.ai interface</figcaption>
+  </figure>
+) : slug === 'experimental-brain' ? (
+  <figure class:list={['work-art', 'art-brain', { large }]}>
+    <div class="video-artifact">
+      <video
+        src="/lab/moving-right.mp4"
+        poster="/projects/brain-sample.webp"
+        muted
+        playsinline
+        loop
+        controls
+        preload="none"
+        aria-label="Original video sample used in the Brain experiment"
+      ></video>
+    </div>
+    <figcaption>A video sample used in the Brain experiment</figcaption>
+  </figure>
+) : slug === 'qwen-fine-tuning' ? (
+  <figure class:list={['work-art', 'art-model', { large }]}>
+    <svg viewBox="0 0 420 230" fill="none" aria-hidden="true" focusable="false">
+      <g stroke="currentColor" stroke-width="1.5">
+        <rect x="55" y="40" width="134" height="140" rx="9" />
+        <path
+          d="M77 68h90M77 81h90M77 94h90M77 107h90M77 120h90M77 133h90M77 146h90"
+          opacity=".25"
+        />
+        <rect
+          x="267"
+          y="72"
+          width="67"
+          height="75"
+          rx="7"
+          fill="var(--paper)"
+        />
+        <path d="M281 91h39M281 104h39M281 117h39M281 130h23" opacity=".4" />
+        <path d="M216 108h24M228 96v24" />
+      </g>
+      <text x="120" y="205" text-anchor="middle">
+        base weights
+      </text>
+      <text x="300" y="172" text-anchor="middle">
+        LoRA adapter
+      </text>
+    </svg>
+    <figcaption>LoRA: base weights and a small adapter.</figcaption>
+  </figure>
+) : null}

@@ -1,0 +1,10 @@
+# CPU: install torch/torchvision from https://download.pytorch.org/whl/cpu first.
+# GPU: install the PyTorch build matching your CUDA driver instead.
+transformers==4.57.6
+fastapi==0.162.0
+uvicorn==0.54.0
+imageio==2.38.1
+imageio-ffmpeg==0.6.0
+httpx==0.28.1
+pillow==13.0.0
+numpy==2.5.4

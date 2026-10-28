@@ -1,0 +1,26 @@
+---
+import Icon from '../../../components/ui/Icon.astro';
+import Layout from '../../../layouts/Portfolio.astro';
+import { getCollection } from 'astro:content';
+export const prerender = true;
+const essays = await getCollection('essays');
+---
+
+<Layout title="Essays — Mihir Karbelkar">
+  <section class="section wrap case-study">
+    <div class="section-label">WRITING / ESSAYS</div>
+    <h1>Notes on the world.</h1>
+    <div class="skills-list">
+      {essays.map((e) => (
+        <article class="source-result">
+          <h2>
+            <a href={`/politics/essays/${e.id}`}>
+              {e.data.title} <Icon name="right" />
+            </a>
+          </h2>
+          <p>{e.data.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>

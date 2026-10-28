@@ -1,0 +1,47 @@
+---
+import Icon from '../../components/ui/Icon.astro';
+import Layout from '../../layouts/Portfolio.astro';
+import Brain from '../../components/lab/Brain';
+export const prerender = true;
+---
+
+<Layout
+  title="Experimental Brain — Mihir Karbelkar"
+  description="An experiment in video representations, rule-based action and language-model narration."
+>
+  <div class="wrap">
+    <header class="lab-header">
+      <div class="lab-header-top">
+        <div class="section-label">LAB / PERCEPTION & ACTION</div>
+        <span class="research-badge">EXPERIMENT</span>
+      </div>
+      <h1>The Experimental Brain.</h1>
+      <p>
+        I’m trying to make the steps between perception, action and narration
+        easier to inspect. I can replay a recorded model run, step through the
+        actor, and look at what each part actually produced.
+      </p>
+      <div class="lab-intro-strip">
+        <span>Observe / Act / Dream</span>
+        <span>Recorded model outputs and a rule-based simulation.</span>
+        <a href="/lab/theme">
+          Theme experiment <Icon name="right" />
+        </a>
+      </div>
+    </header>
+    <Brain client:load />
+    <p class="lab-secondary-link">
+      I also keep a separate{' '}
+      <a class="read-link" href="/lab/guide">
+        model playground <Icon name="right" />
+      </a>{' '}
+      for browser inference and portfolio search.
+    </p>
+    <noscript>
+      <p>
+        This experiment needs JavaScript. You can read the{' '}
+        <a href="/projects/experimental-brain">research overview</a> without it.
+      </p>
+    </noscript>
+  </div>
+</Layout>

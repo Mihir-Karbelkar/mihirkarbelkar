@@ -1,0 +1,89 @@
+---
+import Layout from '../../layouts/Portfolio.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Artwork from '../../components/portfolio/ProjectArtwork.astro';
+import { projects, profile } from '../../data/portfolio';
+export const prerender = true;
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+const { project: p } = Astro.props;
+---
+
+<Layout title={`${p.title} — Mihir Karbelkar`} description={p.summary}>
+  <article class="wrap case-study">
+    <a class="back-link" href="/#work">
+      <Icon name="left" />
+      Selected work
+    </a>
+    <p class="eyebrow">{p.category}</p>
+    <h1>{p.title}</h1>
+    <p class="case-intro">{p.summary}</p>
+    <Artwork slug={p.slug} large />
+    <div class="case-columns">
+      <aside>
+        <h2 class="aside-heading">The work</h2>
+        <p>{p.status}</p>
+        <ul class="case-tags">
+          {p.tags.map((t) => (
+            <li>{t}</li>
+          ))}
+        </ul>
+        {p.source && (
+          <a class="read-link" href={p.source}>
+            {p.source.startsWith('https:')
+              ? 'View the source'
+              : 'Open the experiment'}
+            <Icon name={p.source.startsWith('https:') ? 'external' : 'right'} />
+          </a>
+        )}
+        {p.kind === 'professional' && (
+          <div class="case-fact">
+            <strong>{p.metric}</strong>
+            <span>{p.metricLabel}</span>
+          </div>
+        )}
+      </aside>
+      <div class="case-prose">
+        <section>
+          <h2>{p.kind === 'experiment' ? 'The question' : 'The context'}</h2>
+          <p>{p.problem}</p>
+        </section>
+        <section>
+          <h2>What I worked on</h2>
+          <ul>
+            {p.approach.map((a) => (
+              <li>{a}</li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <h2>
+            {p.kind === 'experiment'
+              ? 'What’s here'
+              : 'What came out of the work'}
+          </h2>
+          <p>{p.outcome}</p>
+        </section>
+        {p.reflection && (
+          <section>
+            <h2>What I keep coming back to</h2>
+            <p>{p.reflection}</p>
+          </section>
+        )}
+        <div class="case-cta">
+          <p>Have a question about this work?</p>
+          <a
+            class="read-link"
+            href={profile.email ? `mailto:${profile.email}` : '/#contact'}
+          >
+            Get in touch
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>

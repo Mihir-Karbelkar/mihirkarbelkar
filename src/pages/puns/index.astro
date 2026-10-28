@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Portfolio.astro';
+import puns from '../../data/puns.json';
+export const prerender = true;
+---
+
+<Layout title="A few questionable puns — Mihir Karbelkar">
+  <section class="section wrap case-study">
+    <div class="section-label">OFF THE CLOCK</div>
+    <h1>
+      A little
+      <br />
+      <span class="serif-word">word play.</span>
+    </h1>
+    <div class="skills-list">
+      {puns.map((p) => (
+        <article class="source-result">
+          <span class="section-label">{p.category}</span>
+          <p>{p.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>

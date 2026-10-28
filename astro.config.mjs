@@ -1,21 +1,21 @@
-// @ts-check
-import { defineConfig } from "astro/config";
-import mdx from "@astrojs/mdx";
-import sitemap from "@astrojs/sitemap";
-
-import cloudflare from "@astrojs/cloudflare";
-
-// https://astro.build/config
+import { defineConfig } from 'astro/config';
+import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
+import cloudflare from '@astrojs/cloudflare';
+import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
-  site: "https://example.com",
-  integrations: [mdx(), sitemap()],
+  site: 'https://mihirkarbelkar.com',
+  integrations: [mdx(), sitemap(), react()],
+  session: { driver: 'memory' },
   adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
+    imageService: 'passthrough',
+    platformProxy: { enabled: true },
   }),
-  output: "server",
-  build: {
-    assetsPrefix: 'https://mihirkarbelkar.com',
-  }
+  output: 'server',
+  vite: {
+    plugins: [tailwindcss()],
+    optimizeDeps: { exclude: ['@mlc-ai/web-llm', '@huggingface/transformers'] },
+    worker: { format: 'es' },
+  },
 });

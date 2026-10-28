@@ -1,0 +1,6 @@
+---
+return Astro.redirect(
+  new URL(`/blog/${Astro.params.slug}`, 'https://mihirkarbelkar.com').href,
+  302,
+);
+---

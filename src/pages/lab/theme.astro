@@ -1,0 +1,29 @@
+---
+import Icon from '../../components/ui/Icon.astro';
+import Layout from '../../layouts/Portfolio.astro';
+import Theme from '../../components/lab/Theme';
+export const prerender = true;
+---
+
+<Layout title="Theme experiment — Mihir Karbelkar">
+  <div class="wrap theme-lab">
+    <a class="back-link" href="/lab/brain">
+      <Icon name="left" /> Experimental Brain
+    </a>
+    <div class="section-label">THE LAB / EXPERIMENT 000</div>
+    <h1>
+      Give an idea
+      <br />
+      <span class="serif-word">a little colour.</span>
+    </h1>
+    <p>
+      The original website’s local AI experiment, rebuilt as a small,
+      self-contained study. Your words become an embedding, then a pair of soft
+      colours.
+    </p>
+    <Theme client:visible />
+    <noscript>
+      <p>This local inference experiment needs JavaScript.</p>
+    </noscript>
+  </div>
+</Layout>
