@@ -3,103 +3,122 @@ import type {
   WebWorkerMLCEngine,
 } from '@mlc-ai/web-llm';
 export const LOCAL_MODEL = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';
-let worker: Worker | null = null,
-  engine: WebWorkerMLCEngine | null = null;
-let generation = 0;
-let rejectLoad: ((reason: Error) => void) | null = null;
+type Progress = (text: string, value: number) => void;
+interface Slot {
+  worker: Worker;
+  engine: WebWorkerMLCEngine | null;
+  loading: Promise<WebWorkerMLCEngine>;
+  reject: (reason: Error) => void;
+}
+const slots = new Map<string, Slot>();
+const cancelled = () => new Error('Model loading cancelled.');
 export function supportsGPU() {
   return typeof navigator !== 'undefined' && 'gpu' in navigator;
 }
-export async function loadLocal(
-  progress: (text: string, value: number) => void,
-) {
-  if (engine) return engine;
-  const current = ++generation;
+/** Loads (downloading if needed) a WebLLM model in its own worker; concurrent calls share one load. */
+export function loadModel(
+  model: string,
+  progress: Progress,
+): Promise<WebWorkerMLCEngine> {
+  const existing = slots.get(model);
+  if (existing) return existing.engine ? Promise.resolve(existing.engine) : existing.loading;
   if (!supportsGPU())
-    throw new Error(
-      'WebGPU is unavailable in this browser. Search still works, or choose Hosted.',
+    return Promise.reject(
+      new Error('WebGPU is unavailable in this browser. Search still works.'),
     );
-  const gpu = (
-    navigator as Navigator & {
-      gpu?: { requestAdapter: () => Promise<unknown> };
-    }
-  ).gpu;
-  if (!gpu || !(await gpu.requestAdapter()))
-    throw new Error(
-      'No compatible WebGPU adapter is available. Use Search or Hosted on this device.',
-    );
-  if (current !== generation) throw new Error('Model loading cancelled.');
-  const { CreateWebWorkerMLCEngine } = await import('@mlc-ai/web-llm');
-  if (current !== generation) throw new Error('Model loading cancelled.');
-  const ownedWorker = new Worker(
+  const worker = new Worker(
     new URL('../workers/chat.worker.ts', import.meta.url),
     { type: 'module' },
   );
-  worker = ownedWorker;
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  try {
-    const loaded = await Promise.race([
-      CreateWebWorkerMLCEngine(
-        ownedWorker,
-        LOCAL_MODEL,
-        {
-          initProgressCallback: (p) => {
-            if (current === generation) progress(p.text, p.progress);
+  let reject!: (reason: Error) => void,
+    timer: ReturnType<typeof setTimeout> | undefined;
+  const abort = new Promise<never>((_, r) => {
+    reject = r;
+    timer = setTimeout(
+      () =>
+        r(
+          new Error(
+            'Model loading timed out. Retry on a faster connection or use Search.',
+          ),
+        ),
+      10 * 60 * 1000,
+    );
+  });
+  const slot: Slot = { worker, engine: null, loading: abort, reject };
+  slot.loading = (async () => {
+    try {
+      const { CreateWebWorkerMLCEngine } = await import('@mlc-ai/web-llm');
+      const engine = await Promise.race([
+        CreateWebWorkerMLCEngine(
+          worker,
+          model,
+          {
+            initProgressCallback: (p) => {
+              if (slots.get(model) === slot) progress(p.text, p.progress);
+            },
           },
-        },
-        { context_window_size: 2048 },
-      ),
-      new Promise<never>((_, reject) => {
-        rejectLoad = reject;
-        timer = setTimeout(
-          () =>
-            reject(
-              new Error(
-                'Model loading timed out. Retry on a faster connection or use Search.',
-              ),
-            ),
-          5 * 60 * 1000,
-        );
-      }),
-    ]);
-    if (current !== generation) throw new Error('Model loading cancelled.');
-    engine = loaded;
-    return loaded;
-  } catch (error) {
-    ownedWorker.terminate();
-    if (current === generation) worker = null;
-    throw error;
-  } finally {
-    clearTimeout(timer);
-    if (current === generation) rejectLoad = null;
+          { context_window_size: 2048 },
+        ),
+        abort,
+      ]);
+      if (slots.get(model) !== slot) throw cancelled();
+      slot.engine = engine;
+      return engine;
+    } catch (error) {
+      worker.terminate();
+      if (slots.get(model) === slot) slots.delete(model);
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
+  })();
+  slots.set(model, slot);
+  return slot.loading;
+}
+export const isLoaded = (model: string) => !!slots.get(model)?.engine;
+export async function isCached(model: string): Promise<boolean> {
+  try {
+    const { hasModelInCache } = await import('@mlc-ai/web-llm');
+    return await hasModelInCache(model);
+  } catch {
+    return false;
   }
 }
-export function cancelLocal() {
-  rejectLoad?.(new Error('Model loading cancelled.'));
-  rejectLoad = null;
-  generation++;
-  engine?.interruptGenerate();
-  worker?.terminate();
-  worker = null;
-  engine = null;
+/** Stops a load or frees a loaded model's GPU memory. Downloaded weights stay cached. */
+export function unloadModel(model: string) {
+  const slot = slots.get(model);
+  if (!slot) return;
+  slots.delete(model);
+  slot.reject(cancelled());
+  slot.engine?.interruptGenerate();
+  slot.worker.terminate();
 }
-export function stopLocal() {
-  engine?.interruptGenerate();
+/** Downloads a model into the browser cache without keeping it in GPU memory. */
+export async function prefetchModel(model: string, progress: Progress) {
+  if (slots.has(model) || (await isCached(model))) return;
+  await loadModel(model, progress);
+  unloadModel(model);
 }
-export async function clearLocalCache() {
-  cancelLocal();
+export function stopModel(model: string) {
+  slots.get(model)?.engine?.interruptGenerate();
+}
+export async function deleteModel(model: string) {
+  unloadModel(model);
   const { deleteModelAllInfoInCache } = await import('@mlc-ai/web-llm');
-  await deleteModelAllInfoInCache(LOCAL_MODEL);
+  await deleteModelAllInfoInCache(model);
 }
-export async function generateLocal(
+export async function generate(
+  model: string,
   messages: ChatCompletionMessageParam[],
   onToken: (token: string) => void,
+  maxTokens = 384,
 ) {
+  const engine = slots.get(model)?.engine;
   if (!engine) throw new Error('Load the on-device model first.');
   const result = await engine.chat.completions.create({
     messages,
     stream: true,
-    max_tokens: 384,
+    max_tokens: maxTokens,
     temperature: 0.3,
   });
   for await (const part of result) {
@@ -107,3 +126,12 @@ export async function generateLocal(
     if (text) onToken(text);
   }
 }
+// Single-model API used by the /lab/guide playground.
+export const loadLocal = (progress: Progress) => loadModel(LOCAL_MODEL, progress);
+export const cancelLocal = () => unloadModel(LOCAL_MODEL);
+export const stopLocal = () => stopModel(LOCAL_MODEL);
+export const clearLocalCache = () => deleteModel(LOCAL_MODEL);
+export const generateLocal = (
+  messages: ChatCompletionMessageParam[],
+  onToken: (token: string) => void,
+) => generate(LOCAL_MODEL, messages, onToken);
