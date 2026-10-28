@@ -25,9 +25,9 @@ No model download is needed to browse the site. Hosted inference, contact delive
 
 ## Content and visual system
 
-- `src/data/portfolio.ts`: editable homepage copy, seven project accounts, notes and background. Superstocks, the Experimental Brain and Qwen fine-tuning are featured; earlier platform and frontend case studies remain available. See `docs/EDITORIAL-SOURCES.md` for source boundaries.
-- `src/lib/content.ts`: the assistant's source corpus, shared with the published project data. It never reads private repos or visitor files.
-- `src/styles/portfolio.css`: ivory, sage, lavender, dusty blue and peach tokens, responsive layouts and optional dark mode. Atkinson and Georgia are the two font families. `src/styles/lab.css` contains the subordinate lab interfaces. Main content is server-rendered and works without JS.
+- `src/data/*.json`: all site copy and data. `site.json` holds the profile, navigation, footer, every homepage heading and label, the about page, the chat greeting and suggestions, the chat's section keywords and the tour steps. `projects.json` holds the project accounts (with their artwork) and the featured/archive order; `notes.json` and `skills.json` hold the rest. Edit these and rebuild; no code changes are needed. `src/data/schema.ts` validates them with zod, and the build fails on a malformed file or an unknown featured slug. `src/data/portfolio.ts` re-exports the parsed data. See `docs/EDITORIAL-SOURCES.md` for source boundaries.
+- `src/lib/content.ts`: the keyword-searchable source documents built from the JSON (used by `/api/chat`). It never reads private repos or visitor files.
+- `src/styles/portfolio.css`: theme tokens, responsive layouts and dark mode. Light is white paper with sakura reds; dark is a plum night with lavender pastels. The theme follows the system setting unless the visitor picks one. Atkinson and Georgia are the two font families. `chat.css` styles the chat bar, `fx.css` the sakura branch, petals, reveal animations and mascot, and `lab.css` the lab interfaces. Main content is server-rendered and works without JS; animations stop under reduced motion.
 - `src/content/blog` and `src/content/essays`: retained writing. Existing blog URLs and RSS remain available. Technical-blog aliases and political-essay routes are wired into the existing subdomain middleware.
 - `docs/CONTENT-TODO.md`: editorial details to confirm before public release.
 
@@ -52,16 +52,27 @@ The Cloudflare `API_LIMITER` binding admits 10 requests per minute per visitor a
 
 Resend sends only after validation. The UI never reports delivery success for unconfigured or failed requests. Actual delivery requires a verified sender/domain and has not been tested without owner credentials.
 
-## On-device models
+## The chat bar and on-device models
 
-The separate `/lab/guide` playground has Search, On this device and Hosted modes; it is linked from the Brain lab, not mounted on the homepage. Search uses lightweight keyword retrieval and links to the public sources. Generation is explicitly optional.
+Every portfolio page has a chat bar fixed at the bottom (`src/components/chat/ChatBar.tsx`). It starts open, collapses to a pill when you scroll, and `/` focuses it.
 
-- Chat: `@mlc-ai/web-llm@0.2.85` with `Qwen2.5-0.5B-Instruct-q4f16_1-MLC`, 2,048-token context, at most 384 generated tokens, in a dedicated worker. Local questions use the current query plus retrieved sources to keep the small context bounded. Conversations remain visible in session memory.
-- Model weights and runtime load only after the visitor chooses Load. The approximate download is shown; GPU memory use is higher. Browser caches may be evicted, so offline reuse is best-effort.
-- Unsupported WebGPU/adapters, cancellation and failed loads return a clear error. The guide does not silently send a local question to a hosted service.
-- `/lab/theme` preserves the original MiniLM + learned colour weights experiment. It runs in a separate worker and constrains colours to a pastel range. It does not alter body-text contrast.
+- **Navigation first.** `src/lib/intent.ts` turns "show me Superstocks", "contact" or "take me to your notes" into a scroll-and-highlight, with no model involved. Section keywords live in `site.json` (`chat.sections`); project titles come from `projects.json`.
+- **Search.** At build time `/search-index.json` (prerendered by `src/pages/search-index.json.ts`) chunks the JSON data, the blog and the essays. A post can opt out with `index: false` in its frontmatter; the Lorem-ipsum template posts do. In the browser, MiniLM (`Xenova/all-MiniLM-L6-v2`, about 23 MB, in `src/workers/embed.worker.ts`) embeds the chunks once. The vectors are cached in the Cache API, keyed by a hash of the content, so they rebuild automatically whenever content changes. Retrieval fuses vector and keyword rankings (`src/lib/retrieval.ts`). If the embedding model can't load, search falls back to keywords.
+- **Generation.** `src/lib/models.ts` defines three WebLLM 0.2.85 tiers: Qwen2.5 1.5B, Qwen2.5 0.5B and SmolLM2 360M. Each uses its q4f16 build when the adapter supports `shader-f16`, otherwise q4f32. `src/lib/model-manager.ts` works out the device's WebGPU adapter, memory and connection, then picks a tier:
+  - On an unmetered desktop it downloads that tier straight away.
+  - On mobile or a metered/Save-Data connection it shows a "Load the AI (size)" button first.
+  - When the page is idle, desktops also prefetch the next smaller tier.
+  - **Auto** uses the largest model that's ready, and steps down a tier if a load fails.
+  - Only one model is kept in GPU memory.
+  - The picker shows each tier's size and download status, and lets the visitor pause a download.
+- **Answers** open a scroll-locked panel over the blurred page. The model receives only the retrieved sources (`src/lib/prompt.ts`), and source links are shown with every answer. Without a ready model, the panel shows the matching sources. The hosted provider is used only on devices without WebGPU, and only when it is configured (`HOSTED_FALLBACK` in `ChatBar.tsx`).
+- **Tour.** "Show me around" (or `/#tour`) starts the computer-use gimmick (`src/components/fx/Mascot.tsx`). An original chibi mascot takes the cursor, flies it to each step in `site.json`'s `tour` list and narrates. Moving the mouse, clicking, scrolling or pressing a key hands the cursor back.
 
-The verification browser has no compatible WebGPU adapter. Its fallback behavior was checked, but actual local Qwen generation needs an additional smoke test on supported hardware. The runtime/model pairing exists in the pinned WebLLM catalog. Small-model answers can still be wrong; source links are shown alongside generated text.
+Download sizes in the picker are approximate; VRAM figures come from WebLLM's catalog. Browser caches may be evicted, so offline reuse is best-effort. Small-model answers can be wrong.
+
+The verification browser has no WebGPU adapter and couldn't reach Hugging Face. Only the fallback path, keyword search, has been exercised end to end. Before launch, smoke-test semantic search and local generation on supported hardware.
+
+`/lab/guide` keeps the original single-model playground (Search / On this device / Hosted).
 
 ## Experimental Brain
 
