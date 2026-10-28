@@ -3,6 +3,7 @@ import Layout from '../layouts/Portfolio.astro';
 import Icon from '../components/ui/Icon.astro';
 import InterestArt from '../components/portfolio/InterestArt.astro';
 import ProjectArtwork from '../components/portfolio/ProjectArtwork.astro';
+import Sakura from '../components/fx/Sakura.astro';
 import {
   profile,
   home,
@@ -26,6 +27,7 @@ const contactHref = profile.email
 
 <Layout>
   <section class="hero wrap" aria-labelledby="hero-title">
+    <Sakura />
     <div class="hero-copy">
       <p class="eyebrow">{home.eyebrow}</p>
       <h1 id="hero-title">
@@ -66,7 +68,7 @@ const contactHref = profile.email
   </section>
   <section
     id="work"
-    class="section wrap selected-work"
+    class="section wrap selected-work" data-reveal
     aria-labelledby="work-title"
   >
     <span id="projects" class="anchor-alias" aria-hidden="true"></span>
@@ -99,7 +101,7 @@ const contactHref = profile.email
       ))}
     </div>
   </section>
-  <section class="section wrap work-archive" aria-labelledby="archive-title">
+  <section class="section wrap work-archive" data-reveal aria-labelledby="archive-title">
     <div class="archive-intro">
       <p class="eyebrow">{archiveCopy.eyebrow}</p>
       <h2 id="archive-title">{archiveCopy.heading}</h2>
@@ -128,7 +130,7 @@ const contactHref = profile.email
   </section>
   <section
     id="notes"
-    class="section notes-section"
+    class="section notes-section" data-reveal
     aria-labelledby="notes-title"
   >
     <div class="wrap">
@@ -162,7 +164,7 @@ const contactHref = profile.email
   </section>
   <section
     id="about"
-    class="section wrap about-section"
+    class="section wrap about-section" data-reveal
     aria-labelledby="about-title"
   >
     <div>
@@ -191,7 +193,7 @@ const contactHref = profile.email
   </section>
   <section
     id="contact"
-    class="section wrap contact-section"
+    class="section wrap contact-section" data-reveal
     aria-labelledby="contact-title"
   >
     <div>

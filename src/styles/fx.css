@@ -1,0 +1,144 @@
+/* Sakura branch, drifting petals and page reveal animations. */
+.hero {
+  position: relative;
+}
+.site-nav {
+  position: relative;
+  z-index: 3;
+}
+.hero > :not(.sakura) {
+  position: relative;
+  z-index: 1;
+}
+.sakura {
+  position: absolute;
+  inset: 0 0 -40px 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.sakura-branch {
+  position: absolute;
+  top: 6px;
+  right: -40px;
+  width: clamp(200px, 20vw, 300px);
+  opacity: 0.9;
+  transform-origin: 100% 10%;
+  animation: sakura-sway 9s ease-in-out infinite alternate;
+}
+.sakura-wood {
+  stroke: var(--branch);
+}
+.sakura-flower {
+  fill: var(--blossom);
+  stroke: color-mix(in srgb, var(--petal) 55%, transparent);
+  stroke-width: 0.8;
+}
+.sakura-flower .sakura-heart,
+.sakura-heart {
+  fill: var(--petal);
+  stroke: none;
+}
+.sakura-leaf {
+  fill: var(--petal);
+  opacity: 0.85;
+}
+.sakura-petals {
+  position: absolute;
+  inset: 0;
+}
+.sakura-petal {
+  position: absolute;
+  top: -20px;
+  width: var(--size);
+  height: calc(var(--size) * 0.75);
+  border-radius: 100% 0 100% 0;
+  background: var(--petal);
+  opacity: 0;
+  animation: sakura-fall var(--duration) linear var(--delay) infinite;
+}
+@keyframes sakura-fall {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0);
+  }
+  8% {
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-60px, 50vh) rotate(260deg);
+  }
+  90% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-20px, 95vh) rotate(520deg);
+  }
+}
+@keyframes sakura-sway {
+  to {
+    transform: rotate(-1.8deg);
+  }
+}
+/* Staged entrance: hero on load, sections as they scroll in. Only with JS. */
+html.js-reveal .hero-copy > *,
+html.js-reveal .hero .desk {
+  animation: reveal-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+html.js-reveal .hero-copy > :nth-child(2) {
+  animation-delay: 0.08s;
+}
+html.js-reveal .hero-copy > :nth-child(3) {
+  animation-delay: 0.16s;
+}
+html.js-reveal .hero-copy > :nth-child(4) {
+  animation-delay: 0.24s;
+}
+html.js-reveal .hero-copy > :nth-child(5) {
+  animation-delay: 0.3s;
+}
+html.js-reveal .hero .desk {
+  animation-delay: 0.2s;
+}
+html.js-reveal [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+html.js-reveal [data-reveal] {
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@media (max-width: 700px) {
+  .sakura-branch {
+    top: -8px;
+    width: 150px;
+    right: -30px;
+    opacity: 0.7;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sakura-petals {
+    display: none;
+  }
+  html.js-reveal [data-reveal]:not(.is-revealed) {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media print {
+  .sakura {
+    display: none;
+  }
+  html.js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,83 @@
+---
+// Decorative sakura branch with a few drifting petals. Colours come from
+// --branch / --blossom / --petal so it follows the theme; motion is off
+// under prefers-reduced-motion.
+const blossoms: [number, number, number, number][] = [
+  // x, y, scale, rotation
+  [252, 44, 1, 0],
+  [214, 78, 0.8, 30],
+  [178, 58, 0.9, 12],
+  [150, 104, 0.7, 50],
+  [118, 82, 0.85, 20],
+  [86, 132, 0.65, 40],
+  [232, 126, 0.75, 8],
+  [196, 150, 0.6, 60],
+  [58, 112, 0.7, 15],
+  [274, 98, 0.65, 35],
+];
+const leaves: [number, number, number][] = [
+  [164, 86, 40],
+  [228, 102, -30],
+  [102, 116, 70],
+  [262, 70, 120],
+  [136, 140, 10],
+];
+const petals = [
+  { left: '18%', delay: '0s', duration: '17s', size: 9 },
+  { left: '42%', delay: '-6s', duration: '21s', size: 7 },
+  { left: '63%', delay: '-11s', duration: '19s', size: 10 },
+  { left: '78%', delay: '-3s', duration: '23s', size: 8 },
+  { left: '88%', delay: '-14s', duration: '18s', size: 6 },
+  { left: '30%', delay: '-17s', duration: '25s', size: 7 },
+];
+---
+
+<div class="sakura" aria-hidden="true">
+  <svg class="sakura-branch" viewBox="0 0 320 190" fill="none">
+    <defs>
+      <g id="sakura-blossom">
+        {
+          [0, 72, 144, 216, 288].map((r) => (
+            <ellipse cx="0" cy="-7" rx="5" ry="7.5" transform={`rotate(${r})`} />
+          ))
+        }
+        <circle class="sakura-heart" r="2.4" />
+      </g>
+    </defs>
+    <g class="sakura-wood" stroke-linecap="round">
+      <path d="M330 18C270 30 232 50 196 78 160 106 120 116 70 120" stroke-width="5" />
+      <path d="M232 52c-8 22-6 50 2 76" stroke-width="3" />
+      <path d="M160 102c18 14 30 30 38 50" stroke-width="2.5" />
+      <path d="M120 112c-12-14-12-34-2-52" stroke-width="2.5" />
+      <path d="M96 118c-14 6-26 0-40-8" stroke-width="2" />
+    </g>
+    {
+      leaves.map(([x, y, r]) => (
+        <path
+          class="sakura-leaf"
+          d="M0 0c4-7 13-8 18-5-3 6-12 9-18 5Z"
+          transform={`translate(${x} ${y}) rotate(${r})`}
+        />
+      ))
+    }
+    {
+      blossoms.map(([x, y, s, r]) => (
+        <use
+          href="#sakura-blossom"
+          class="sakura-flower"
+          transform={`translate(${x} ${y}) scale(${s}) rotate(${r})`}
+        />
+      ))
+    }
+  </svg>
+  <div class="sakura-petals">
+    {
+      petals.map((p) => (
+        <span
+          class="sakura-petal"
+          style={`left:${p.left};--delay:${p.delay};--duration:${p.duration};--size:${p.size}px`}
+        />
+      ))
+    }
+  </div>
+</div>

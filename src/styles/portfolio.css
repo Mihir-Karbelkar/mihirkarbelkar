@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './lab.css';
 @import './chat.css';
+@import './fx.css';
 @font-face {
   font-family: Atkinson;
   src: url('/fonts/atkinson-regular.woff') format('woff');

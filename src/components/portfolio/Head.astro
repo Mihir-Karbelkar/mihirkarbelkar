@@ -62,6 +62,7 @@ const canonical = new URL(Astro.url.pathname, 'https://mihirkarbelkar.com');
   try {
     saved = localStorage.getItem('portfolio-theme');
   } catch {}
+  document.documentElement.classList.add('js-reveal');
   document.documentElement.dataset.theme =
     saved === 'dark' || saved === 'light'
       ? saved

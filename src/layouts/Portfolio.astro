@@ -32,5 +32,21 @@ interface Props {
     </main>
     <Footer />
     <ChatBar client:only="react" {...chat} />
+    <script>
+      // Sections fade in as they enter the viewport (hidden only once JS runs).
+      const sections = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              e.target.classList.add('is-revealed');
+              io.unobserve(e.target);
+            }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        sections.forEach((s) => io.observe(s));
+      } else sections.forEach((s) => s.classList.add('is-revealed'));
+    </script>
   </body>
 </html>
