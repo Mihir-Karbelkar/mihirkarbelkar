@@ -54,13 +54,24 @@ export interface Capability {
 export const tier = (id: TierId) => TIERS.find((t) => t.id === id)!;
 export const modelId = (t: Tier, cap: Pick<Capability, 'shaderF16'>) =>
   cap.shaderF16 ? t.f16 : t.f32;
-/** The tier to download first on this device, or null when local generation can't run. */
+const GB = 1024 ** 3;
+/**
+ * The tier to download first on this device, or null when local generation
+ * shouldn't run (no WebGPU, or a phone too small to hold a model without the
+ * GPU being dropped mid-answer). Phones get the small models only.
+ */
 export function pickTier(cap: Capability): TierId | null {
   if (!cap.webgpu) return null;
-  const memory = cap.deviceMemory ?? (cap.mobile ? 4 : 8);
-  if (!cap.mobile && memory >= 8 && cap.maxBufferSize >= 1 << 30)
-    return 'qwen-1.5b';
-  if (memory >= 6 || (!cap.mobile && memory >= 4)) return 'qwen-0.5b';
+  if (cap.mobile) {
+    const memory = cap.deviceMemory ?? 4;
+    if (memory < 6 || cap.maxBufferSize < GB / 2) return null;
+    return memory >= 8 && cap.maxBufferSize >= 2 * GB && cap.shaderF16
+      ? 'qwen-0.5b'
+      : 'smollm-360m';
+  }
+  const memory = cap.deviceMemory ?? 8;
+  if (memory >= 8 && cap.maxBufferSize >= GB) return 'qwen-1.5b';
+  if (memory >= 4) return 'qwen-0.5b';
   return 'smollm-360m';
 }
 /** The next smaller tier, prefetched in the background as a fallback. */

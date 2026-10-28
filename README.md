@@ -27,7 +27,7 @@ No model download is needed to browse the site. Hosted inference, contact delive
 
 - `src/data/*.json`: all site copy and data. `site.json` holds the profile, navigation, footer, every homepage heading and label, the about page, the chat greeting and suggestions, the chat's section keywords and the tour steps. `projects.json` holds the project accounts (with their artwork) and the featured/archive order; `notes.json` and `skills.json` hold the rest. Edit these and rebuild; no code changes are needed. `src/data/schema.ts` validates them with zod, and the build fails on a malformed file or an unknown featured slug. `src/data/portfolio.ts` re-exports the parsed data. See `docs/EDITORIAL-SOURCES.md` for source boundaries.
 - `src/lib/content.ts`: the keyword-searchable source documents built from the JSON (used by `/api/chat`). It never reads private repos or visitor files.
-- `src/styles/portfolio.css`: theme tokens, responsive layouts and dark mode. Light is white paper with sakura reds; dark is a plum night with lavender pastels. The theme follows the system setting unless the visitor picks one. Atkinson and Georgia are the two font families. `chat.css` styles the chat bar, `fx.css` the sakura branch, petals, reveal animations and mascot, and `lab.css` the lab interfaces. Main content is server-rendered and works without JS; animations stop under reduced motion.
+- `src/styles/portfolio.css`: theme tokens, responsive layouts and dark mode. Light is warm cream paper with sakura reds; dark is a plum night with lavender pastels. The theme follows the system setting unless the visitor picks one. Atkinson and Georgia are the two font families. `chat.css` styles the chat bar, `fx.css` the sakura branch, petals, reveal animations and mascot, and `lab.css` the lab interfaces. Main content is server-rendered and works without JS; animations stop under reduced motion.
 - `src/content/blog` and `src/content/essays`: retained writing. Existing blog URLs and RSS remain available. Technical-blog aliases and political-essay routes are wired into the existing subdomain middleware.
 - `docs/CONTENT-TODO.md`: editorial details to confirm before public release.
 
@@ -56,10 +56,19 @@ Resend sends only after validation. The UI never reports delivery success for un
 
 Every portfolio page has a chat bar fixed at the bottom (`src/components/chat/ChatBar.tsx`). It starts open, collapses to a pill when you scroll, and `/` focuses it.
 
-- **Auto routing, before any LLM.** Each message is routed in this order, and the generative model never claims to have done something:
-  1. Instant rules (`src/lib/intent.ts`) for navigation and theme commands.
-  2. The MiniLM search model (already loaded) as a router (`src/lib/router.ts`). It compares the message with the example phrases in `site.json` (`chat.actions`: light/dark theme, tour, back to top) and performs a confident match directly.
-  3. Only questions reach Qwen/SmolLM.
+- **One pipeline per message** (`src/lib/chat/pipeline.ts`). Each stage has a time budget and falls through to the next, so a message always ends with something useful and never hangs on "Thinking…":
+  1. Instant rules (`src/lib/intent.ts`) handle navigation and theme commands.
+  2. The MiniLM router (`src/lib/router.ts`) matches site actions from the `chat.actions` examples in `site.json`. It is only used once it is warm.
+  3. Hybrid search runs with a 6 s budget, then falls back to keyword search. Short follow-ups are searched together with the previous question.
+  4. The model writes the answer, with a watchdog on the first token and on gaps between tokens.
+  5. A grounding check (`src/lib/chat/answer.ts`) runs on the result. An answer that isn't supported by its sources, or that claims to have done something, is replaced by result cards with an honest intro.
+
+  Answers cite numbered sources, and the `[n]` markers become links to the pages. Models sit behind the `AnswerEngine` interface (`src/lib/chat/engine.ts`), the seam for a future local-model SDK.
+- **No model UI for visitors.**
+  - Auto picks a tier from device memory and GPU limits. Phones with less than 6 GB, and phones with small GPU buffers, get no generative model, only result cards.
+  - A download that needs consent shows "Enable smarter answers (≈ size)"; while downloading, a progress line with Pause is shown.
+  - `?assistant-debug` shows the model picker for testing.
+  - Errors in the chat use short, friendly copy; the details go to the console.
 - **Navigation first.** `src/lib/intent.ts` turns "show me Superstocks", "contact" or "take me to your notes" into a scroll-and-highlight, with no model involved. Section keywords live in `site.json` (`chat.sections`); project titles come from `projects.json`.
 - **Search.** At build time `/search-index.json` (prerendered by `src/pages/search-index.json.ts`) chunks the JSON data, the blog and the essays. A post can opt out with `index: false` in its frontmatter; the Lorem-ipsum template posts do. In the browser, MiniLM (`Xenova/all-MiniLM-L6-v2`, about 23 MB, in `src/workers/embed.worker.ts`) embeds the chunks once. The vectors are cached in the Cache API, keyed by a hash of the content, so they rebuild automatically whenever content changes. Retrieval fuses vector and keyword rankings (`src/lib/retrieval.ts`). If the embedding model can't load, search falls back to keywords.
 - **Downloads** (`src/lib/weights.ts`) stream the weight shards into WebLLM's own cache with byte-level progress, a storage check and stall retries. WebLLM then loads from cache. Its own downloader reports nothing until whole ~30 MB shards land.

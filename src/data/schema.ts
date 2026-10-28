@@ -135,6 +135,17 @@ export const siteSchema = z.object({
     greeting: z.string(),
     suggestions: z.array(z.string()).max(6),
     contact: z.string(),
+    /** Fixed copy around answers and result cards. */
+    copy: z.object({
+      found: z.string(),
+      ungrounded: z.string(),
+      empty: z.string(),
+      error: z.string(),
+      contactLabel: z.string(),
+      answeredFrom: z.string(),
+      enable: z.string(),
+      preparing: z.string(),
+    }),
     /** Site actions the chat can perform; the examples train the in-browser intent router. */
     actions: z.array(
       z.object({

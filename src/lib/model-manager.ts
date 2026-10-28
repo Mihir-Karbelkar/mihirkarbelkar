@@ -19,6 +19,8 @@ export interface EngineDeps {
   /** Runs work when the page is idle (requestIdleCallback in the browser). */
   idle(fn: () => void): void;
   storage?: Pick<Storage, 'getItem' | 'setItem'>;
+  /** Debug mode keeps a manual model choice; visitors always get Auto. */
+  debug?: boolean;
 }
 export interface TierState {
   status: Status;
@@ -107,7 +109,7 @@ export class ModelManager {
       !!v && TIERS.some((t) => t.id === v);
     try {
       const saved = this.deps.storage?.getItem(CHOICE_KEY);
-      if (isTier(saved)) choice = saved;
+      if (this.deps.debug && isTier(saved)) choice = saved;
       const crashed = this.deps.storage?.getItem(LOST_KEY);
       if (isTier(crashed)) lost = crashed;
     } catch {}
@@ -220,5 +222,7 @@ export class ModelManager {
     if (this.state.tiers[id].status !== 'loading') return;
     this.deps.unload(this.model(id));
     this.setTier(id, { status: 'idle', progress: 0, text: '' });
+    // Paused: offer the download again (finished shards are kept and skipped).
+    this.set({ needsConsent: true });
   }
 }

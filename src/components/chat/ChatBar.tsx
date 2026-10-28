@@ -1,34 +1,62 @@
 import {
   useCallback,
-  useMemo,
   useEffect,
+  useMemo,
   useRef,
   useState,
   useSyncExternalStore,
 } from 'react';
 import type { FormEvent, KeyboardEvent } from 'react';
 import Icon from '../ui/Icon';
+import AssistantStatus from './AssistantStatus';
 import ModelPicker from './ModelPicker';
-import { models } from '../../lib/browser-models';
-import { generate, stopModel } from '../../lib/local-engine';
-import { routeAction, search } from '../../lib/vector-store';
+import { assistantDebug, models } from '../../lib/browser-models';
+import {
+  keywordSearch,
+  routeAction,
+  routerWarm,
+  search,
+  warmUp,
+} from '../../lib/vector-store';
 import { applyTheme } from '../../lib/theme';
-import { buildExemplars, toIntent, type ActionSpec } from '../../lib/router';
-import { systemPrompt, type Source } from '../../lib/prompt';
+import { buildExemplars, type ActionSpec } from '../../lib/router';
+import type { Source } from '../../lib/prompt';
 import { routeIntent, type Intent, type IntentContext } from '../../lib/intent';
-import { readTokens } from '../../lib/client-stream';
-import { errorMessage } from '../../lib/errors';
-import { GpuLostError, TIERS } from '../../lib/models';
+import { friendlyError } from '../../lib/errors';
+import { TIERS, type TierId } from '../../lib/models';
 import type { ChatMessage } from '../../lib/contracts';
+import { runChat, type ChatCopy } from '../../lib/chat/pipeline';
+import {
+  bestExcerpt,
+  finalizeAnswer,
+  type Segment,
+} from '../../lib/chat/answer';
+import { hostedEngine, localEngine } from '../../lib/chat/engines';
 /** Hosted Groq/Inception answers are used only on devices without WebGPU, and only if configured. */
 const HOSTED_FALLBACK = true;
-type Via = 'local' | 'hosted' | 'search';
-type Message = ChatMessage & { sources?: Source[]; via?: Via; model?: string };
+type Turn =
+  | { role: 'user'; content: string }
+  | {
+      role: 'assistant';
+      /** Plain text kept for conversation history. */
+      content: string;
+      state: 'pending' | 'writing' | 'answer' | 'cards';
+      segments?: Segment[];
+      sources?: Source[];
+      query?: string;
+      empty?: boolean;
+    };
 export interface ChatBarProps extends IntentContext {
   greeting: string;
   placeholder: string;
   suggestions: string[];
   actions: ActionSpec[];
+  copy: ChatCopy & {
+    contactLabel: string;
+    answeredFrom: string;
+    enable: string;
+    preparing: string;
+  };
 }
 const reducedMotion = () =>
   matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -59,7 +87,7 @@ export default function ChatBar(props: ChatBarProps) {
   const [expanded, setExpanded] = useState(true),
     [panel, setPanel] = useState(false),
     [query, setQuery] = useState(''),
-    [messages, setMessages] = useState<Message[]>([]),
+    [turns, setTurns] = useState<Turn[]>([]),
     [busy, setBusy] = useState(false),
     [status, setStatus] = useState(''),
     [toast, setToast] = useState(''),
@@ -68,6 +96,8 @@ export default function ChatBar(props: ChatBarProps) {
     panelRef = useRef<HTMLDivElement>(null),
     log = useRef<HTMLDivElement>(null),
     abort = useRef<AbortController | null>(null),
+    warmed = useRef(false),
+    debug = useMemo(() => assistantDebug(), []),
     run = useRef(0),
     focused = useRef(false);
   useEffect(() => {
@@ -139,7 +169,7 @@ export default function ChatBar(props: ChatBarProps) {
   useEffect(() => {
     const el = log.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [turns]);
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(''), 3200);
@@ -152,9 +182,17 @@ export default function ChatBar(props: ChatBarProps) {
   const stop = () => {
     run.current++;
     abort.current?.abort();
-    if (m.active) stopModel(manager.model(m.active));
     setBusy(false);
     setStatus('');
+    setTurns((t) =>
+      t.filter((x) => x.role === 'user' || x.state !== 'pending'),
+    );
+  };
+  /** Loads the search model and embeds the index on first interaction, not on page load. */
+  const warm = () => {
+    if (warmed.current) return;
+    warmed.current = true;
+    void warmUp(exemplars);
   };
   /** Performs navigation, tours and site actions; false means "answer it". */
   function act(intent: Intent): boolean {
@@ -183,106 +221,97 @@ export default function ChatBar(props: ChatBarProps) {
     const q = text.trim().slice(0, 1500);
     if (!q || busy) return;
     setQuery('');
-    // Rules first (instant), then the MiniLM router, then the LLM.
-    if (act(routeIntent(q, props))) return;
+    warm();
     const current = ++run.current;
-    setBusy(true);
-    setStatus('Thinking…');
-    const routed = await routeAction(q, exemplars);
-    if (current !== run.current) return;
-    if (routed) {
-      setBusy(false);
-      setStatus('');
-      act(toIntent(routed));
-      return;
-    }
-    const history = messages.filter((x) => x.content).slice(-4);
-    const reply: Message = { role: 'assistant', content: '' };
-    const update = () => {
+    const history: ChatMessage[] = turns
+      .filter((t) => t.content && (t.role === 'user' || t.state !== 'pending'))
+      .slice(-4)
+      .map(({ role, content }) => ({ role, content }));
+    const base = turns.filter(
+      (t) => t.role === 'user' || t.state !== 'pending',
+    );
+    const show = (reply: Turn) => {
       if (current === run.current)
-        setMessages([...history, { role: 'user', content: q }, { ...reply }]);
+        setTurns([...base, { role: 'user', content: q }, reply]);
     };
-    setPanel(true);
+    const controller = new AbortController();
+    abort.current = controller;
     setBusy(true);
-    update();
+    let opened = false;
+    const open = () => {
+      if (opened) return;
+      opened = true;
+      setPanel(true);
+      show({ role: 'assistant', content: '', state: 'pending' });
+    };
     try {
-      setStatus('Searching the site…');
-      const found = await search(
+      const outcome = await runChat(
         q,
-        (t) => current === run.current && setStatus(t),
+        history,
+        {
+          rules: (x) => routeIntent(x, props),
+          route: (x) => routeAction(x, exemplars),
+          routerWarm,
+          search: (x) => search(x),
+          keywordSearch: (x) => keywordSearch(x),
+          engine: () => {
+            const state = manager.getState();
+            return (
+              localEngine(manager) ??
+              (HOSTED_FALLBACK && hosted && !state.capability?.webgpu
+                ? hostedEngine()
+                : null)
+            );
+          },
+          onGpuLost: (id) => manager.lost(id as TierId),
+          copy: props.copy,
+        },
+        (p) => {
+          if (current !== run.current) return;
+          open();
+          if (p.stage === 'writing')
+            show({
+              role: 'assistant',
+              content: '',
+              state: 'writing',
+              segments: finalizeAnswer(p.partial, p.sources),
+              sources: p.sources,
+            });
+        },
+        controller.signal,
       );
       if (current !== run.current) return;
-      reply.sources = found.sources;
-      const active = manager.getState().active;
-      const useHosted =
-        !active &&
-        HOSTED_FALLBACK &&
-        hosted &&
-        !manager.getState().capability?.webgpu;
-      if (!found.sources.length) {
-        reply.via = 'search';
-        reply.content =
-          'I couldn’t find that in anything published here. Try asking about a project, or say hello in the contact section.';
-      } else if (active) {
-        reply.via = 'local';
-        reply.model = TIERS.find((t) => t.id === active)!.label;
-        setStatus(`Thinking on this device (${reply.model})…`);
-        await generate(
-          manager.model(active),
-          [
-            { role: 'system', content: systemPrompt(found.sources) },
-            ...history.map(({ role, content }) => ({ role, content })),
-            { role: 'user', content: q },
-          ],
-          (token) => {
-            reply.content += token;
-            update();
-          },
-          320,
-        );
-      } else if (useHosted) {
-        reply.via = 'hosted';
-        setStatus('Asking the hosted model…');
-        abort.current = new AbortController();
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          signal: abort.current.signal,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [...history, { role: 'user', content: q }].map(
-              ({ role, content }) => ({ role, content }),
-            ),
-          }),
-        });
-        await readTokens(res, (token) => {
-          reply.content += token;
-          update();
-        });
-      } else {
-        reply.via = 'search';
-        reply.content =
-          m.tiers[m.preferred ?? 'qwen-0.5b']?.status === 'loading'
-            ? 'The on-device model is still downloading, so here’s what I found so far:'
-            : 'Here’s what I found:';
-      }
-      update();
-    } catch (e) {
-      if (current !== run.current) return;
-      const lostTier = TIERS.find((t) => t.label === reply.model)?.id;
-      if (e instanceof GpuLostError && reply.via === 'local' && lostTier) {
-        // Show what search found and move Auto down a tier for next time.
-        manager.lost(lostTier);
-        reply.via = 'search';
-        reply.model = undefined;
-        reply.content = `${TIERS.find((t) => t.id === lostTier)!.label} ran out of GPU memory on this device, so I’m switching to a smaller model. Here’s what I found meanwhile:`;
-        update();
+      if (outcome.kind === 'intent') {
+        act(outcome.intent);
         return;
       }
-      reply.content ||= errorMessage(
-        e,
-        'Something went wrong. Please try again.',
-      );
-      update();
+      open();
+      if (outcome.kind === 'answer')
+        show({
+          role: 'assistant',
+          content: outcome.text,
+          state: 'answer',
+          segments: outcome.segments,
+          sources: outcome.sources,
+        });
+      else
+        show({
+          role: 'assistant',
+          content: outcome.intro,
+          state: 'cards',
+          sources: outcome.sources,
+          query: q,
+          empty: outcome.reason === 'empty',
+        });
+    } catch (e) {
+      if (current !== run.current || controller.signal.aborted) return;
+      open();
+      show({
+        role: 'assistant',
+        content: friendlyError(e),
+        state: 'cards',
+        sources: [],
+      });
     } finally {
       if (current === run.current) {
         setBusy(false);
@@ -336,55 +365,94 @@ export default function ChatBar(props: ChatBarProps) {
               aria-live="polite"
               aria-busy={busy}
             >
-              {messages.map((x, i) => (
-                <div key={i} className={`chat-msg is-${x.role}`}>
-                  {x.role === 'assistant' && (
+              {turns.map((x, i) =>
+                x.role === 'user' ? (
+                  <div key={i} className="chat-msg is-user">
+                    <div className="chat-bubble">
+                      <p>{x.content}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={i} className="chat-msg is-assistant">
                     <span className="chat-avatar" aria-hidden="true">
                       <Icon name="sparkle" />
                     </span>
-                  )}
-                  <div className="chat-bubble">
-                    {x.content ? (
-                      x.content
-                        .split(/\n{2,}/)
-                        .map((p, j) => <p key={j}>{p}</p>)
-                    ) : (
-                      <span className="chat-typing" aria-label="Thinking">
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                    )}
-                    {x.via === 'search' && !!x.sources?.length && (
-                      <div className="chat-results">
-                        {x.sources.map((s) => (
-                          <a key={s.id} className="chat-result" href={s.href}>
-                            <strong>{s.title}</strong>
-                            <span>{s.text.slice(0, 180)}…</span>
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                    {x.via !== 'search' && !!x.sources?.length && (
-                      <div className="chat-sources">
-                        {x.sources.map((s) => (
-                          <a key={s.id} href={s.href}>
-                            {s.title}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                    {x.via && x.via !== 'search' && x.content && (
-                      <small className="chat-via">
-                        {x.via === 'local'
-                          ? `Generated in your browser · ${x.model}`
-                          : 'Generated by a hosted model'}
-                        . Check the sources.
-                      </small>
-                    )}
+                    <div className="chat-bubble">
+                      {x.state === 'pending' ? (
+                        <span className="chat-typing" aria-label="Thinking">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                      ) : x.segments ? (
+                        <p
+                          className={x.state === 'writing' ? 'is-writing' : ''}
+                        >
+                          {x.segments.map((seg, j) =>
+                            seg.cite ? (
+                              <a
+                                key={j}
+                                className="chat-cite"
+                                href={seg.href}
+                                aria-label={`Source ${seg.cite}: ${x.sources?.[seg.cite - 1]?.title ?? ''}`}
+                              >
+                                {seg.cite}
+                              </a>
+                            ) : seg.href ? (
+                              <a key={j} href={seg.href}>
+                                {seg.text}
+                              </a>
+                            ) : (
+                              <span key={j}>{seg.text}</span>
+                            ),
+                          )}
+                        </p>
+                      ) : (
+                        <p>
+                          {x.content}
+                          {x.empty && (
+                            <>
+                              {' '}
+                              <a href="/#contact">{props.copy.contactLabel}</a>
+                            </>
+                          )}
+                        </p>
+                      )}
+                      {x.state === 'cards' && !!x.sources?.length && (
+                        <div className="chat-results">
+                          {x.sources.map((src) => (
+                            <a
+                              key={src.id}
+                              className="chat-result"
+                              href={src.href}
+                            >
+                              <strong>{src.title}</strong>
+                              <span>{bestExcerpt(src, x.query ?? '')}</span>
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                      {x.state === 'answer' && !!x.sources?.length && (
+                        <>
+                          <div className="chat-sources">
+                            {x.sources.map((src, j) => (
+                              <a key={src.id} href={src.href}>
+                                <span className="chat-cite" aria-hidden="true">
+                                  {j + 1}
+                                </span>
+                                {src.title}
+                              </a>
+                            ))}
+                          </div>
+                          <small className="chat-via">
+                            {props.copy.answeredFrom}
+                          </small>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           </div>
         )}
@@ -423,6 +491,7 @@ export default function ChatBar(props: ChatBarProps) {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={onKeyDown}
               onFocus={() => {
+                warm();
                 focused.current = true;
                 setExpanded(true);
               }}
@@ -456,7 +525,7 @@ export default function ChatBar(props: ChatBarProps) {
             ) : (
               !panel && (
                 <div className="chat-suggestions">
-                  {messages.length === 0 && (
+                  {turns.length === 0 && (
                     <p className="chat-greeting">{props.greeting}</p>
                   )}
                   <div className="chat-chips">
@@ -473,7 +542,11 @@ export default function ChatBar(props: ChatBarProps) {
                 </div>
               )
             )}
-            <ModelPicker state={m} manager={manager} loading={loading} />
+            {debug ? (
+              <ModelPicker state={m} manager={manager} loading={loading} />
+            ) : (
+              <AssistantStatus state={m} manager={manager} copy={props.copy} />
+            )}
           </div>
         </div>
       </div>

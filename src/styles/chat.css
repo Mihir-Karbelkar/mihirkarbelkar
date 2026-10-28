@@ -495,3 +495,60 @@ html.chat-locked {
     justify-content: flex-end;
   }
 }
+/* Answer text: inline links and numbered citations */
+.chat-bubble p a:not(.chat-cite) {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.chat-cite {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35em;
+  height: 1.35em;
+  margin: 0 1px 0 3px;
+  padding: 0 4px;
+  border-radius: 999px;
+  color: var(--on-primary) !important;
+  background: var(--primary);
+  font-size: 0.68em;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none !important;
+  vertical-align: 0.35em;
+}
+.chat-sources a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.chat-sources .chat-cite {
+  margin: 0;
+  vertical-align: 0;
+}
+.chat-bubble p.is-writing::after {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--accent);
+  animation: chat-caret 1s steps(2) infinite;
+}
+.assistant-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+@keyframes chat-caret {
+  50% {
+    opacity: 0;
+  }
+}

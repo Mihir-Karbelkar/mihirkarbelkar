@@ -8,7 +8,19 @@ const CACHE = 'portfolio-search';
 let manifest: Promise<SearchManifest> | null = null,
   vectors: Promise<Float32Array[]> | null = null,
   worker: Worker | null = null,
+  modelReady = false,
   seq = 0;
+/** The first call includes downloading MiniLM (~23 MB); later calls are fast. */
+const FIRST_CALL_MS = 45000,
+  CALL_MS = 8000;
+interface Pending {
+  texts: number;
+  resolve: (v: Float32Array[]) => void;
+  reject: (e: Error) => void;
+  progress?: Progress;
+  timer: ReturnType<typeof setTimeout>;
+}
+const pending = new Map<number, Pending>();
 export function loadManifest(): Promise<SearchManifest> {
   manifest ??= fetch('/search-index.json').then((r) => {
     if (!r.ok) throw new Error('The search index is unavailable.');
@@ -17,27 +29,57 @@ export function loadManifest(): Promise<SearchManifest> {
   manifest.catch(() => (manifest = null));
   return manifest;
 }
-function embed(texts: string[], progress?: Progress): Promise<Float32Array[]> {
-  worker ??= new Worker(
-    new URL('../workers/embed.worker.ts', import.meta.url),
-    {
-      type: 'module',
-    },
+/** A crashed or unloadable worker rejects everything in flight; the next call starts a fresh one. */
+function failAll(reason: string) {
+  worker?.terminate();
+  worker = null;
+  for (const [id, p] of pending) {
+    clearTimeout(p.timer);
+    p.reject(new Error(reason));
+    pending.delete(id);
+  }
+}
+function getWorker(): Worker {
+  if (worker) return worker;
+  const w = new Worker(new URL('../workers/embed.worker.ts', import.meta.url), {
+    type: 'module',
+  });
+  w.addEventListener('message', ({ data: m }: MessageEvent<EmbedResponse>) => {
+    const p = pending.get(m.id);
+    if (!p) return;
+    if (m.type === 'progress') return p.progress?.(m.text, m.progress);
+    clearTimeout(p.timer);
+    pending.delete(m.id);
+    if (m.type === 'error') return p.reject(new Error(m.text));
+    modelReady = true;
+    const out: Float32Array[] = [];
+    for (let i = 0; i < p.texts; i++)
+      out.push(m.data.subarray(i * m.dims, (i + 1) * m.dims));
+    p.resolve(out);
+  });
+  w.addEventListener('error', (e) => {
+    e.preventDefault();
+    failAll('The search model stopped working.');
+  });
+  w.addEventListener('messageerror', () =>
+    failAll('The search model sent an unreadable reply.'),
   );
-  const id = ++seq,
-    w = worker;
+  worker = w;
+  return w;
+}
+function embed(texts: string[], progress?: Progress): Promise<Float32Array[]> {
+  const w = getWorker(),
+    id = ++seq;
   return new Promise((resolve, reject) => {
-    const listener = ({ data: m }: MessageEvent<EmbedResponse>) => {
-      if (m.id !== id) return;
-      if (m.type === 'progress') return progress?.(m.text, m.progress);
-      w.removeEventListener('message', listener);
-      if (m.type === 'error') return reject(new Error(m.text));
-      const out: Float32Array[] = [];
-      for (let i = 0; i < texts.length; i++)
-        out.push(m.data.subarray(i * m.dims, (i + 1) * m.dims));
-      resolve(out);
-    };
-    w.addEventListener('message', listener);
+    // Batches of chunks get proportionally longer than a single query.
+    const ms =
+      (modelReady ? CALL_MS : FIRST_CALL_MS) +
+      Math.ceil(texts.length / 8) * 2000;
+    const timer = setTimeout(() => {
+      pending.delete(id);
+      reject(new Error('The search model took too long.'));
+    }, ms);
+    pending.set(id, { texts: texts.length, resolve, reject, progress, timer });
     w.postMessage({ id, texts } satisfies EmbedRequest);
   });
 }
@@ -77,7 +119,6 @@ export function ensureVectors(progress?: Progress): Promise<Float32Array[]> {
   vectors.catch(() => (vectors = null));
   return vectors;
 }
-export type SearchResult = { sources: Source[]; semantic: boolean };
 const queryCache = new Map<string, Promise<Float32Array>>();
 /** One embedding per distinct query, shared by the router and search. */
 function embedQuery(query: string): Promise<Float32Array> {
@@ -89,57 +130,87 @@ function embedQuery(query: string): Promise<Float32Array> {
   }
   return v;
 }
-let exemplarVectors: { key: string; vectors: Promise<Float32Array[]> } | null =
-  null;
+let exemplarVectors: {
+  key: string;
+  vectors: Promise<Float32Array[]>;
+  ready: boolean;
+} | null = null;
+function ensureExemplars(exemplars: Exemplars) {
+  const key = exemplars.texts.join('\n');
+  if (exemplarVectors?.key !== key) {
+    const entry = {
+      key,
+      vectors: embed(exemplars.texts),
+      ready: false,
+    };
+    entry.vectors.then(
+      () => (entry.ready = true),
+      () => exemplarVectors === entry && (exemplarVectors = null),
+    );
+    exemplarVectors = entry;
+  }
+  return exemplarVectors.vectors;
+}
+let indexReady = false;
+/** True once the router examples are embedded, so routing costs one query embedding. */
+export const routerWarm = () => modelReady && !!exemplarVectors?.ready;
 /**
- * The Auto router's site-action match. Returns null when the
- * embedding model isn't available, so callers fall through to answering.
+ * Loads the search model and embeds the site index and router examples in
+ * the background (on first focus), so the first question isn't kept waiting.
  */
+export function warmUp(exemplars: Exemplars, progress?: Progress) {
+  return Promise.all([
+    ensureVectors(progress).then(() => (indexReady = true)),
+    ensureExemplars(exemplars),
+  ]).catch(() => {});
+}
+/** The site-action match for the Auto router; null when unsure or unavailable. */
 export async function routeAction(
   query: string,
   exemplars: Exemplars,
 ): Promise<ActionId | null> {
   try {
-    const key = exemplars.texts.join('\n');
-    if (exemplarVectors?.key !== key) {
-      exemplarVectors = { key, vectors: embed(exemplars.texts) };
-      exemplarVectors.vectors.catch(() => (exemplarVectors = null));
-    }
     const [queryVector, vectors] = await Promise.all([
       embedQuery(query),
-      exemplarVectors.vectors,
+      ensureExemplars(exemplars),
     ]);
     return routeByExample(query, queryVector, exemplars, vectors);
   } catch {
     return null;
   }
 }
-/** Hybrid search; degrades to keyword-only if the embedding model can't load. */
-export async function search(
+/** Instant keyword-only search over the prebuilt index. */
+export async function keywordSearch(
   query: string,
-  progress?: Progress,
-): Promise<SearchResult> {
+  limit = 4,
+): Promise<Source[]> {
+  return hybridSearch(query, (await loadManifest()).chunks, { limit });
+}
+/**
+ * Hybrid vector + keyword search. Until the index is embedded (or if the
+ * model can't load) it answers from keywords instead of waiting.
+ */
+export async function search(query: string, limit = 4): Promise<Source[]> {
   const m = await loadManifest();
+  if (!indexReady) return hybridSearch(query, m.chunks, { limit });
   try {
     const [chunkVectors, queryVector] = await Promise.all([
-      ensureVectors(progress),
+      ensureVectors(),
       embedQuery(query),
     ]);
-    return {
-      sources: hybridSearch(query, m.chunks, {
-        queryVector,
-        vectors: chunkVectors,
-      }),
-      semantic: true,
-    };
+    return hybridSearch(query, m.chunks, {
+      queryVector,
+      vectors: chunkVectors,
+      limit,
+    });
   } catch {
-    return { sources: hybridSearch(query, m.chunks), semantic: false };
+    return hybridSearch(query, m.chunks, { limit });
   }
 }
 export async function clearSearchCache() {
   vectors = null;
-  worker?.terminate();
-  worker = null;
+  indexReady = false;
+  failAll('Search cache cleared.');
   try {
     await caches.delete(CACHE);
   } catch {}

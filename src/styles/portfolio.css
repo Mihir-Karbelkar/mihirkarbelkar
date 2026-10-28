@@ -15,23 +15,23 @@
   font-display: swap;
 }
 :root {
-  /* Light: white paper, sakura reds */
-  --bg: #fbf9f7;
-  --paper: #ffffff;
+  /* Light: warm cream paper, sakura reds, soft pastels */
+  --bg: #f7f1e6;
+  --paper: #fdf9f2;
   --surface: var(--paper);
-  --wash: #f6f1ee;
-  --ink: #2a2530;
-  --muted: #6b6472;
-  --line: #ece4e8;
-  --sage: #ebefe7;
+  --wash: #f1e9db;
+  --ink: #2e2722;
+  --muted: #6e6259;
+  --line: #e6dccb;
+  --sage: #e6ebdc;
   --mint: var(--sage);
-  --lavender: #efe8f5;
-  --blue: #e8eef5;
-  --peach: #f8e7e4;
+  --lavender: #ece5f1;
+  --blue: #e4eaf0;
+  --peach: #f6e2d8;
   --accent: #e8a5b5;
-  --primary: #a63d52;
-  --on-primary: #ffffff;
-  --blossom: #ffffff;
+  --primary: #a4404f;
+  --on-primary: #fdf9f2;
+  --blossom: #fffaf3;
   --petal: #e3778d;
   --branch: #4a3a40;
   --font-body: Atkinson, Arial, sans-serif;

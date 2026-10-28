@@ -140,7 +140,7 @@
   },
   "chat": {
     "placeholder": "Ask me anything…",
-    "greeting": "Ask about my work or this site. Answers come only from what’s published here, generated in your browser when your device supports it.",
+    "greeting": "Ask about my work, my projects or this site. Answers come only from what’s published here, with links to the pages.",
     "suggestions": [
       "Show me Superstocks",
       "How did the robot fleet scale?",
@@ -257,7 +257,17 @@
           "take me to the start of the page"
         ]
       }
-    ]
+    ],
+    "copy": {
+      "found": "These pages cover it:",
+      "ungrounded": "I couldn’t word that reliably, so here are the pages that cover it:",
+      "empty": "That isn’t covered on the site yet. You can ask Mihir directly.",
+      "error": "I couldn’t finish that answer, but these pages should help:",
+      "contactLabel": "Say hello",
+      "answeredFrom": "Answered from pages on this site.",
+      "enable": "Enable smarter answers",
+      "preparing": "Getting the assistant ready"
+    }
   },
   "tour": [
     {

@@ -29,10 +29,14 @@ test('pickTier chooses by capability', () => {
     [{ maxBufferSize: 2 ** 28 }, 'qwen-0.5b'],
     [{ deviceMemory: 4 }, 'qwen-0.5b'],
     [{ deviceMemory: undefined }, 'qwen-1.5b'],
-    [{ mobile: true, deviceMemory: 8 }, 'qwen-0.5b'],
-    [{ mobile: true, deviceMemory: 4 }, 'smollm-360m'],
-    [{ mobile: true, deviceMemory: undefined }, 'smollm-360m'],
     [{ deviceMemory: 2 }, 'smollm-360m'],
+    // phones: small models only, none on low-memory devices
+    [{ mobile: true, deviceMemory: 4 }, null],
+    [{ mobile: true, deviceMemory: undefined }, null],
+    [{ mobile: true, deviceMemory: 8, maxBufferSize: 2 ** 28 }, null],
+    [{ mobile: true, deviceMemory: 8, shaderF16: false }, 'smollm-360m'],
+    [{ mobile: true, deviceMemory: 6 }, 'smollm-360m'],
+    [{ mobile: true, deviceMemory: 8 }, 'qwen-0.5b'],
   ];
   for (const [patch, want] of cases)
     assert.equal(
@@ -96,7 +100,7 @@ test('mobile waits for consent unless the model is already cached', async () => 
   const mobile = {
     ...desktop,
     mobile: true,
-    deviceMemory: 4,
+    deviceMemory: 6,
     shaderF16: false,
   };
   const a = fakeDeps(mobile);

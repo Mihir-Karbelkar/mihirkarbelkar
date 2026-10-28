@@ -1,5 +1,5 @@
 export type Theme = 'light' | 'dark';
-const COLORS: Record<Theme, string> = { light: '#fbf9f7', dark: '#1c1727' };
+const COLORS: Record<Theme, string> = { light: '#f7f1e6', dark: '#1c1727' };
 export const currentTheme = (): Theme =>
   document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 /** Applies and remembers a theme; the nav toggle listens for the event to update its label. */
