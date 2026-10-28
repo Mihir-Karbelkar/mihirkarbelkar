@@ -214,6 +214,49 @@
           "reach you"
         ]
       }
+    ],
+    "actions": [
+      {
+        "id": "theme-light",
+        "reply": "Switched to light mode.",
+        "examples": [
+          "change to light mode",
+          "switch to the light theme",
+          "turn off dark mode",
+          "make the page brighter",
+          "use light colours"
+        ]
+      },
+      {
+        "id": "theme-dark",
+        "reply": "Switched to dark mode.",
+        "examples": [
+          "change to dark mode",
+          "switch to the dark theme",
+          "turn on dark mode",
+          "make the page darker",
+          "night mode please"
+        ]
+      },
+      {
+        "id": "tour",
+        "reply": "Let me show you around.",
+        "examples": [
+          "show me around",
+          "give me a tour of the site",
+          "walk me through this page",
+          "what's on this site, take me around"
+        ]
+      },
+      {
+        "id": "top",
+        "reply": "Back to the top.",
+        "examples": [
+          "scroll to the top",
+          "go back up",
+          "take me to the start of the page"
+        ]
+      }
     ]
   },
   "tour": [

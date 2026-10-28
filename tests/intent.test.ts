@@ -36,3 +36,46 @@ test('questions and tours', () => {
   assert.equal(target('Show me around'), 'tour');
   assert.equal(target('can you give me a tour?'), 'tour');
 });
+test('theme commands are actions, theme questions are not', () => {
+  const action = (q: string) => {
+    const i = routeIntent(q, ctx);
+    return i.kind === 'action' ? i.action : i.kind;
+  };
+  assert.equal(action('Change to light mode'), 'theme-light');
+  assert.equal(action('dark mode please'), 'theme-dark');
+  assert.equal(action('turn off dark mode'), 'theme-light');
+  assert.equal(action('switch to night mode'), 'theme-dark');
+  assert.equal(action('How did you build the dark mode?'), 'answer');
+});
+import { buildExemplars, routeByExample } from '../src/lib/router.ts';
+test('semantic router picks a confident, unambiguous action only', () => {
+  const ex = buildExemplars(site.chat.actions);
+  assert.equal(ex.texts.length, ex.actions.length);
+  // Fake 3-d embeddings: light, dark, tour directions.
+  const dir = {
+    'theme-light': [1, 0, 0],
+    'theme-dark': [0, 1, 0],
+    tour: [0, 0, 1],
+    top: [0.6, 0, 0.8],
+  } as const;
+  const vectors = ex.actions.map((a) => dir[a]);
+  assert.equal(
+    routeByExample('make it bright', [0.95, 0.31, 0], ex, vectors),
+    'theme-light',
+  );
+  assert.equal(
+    routeByExample('hmm', [0.7, 0.7, 0.14], ex, vectors),
+    null,
+    'ambiguous',
+  );
+  assert.equal(
+    routeByExample('qwen?', [0.3, 0.3, 0.3], ex, vectors),
+    null,
+    'too weak',
+  );
+  assert.equal(
+    routeByExample('How does dark mode work', [0, 1, 0], ex, vectors),
+    null,
+    'questions go to the LLM',
+  );
+});

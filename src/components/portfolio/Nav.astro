@@ -34,6 +34,7 @@ import { profile, site } from '../../data/portfolio';
   </nav>
 </header>
 <script>
+  import { applyTheme, currentTheme } from '../../lib/theme';
   const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
   function label() {
     toggle?.setAttribute(
@@ -44,20 +45,10 @@ import { profile, site } from '../../data/portfolio';
     );
   }
   label();
-  toggle?.addEventListener('click', () => {
-    const theme =
-      document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = theme;
-    document
-      .querySelectorAll('meta[name="theme-color"]')
-      .forEach((m) =>
-        m.setAttribute('content', theme === 'dark' ? '#1c1727' : '#fbf9f7'),
-      );
-    try {
-      localStorage.setItem('portfolio-theme', theme);
-    } catch {}
-    label();
-  });
+  addEventListener('portfolio:theme', label);
+  toggle?.addEventListener('click', () =>
+    applyTheme(currentTheme() === 'dark' ? 'light' : 'dark'),
+  );
   const menu = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
   const nav = document.querySelector<HTMLElement>('#mobile-nav');
   function closeMenu(restoreFocus = false) {

@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useMemo,
   useEffect,
   useRef,
   useState,
@@ -10,9 +11,11 @@ import Icon from '../ui/Icon';
 import ModelPicker from './ModelPicker';
 import { models } from '../../lib/browser-models';
 import { generate, stopModel } from '../../lib/local-engine';
-import { search } from '../../lib/vector-store';
+import { routeAction, search } from '../../lib/vector-store';
+import { applyTheme } from '../../lib/theme';
+import { buildExemplars, toIntent, type ActionSpec } from '../../lib/router';
 import { systemPrompt, type Source } from '../../lib/prompt';
-import { routeIntent, type IntentContext } from '../../lib/intent';
+import { routeIntent, type Intent, type IntentContext } from '../../lib/intent';
 import { readTokens } from '../../lib/client-stream';
 import { errorMessage } from '../../lib/errors';
 import { GpuLostError, TIERS } from '../../lib/models';
@@ -25,6 +28,7 @@ export interface ChatBarProps extends IntentContext {
   greeting: string;
   placeholder: string;
   suggestions: string[];
+  actions: ActionSpec[];
 }
 const reducedMotion = () =>
   matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -43,6 +47,10 @@ export function goTo(target: string, href: string) {
 }
 export default function ChatBar(props: ChatBarProps) {
   const manager = models();
+  const exemplars = useMemo(
+    () => buildExemplars(props.actions),
+    [props.actions],
+  );
   const m = useSyncExternalStore(
     manager.subscribe,
     manager.getState,
@@ -148,27 +156,47 @@ export default function ChatBar(props: ChatBarProps) {
     setBusy(false);
     setStatus('');
   };
-  async function send(text = query) {
-    const q = text.trim().slice(0, 1500);
-    if (!q || busy) return;
-    setQuery('');
-    const intent = routeIntent(q, props);
+  /** Performs navigation, tours and site actions; false means "answer it". */
+  function act(intent: Intent): boolean {
+    const say = (id: string) =>
+      props.actions.find((a) => a.id === id)?.reply ?? '';
     if (intent.kind === 'navigate') {
       setPanel(false);
       setToast(`Here’s ${intent.label}.`);
       goTo(intent.target, intent.href);
-      return;
-    }
-    if (intent.kind === 'tour') {
+    } else if (intent.kind === 'tour') {
       setPanel(false);
       setExpanded(false);
       if (document.querySelector('.mascot'))
         dispatchEvent(new CustomEvent('portfolio:tour'));
       else location.href = '/#tour';
+    } else if (intent.kind === 'action') {
+      setPanel(false);
+      if (intent.action === 'top')
+        scrollTo({ top: 0, behavior: reducedMotion() ? 'auto' : 'smooth' });
+      else applyTheme(intent.action === 'theme-dark' ? 'dark' : 'light');
+      setToast(say(intent.action));
+    } else return false;
+    return true;
+  }
+  async function send(text = query) {
+    const q = text.trim().slice(0, 1500);
+    if (!q || busy) return;
+    setQuery('');
+    // Rules first (instant), then the MiniLM router, then the LLM.
+    if (act(routeIntent(q, props))) return;
+    const current = ++run.current;
+    setBusy(true);
+    setStatus('Thinking…');
+    const routed = await routeAction(q, exemplars);
+    if (current !== run.current) return;
+    if (routed) {
+      setBusy(false);
+      setStatus('');
+      act(toIntent(routed));
       return;
     }
-    const current = ++run.current,
-      history = messages.filter((x) => x.content).slice(-4);
+    const history = messages.filter((x) => x.content).slice(-4);
     const reply: Message = { role: 'assistant', content: '' };
     const update = () => {
       if (current === run.current)

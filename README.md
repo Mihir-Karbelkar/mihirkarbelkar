@@ -56,8 +56,14 @@ Resend sends only after validation. The UI never reports delivery success for un
 
 Every portfolio page has a chat bar fixed at the bottom (`src/components/chat/ChatBar.tsx`). It starts open, collapses to a pill when you scroll, and `/` focuses it.
 
+- **Auto routing, before any LLM.** Each message is routed in this order, and the generative model never claims to have done something:
+  1. Instant rules (`src/lib/intent.ts`) for navigation and theme commands.
+  2. The MiniLM search model (already loaded) as a router (`src/lib/router.ts`). It compares the message with the example phrases in `site.json` (`chat.actions`: light/dark theme, tour, back to top) and performs a confident match directly.
+  3. Only questions reach Qwen/SmolLM.
 - **Navigation first.** `src/lib/intent.ts` turns "show me Superstocks", "contact" or "take me to your notes" into a scroll-and-highlight, with no model involved. Section keywords live in `site.json` (`chat.sections`); project titles come from `projects.json`.
 - **Search.** At build time `/search-index.json` (prerendered by `src/pages/search-index.json.ts`) chunks the JSON data, the blog and the essays. A post can opt out with `index: false` in its frontmatter; the Lorem-ipsum template posts do. In the browser, MiniLM (`Xenova/all-MiniLM-L6-v2`, about 23 MB, in `src/workers/embed.worker.ts`) embeds the chunks once. The vectors are cached in the Cache API, keyed by a hash of the content, so they rebuild automatically whenever content changes. Retrieval fuses vector and keyword rankings (`src/lib/retrieval.ts`). If the embedding model can't load, search falls back to keywords.
+- **Downloads** (`src/lib/weights.ts`) stream the weight shards into WebLLM's own cache with byte-level progress, a storage check and stall retries. WebLLM then loads from cache. Its own downloader reports nothing until whole ~30 MB shards land.
+- **GPU loss.** If the GPU drops a model mid-answer (WebGPU `mapAsync … unmapped`, usually out of memory), the answer falls back to search results and Auto moves to a smaller model. That device is also capped below the failed tier on later visits.
 - **Generation.** `src/lib/models.ts` defines three WebLLM 0.2.85 tiers: Qwen2.5 1.5B, Qwen2.5 0.5B and SmolLM2 360M. Each uses its q4f16 build when the adapter supports `shader-f16`, otherwise q4f32. `src/lib/model-manager.ts` works out the device's WebGPU adapter, memory and connection, then picks a tier:
   - On an unmetered desktop it downloads that tier straight away.
   - On mobile or a metered/Save-Data connection it shows a "Load the AI (size)" button first.

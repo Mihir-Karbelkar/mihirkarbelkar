@@ -135,6 +135,14 @@ export const siteSchema = z.object({
     greeting: z.string(),
     suggestions: z.array(z.string()).max(6),
     contact: z.string(),
+    /** Site actions the chat can perform; the examples train the in-browser intent router. */
+    actions: z.array(
+      z.object({
+        id: z.enum(['theme-light', 'theme-dark', 'tour', 'top']),
+        reply: z.string(),
+        examples: z.array(z.string()).min(1),
+      }),
+    ),
     /** Questions matching these keywords scroll to the section instead of generating an answer. */
     sections: z.array(
       z.object({
