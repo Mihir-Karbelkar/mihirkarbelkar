@@ -2,6 +2,8 @@ import type {
   ChatCompletionMessageParam,
   WebWorkerMLCEngine,
 } from '@mlc-ai/web-llm';
+import { GpuLostError, isGpuLost } from './models';
+import { WEBLLM_CACHE, checkStorage, downloadWeights } from './weights';
 export const LOCAL_MODEL = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';
 type Progress = (text: string, value: number) => void;
 interface Slot {
@@ -9,7 +11,9 @@ interface Slot {
   engine: WebWorkerMLCEngine | null;
   loading: Promise<WebWorkerMLCEngine>;
   reject: (reason: Error) => void;
+  download: AbortController;
 }
+const mb = (bytes: number) => `${Math.round(bytes / 1e6)} MB`;
 const slots = new Map<string, Slot>();
 const cancelled = () => new Error('Model loading cancelled.');
 export function supportsGPU() {
@@ -35,30 +39,62 @@ export function loadModel(
   );
   let reject!: (reason: Error) => void,
     timer: ReturnType<typeof setTimeout> | undefined;
-  const abort = new Promise<never>((_, r) => {
-    reject = r;
-    timer = setTimeout(
-      () =>
-        r(
-          new Error(
-            'Model loading timed out. Retry on a faster connection or use Search.',
-          ),
-        ),
-      10 * 60 * 1000,
-    );
-  });
-  const slot: Slot = { worker, engine: null, loading: abort, reject };
+  const abort = new Promise<never>((_, r) => (reject = r));
+  const slot: Slot = {
+    worker,
+    engine: null,
+    loading: abort,
+    reject,
+    download: new AbortController(),
+  };
+  const report: Progress = (text, value) => {
+    if (slots.get(model) === slot) progress(text, value);
+  };
   slot.loading = (async () => {
     try {
-      const { CreateWebWorkerMLCEngine } = await import('@mlc-ai/web-llm');
+      const { CreateWebWorkerMLCEngine, prebuiltAppConfig } =
+        await import('@mlc-ai/web-llm');
+      const record = prebuiltAppConfig.model_list.find(
+        (m) => m.model_id === model,
+      );
+      // Stream the weights first so progress moves byte by byte (see weights.ts).
+      if (record && typeof caches !== 'undefined')
+        await Promise.race([
+          downloadWeights({
+            model: record.model,
+            cache: await caches.open(WEBLLM_CACHE),
+            signal: slot.download.signal,
+            beforeDownload: checkStorage,
+            onProgress: (loaded, total) =>
+              report(
+                `Downloading ${mb(loaded)} of ${mb(total)}`,
+                total ? (0.9 * loaded) / total : 0,
+              ),
+          }),
+          abort,
+        ]);
+      if (slots.get(model) !== slot) throw cancelled();
+      report('Preparing the model on your GPU…', 0.9);
+      // The timeout covers GPU setup only; slow downloads keep reporting progress instead.
+      timer = setTimeout(
+        () =>
+          reject(
+            new Error(
+              'Setting up the model took too long. Try a smaller model.',
+            ),
+          ),
+        3 * 60 * 1000,
+      );
       const engine = await Promise.race([
         CreateWebWorkerMLCEngine(
           worker,
           model,
           {
-            initProgressCallback: (p) => {
-              if (slots.get(model) === slot) progress(p.text, p.progress);
-            },
+            initProgressCallback: (p) =>
+              report(
+                'Preparing the model on your GPU…',
+                0.9 + 0.1 * p.progress,
+              ),
           },
           { context_window_size: 2048 },
         ),
@@ -92,6 +128,7 @@ export function unloadModel(model: string) {
   const slot = slots.get(model);
   if (!slot) return;
   slots.delete(model);
+  slot.download.abort();
   slot.reject(cancelled());
   slot.engine?.interruptGenerate();
   slot.worker.terminate();
@@ -118,15 +155,23 @@ export async function generate(
 ) {
   const engine = slots.get(model)?.engine;
   if (!engine) throw new Error('Load the on-device model first.');
-  const result = await engine.chat.completions.create({
-    messages,
-    stream: true,
-    max_tokens: maxTokens,
-    temperature: 0.3,
-  });
-  for await (const part of result) {
-    const text = part.choices[0]?.delta.content;
-    if (text) onToken(text);
+  try {
+    const result = await engine.chat.completions.create({
+      messages,
+      stream: true,
+      max_tokens: maxTokens,
+      temperature: 0.3,
+    });
+    for await (const part of result) {
+      const text = part.choices[0]?.delta.content;
+      if (text) onToken(text);
+    }
+  } catch (e) {
+    // WebLLM unloads itself when the GPU device is lost (usually out of
+    // memory), so this engine is unusable: drop it and tell the caller.
+    if (!isGpuLost(e)) throw e;
+    unloadModel(model);
+    throw new GpuLostError();
   }
 }
 // Single-model API used by the /lab/guide playground.

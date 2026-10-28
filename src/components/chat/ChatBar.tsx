@@ -15,7 +15,7 @@ import { systemPrompt, type Source } from '../../lib/prompt';
 import { routeIntent, type IntentContext } from '../../lib/intent';
 import { readTokens } from '../../lib/client-stream';
 import { errorMessage } from '../../lib/errors';
-import { TIERS } from '../../lib/models';
+import { GpuLostError, TIERS } from '../../lib/models';
 import type { ChatMessage } from '../../lib/contracts';
 /** Hosted Groq/Inception answers are used only on devices without WebGPU, and only if configured. */
 const HOSTED_FALLBACK = true;
@@ -240,6 +240,16 @@ export default function ChatBar(props: ChatBarProps) {
       update();
     } catch (e) {
       if (current !== run.current) return;
+      const lostTier = TIERS.find((t) => t.label === reply.model)?.id;
+      if (e instanceof GpuLostError && reply.via === 'local' && lostTier) {
+        // Show what search found and move Auto down a tier for next time.
+        manager.lost(lostTier);
+        reply.via = 'search';
+        reply.model = undefined;
+        reply.content = `${TIERS.find((t) => t.id === lostTier)!.label} ran out of GPU memory on this device, so I’m switching to a smaller model. Here’s what I found meanwhile:`;
+        update();
+        return;
+      }
       reply.content ||= errorMessage(
         e,
         'Something went wrong. Please try again.',

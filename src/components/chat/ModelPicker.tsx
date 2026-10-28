@@ -37,7 +37,7 @@ const describe = (s: TierState) =>
       : s.status === 'unsupported'
         ? 'Needs WebGPU'
         : s.status === 'error'
-          ? 'Failed to load'
+          ? `${s.text || 'Failed to load'} Tap to retry`
           : s.cached
             ? 'Downloaded'
             : 'Not downloaded';

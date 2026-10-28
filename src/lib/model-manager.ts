@@ -37,6 +37,14 @@ export interface ManagerState {
   tiers: Record<TierId, TierState>;
 }
 const CHOICE_KEY = 'portfolio-model-choice';
+/** The largest tier this device has run out of GPU memory on. */
+const LOST_KEY = 'portfolio-model-lost';
+/** Caps a pick below a tier that previously crashed on this device. */
+export function capTier(pick: TierId | null, lost: TierId | null) {
+  if (!pick || !lost) return pick;
+  const order = (id: TierId) => TIERS.findIndex((t) => t.id === id);
+  return order(pick) <= order(lost) ? fallbackTier(lost) : pick;
+}
 const blank = (): Record<TierId, TierState> =>
   Object.fromEntries(
     TIERS.map((t) => [
@@ -93,12 +101,17 @@ export class ModelManager {
     if (this.started) return;
     this.started = true;
     const capability = await this.deps.detect();
-    const preferred = pickTier(capability);
-    let choice: TierId | 'auto' = 'auto';
+    let choice: TierId | 'auto' = 'auto',
+      lost: TierId | null = null;
+    const isTier = (v: string | null | undefined): v is TierId =>
+      !!v && TIERS.some((t) => t.id === v);
     try {
       const saved = this.deps.storage?.getItem(CHOICE_KEY);
-      if (saved && TIERS.some((t) => t.id === saved)) choice = saved as TierId;
+      if (isTier(saved)) choice = saved;
+      const crashed = this.deps.storage?.getItem(LOST_KEY);
+      if (isTier(crashed)) lost = crashed;
     } catch {}
+    const preferred = capTier(pickTier(capability), lost);
     const tiers = blank();
     await Promise.all(
       TIERS.map(async (t) => {
@@ -182,6 +195,26 @@ export class ModelManager {
         .then(() => this.setTier(next, { cached: true }))
         .catch(() => {});
     });
+  }
+  /**
+   * The GPU dropped this tier mid-answer (usually out of memory). Remember
+   * it so this device starts smaller next time, and in Auto load the next
+   * smaller tier now.
+   */
+  lost(id: TierId) {
+    try {
+      this.deps.storage?.setItem(LOST_KEY, id);
+    } catch {}
+    const next = fallbackTier(id);
+    this.setTier(id, {
+      status: 'error',
+      text: 'Ran out of GPU memory on this device.',
+    });
+    this.set({
+      preferred: capTier(this.state.preferred, id),
+      choice: this.state.choice === id ? 'auto' : this.state.choice,
+    });
+    if (this.state.choice === 'auto' && next) void this.use(next);
   }
   cancel(id: TierId) {
     if (this.state.tiers[id].status !== 'loading') return;

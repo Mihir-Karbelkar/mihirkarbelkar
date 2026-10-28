@@ -83,3 +83,19 @@ export const formatSize = (mb: number) =>
   mb >= 1000
     ? `${(mb / 1000).toFixed(1)} GB`
     : `${Math.round(mb / 10) * 10} MB`;
+/** WebGPU errors that mean the device was lost (WebLLM then unloads the model). */
+export function isGpuLost(e: unknown): boolean {
+  // Errors from the worker can arrive as Errors, plain objects or strings.
+  const err = e as { name?: unknown; message?: unknown } | null;
+  const text =
+    typeof e === 'string' ? e : `${err?.name ?? ''} ${err?.message ?? ''}`;
+  return /DeviceLost|device (was |is )?lost|mapAsync|unmapped before|GPUBuffer|Instance dropped|Model not loaded|disposed/i.test(
+    text,
+  );
+}
+export class GpuLostError extends Error {
+  name = 'GpuLostError';
+  constructor() {
+    super('The on-device model ran out of GPU memory.');
+  }
+}

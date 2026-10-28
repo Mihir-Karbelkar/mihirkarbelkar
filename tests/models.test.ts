@@ -143,3 +143,42 @@ test('choosing a model loads it and frees the previous one', async () => {
   assert.equal(m.state.active, 'smollm-360m');
   assert.ok(calls.includes('unload Qwen2.5-1.5B-Instruct-q4f16_1-MLC'));
 });
+import { capTier } from '../src/lib/model-manager.ts';
+import { isGpuLost } from '../src/lib/models.ts';
+test('GPU loss steps down now and caps the tier on later visits', async () => {
+  const store = new Map<string, string>();
+  const storage = {
+    getItem: (k: string) => store.get(k) ?? null,
+    setItem: (k: string, v: string) => void store.set(k, v),
+  };
+  const a = fakeDeps(desktop);
+  const m = new ModelManager({ ...a.deps, storage });
+  await m.init();
+  await settle();
+  assert.equal(m.state.active, 'qwen-1.5b');
+  m.lost('qwen-1.5b');
+  await settle();
+  assert.equal(m.state.tiers['qwen-1.5b'].status, 'error');
+  assert.equal(m.state.active, 'qwen-0.5b');
+  const b = fakeDeps(desktop);
+  const n = new ModelManager({ ...b.deps, storage });
+  await n.init();
+  await settle();
+  assert.equal(n.state.preferred, 'qwen-0.5b');
+  assert.deepEqual(b.calls, ['load Qwen2.5-0.5B-Instruct-q4f16_1-MLC']);
+  assert.equal(capTier('qwen-0.5b', 'qwen-1.5b'), 'qwen-0.5b');
+  assert.equal(capTier('qwen-0.5b', 'qwen-0.5b'), 'smollm-360m');
+  assert.equal(capTier('smollm-360m', 'smollm-360m'), null);
+});
+test('recognises WebGPU device-loss errors', () => {
+  assert.ok(
+    isGpuLost(
+      new DOMException(
+        "Failed to execute 'mapAsync' on 'GPUBuffer': Buffer was unmapped before mapping was resolved.",
+        'AbortError',
+      ),
+    ),
+  );
+  assert.ok(isGpuLost(new Error('Device was lost.')));
+  assert.equal(isGpuLost(new Error('Network error')), false);
+});
