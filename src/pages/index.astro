@@ -79,7 +79,10 @@ const contactHref = profile.email
     </div>
     <div class="work-grid">
       {featured.map((p, i) => (
-        <article class:list={['work-card', `work-${i}`]}>
+        <article
+          id={`project-${p.slug}`}
+          class:list={['work-card', `work-${i}`]}
+        >
           <ProjectArtwork artwork={p.artwork} />
           <div class="work-card-copy">
             <p class="work-category">{p.category}</p>
@@ -104,7 +107,7 @@ const contactHref = profile.email
     </div>
     <div id="experience" class="archive-list">
       {archive.map((p) => (
-        <article>
+        <article id={`project-${p.slug}`}>
           <div>
             <p class="work-category">{p.category}</p>
             <h3>

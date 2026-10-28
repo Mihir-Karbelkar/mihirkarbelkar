@@ -48,6 +48,11 @@ import { profile, site } from '../../data/portfolio';
     const theme =
       document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = theme;
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) =>
+        m.setAttribute('content', theme === 'dark' ? '#1c1727' : '#fbf9f7'),
+      );
     try {
       localStorage.setItem('portfolio-theme', theme);
     } catch {}

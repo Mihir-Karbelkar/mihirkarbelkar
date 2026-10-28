@@ -31,7 +31,16 @@ const canonical = new URL(Astro.url.pathname, 'https://mihirkarbelkar.com');
   type="font/woff"
   crossorigin
 />
-<meta name="theme-color" content="#F8F6F0" />
+<meta
+  name="theme-color"
+  content="#fbf9f7"
+  media="(prefers-color-scheme: light)"
+/>
+<meta
+  name="theme-color"
+  content="#1c1727"
+  media="(prefers-color-scheme: dark)"
+/>
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
@@ -48,12 +57,17 @@ const canonical = new URL(Astro.url.pathname, 'https://mihirkarbelkar.com');
   content="https://mihirkarbelkar.com/social-card.png"
 />
 <script is:inline>
+  // A saved choice wins; otherwise follow the system setting.
+  let saved = null;
   try {
-    document.documentElement.dataset.theme =
-      localStorage.getItem('portfolio-theme') === 'dark' ? 'dark' : 'light';
-  } catch {
-    document.documentElement.dataset.theme = 'light';
-  }
+    saved = localStorage.getItem('portfolio-theme');
+  } catch {}
+  document.documentElement.dataset.theme =
+    saved === 'dark' || saved === 'light'
+      ? saved
+      : matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
 </script>
 <script
   type="application/ld+json"

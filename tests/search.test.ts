@@ -46,7 +46,10 @@ test('keyword-only hybrid search keeps the existing behaviour', () => {
   const chunks = buildChunks(siteDocs());
   assert.equal(hybridSearch('robot fleet scale', chunks)[0].id, 'robot-fleet');
   assert.deepEqual(hybridSearch('the and of', chunks), []);
-  assert.equal(keywordScores('', chunks).every((s) => s === 0), true);
+  assert.equal(
+    keywordScores('', chunks).every((s) => s === 0),
+    true,
+  );
 });
 test('vector ranking contributes and results are grouped per document', () => {
   const chunks = buildChunks(siteDocs());

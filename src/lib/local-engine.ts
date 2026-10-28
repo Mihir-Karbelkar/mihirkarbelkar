@@ -21,7 +21,10 @@ export function loadModel(
   progress: Progress,
 ): Promise<WebWorkerMLCEngine> {
   const existing = slots.get(model);
-  if (existing) return existing.engine ? Promise.resolve(existing.engine) : existing.loading;
+  if (existing)
+    return existing.engine
+      ? Promise.resolve(existing.engine)
+      : existing.loading;
   if (!supportsGPU())
     return Promise.reject(
       new Error('WebGPU is unavailable in this browser. Search still works.'),
@@ -127,7 +130,8 @@ export async function generate(
   }
 }
 // Single-model API used by the /lab/guide playground.
-export const loadLocal = (progress: Progress) => loadModel(LOCAL_MODEL, progress);
+export const loadLocal = (progress: Progress) =>
+  loadModel(LOCAL_MODEL, progress);
 export const cancelLocal = () => unloadModel(LOCAL_MODEL);
 export const stopLocal = () => stopModel(LOCAL_MODEL);
 export const clearLocalCache = () => deleteModel(LOCAL_MODEL);

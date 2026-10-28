@@ -1,5 +1,5 @@
 import type { SearchManifest } from './corpus';
-import type { Source } from './content';
+import type { Source } from './prompt';
 import { hybridSearch } from './retrieval';
 import type { EmbedRequest, EmbedResponse } from '../workers/embed.worker';
 export type Progress = (text: string, progress: number) => void;
@@ -17,9 +17,12 @@ export function loadManifest(): Promise<SearchManifest> {
   return manifest;
 }
 function embed(texts: string[], progress?: Progress): Promise<Float32Array[]> {
-  worker ??= new Worker(new URL('../workers/embed.worker.ts', import.meta.url), {
-    type: 'module',
-  });
+  worker ??= new Worker(
+    new URL('../workers/embed.worker.ts', import.meta.url),
+    {
+      type: 'module',
+    },
+  );
   const id = ++seq,
     w = worker;
   return new Promise((resolve, reject) => {

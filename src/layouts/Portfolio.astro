@@ -2,6 +2,15 @@
 import Head from '../components/portfolio/Head.astro';
 import Nav from '../components/portfolio/Nav.astro';
 import Footer from '../components/portfolio/Footer.astro';
+import ChatBar from '../components/chat/ChatBar';
+import { projects, site } from '../data/portfolio';
+const chat = {
+  greeting: site.chat.greeting,
+  placeholder: site.chat.placeholder,
+  suggestions: site.chat.suggestions,
+  sections: site.chat.sections,
+  projects: projects.map(({ slug, title }) => ({ slug, title })),
+};
 interface Props {
   title?: string;
   description?: string;
@@ -22,5 +31,6 @@ interface Props {
       <slot />
     </main>
     <Footer />
+    <ChatBar client:only="react" {...chat} />
   </body>
 </html>

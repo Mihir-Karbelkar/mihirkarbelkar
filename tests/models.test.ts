@@ -35,7 +35,11 @@ test('pickTier chooses by capability', () => {
     [{ deviceMemory: 2 }, 'smollm-360m'],
   ];
   for (const [patch, want] of cases)
-    assert.equal(pickTier({ ...desktop, ...patch }), want, JSON.stringify(patch));
+    assert.equal(
+      pickTier({ ...desktop, ...patch }),
+      want,
+      JSON.stringify(patch),
+    );
 });
 test('fallbacks, auto download and auto routing', () => {
   assert.equal(fallbackTier('qwen-1.5b'), 'qwen-0.5b');
@@ -43,14 +47,23 @@ test('fallbacks, auto download and auto routing', () => {
   assert.equal(autoDownload(desktop), true);
   assert.equal(autoDownload({ ...desktop, metered: true }), false);
   assert.equal(autoDownload({ ...desktop, mobile: true }), false);
-  assert.equal(route({ 'qwen-0.5b': 'ready', 'qwen-1.5b': 'loading' }, 'auto'), 'qwen-0.5b');
-  assert.equal(route({ 'qwen-0.5b': 'ready', 'qwen-1.5b': 'ready' }, 'auto'), 'qwen-1.5b');
+  assert.equal(
+    route({ 'qwen-0.5b': 'ready', 'qwen-1.5b': 'loading' }, 'auto'),
+    'qwen-0.5b',
+  );
+  assert.equal(
+    route({ 'qwen-0.5b': 'ready', 'qwen-1.5b': 'ready' }, 'auto'),
+    'qwen-1.5b',
+  );
   assert.equal(route({ 'qwen-0.5b': 'ready' }, 'qwen-1.5b'), null);
   assert.equal(route({}, 'auto'), null);
 });
 
 import { ModelManager, type EngineDeps } from '../src/lib/model-manager.ts';
-function fakeDeps(cap: Capability, opts: { fail?: string[]; cached?: string[] } = {}) {
+function fakeDeps(
+  cap: Capability,
+  opts: { fail?: string[]; cached?: string[] } = {},
+) {
   const calls: string[] = [],
     idle: (() => void)[] = [];
   const deps: EngineDeps = {
@@ -80,7 +93,12 @@ test('desktop downloads the preferred model, then prefetches the fallback when i
   assert.equal(m.state.tiers['qwen-0.5b'].cached, true);
 });
 test('mobile waits for consent unless the model is already cached', async () => {
-  const mobile = { ...desktop, mobile: true, deviceMemory: 4, shaderF16: false };
+  const mobile = {
+    ...desktop,
+    mobile: true,
+    deviceMemory: 4,
+    shaderF16: false,
+  };
   const a = fakeDeps(mobile);
   const m = new ModelManager(a.deps);
   await m.init();
@@ -110,7 +128,9 @@ test('auto steps down when a model fails; no WebGPU marks every tier unsupported
   const n = new ModelManager(b.deps);
   await n.init();
   assert.equal(n.state.active, null);
-  assert.ok(Object.values(n.state.tiers).every((t) => t.status === 'unsupported'));
+  assert.ok(
+    Object.values(n.state.tiers).every((t) => t.status === 'unsupported'),
+  );
   assert.deepEqual(b.calls, []);
 });
 test('choosing a model loads it and frees the previous one', async () => {

@@ -1,4 +1,6 @@
 import { sources } from './content.ts';
+import { EMBED_MODEL } from './text.ts';
+export { EMBED_MODEL };
 export type DocKind =
   | 'project'
   | 'about'
@@ -26,7 +28,6 @@ export interface SearchManifest {
   model: string;
   chunks: Chunk[];
 }
-export const EMBED_MODEL = 'Xenova/all-MiniLM-L6-v2';
 /** FNV-1a; a cache key for embeddings, not a security hash. */
 export function hashString(s: string): string {
   let h = 0x811c9dc5;

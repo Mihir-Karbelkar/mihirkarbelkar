@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './lab.css';
+@import './chat.css';
 @font-face {
   font-family: Atkinson;
   src: url('/fonts/atkinson-regular.woff') format('woff');
@@ -13,19 +14,25 @@
   font-display: swap;
 }
 :root {
-  --bg: #f8f6f0;
-  --paper: #fffdf8;
+  /* Light: white paper, sakura reds */
+  --bg: #fbf9f7;
+  --paper: #ffffff;
   --surface: var(--paper);
-  --ink: #29362f;
-  --muted: #58665c;
-  --line: #d5d8ce;
-  --sage: #dfe8db;
+  --wash: #f6f1ee;
+  --ink: #2a2530;
+  --muted: #6b6472;
+  --line: #ece4e8;
+  --sage: #ebefe7;
   --mint: var(--sage);
-  --lavender: #e9e3f2;
-  --blue: #dfeaf0;
-  --peach: #f1e2d6;
-  --primary: #334b3e;
-  --on-primary: #fffdf8;
+  --lavender: #efe8f5;
+  --blue: #e8eef5;
+  --peach: #f8e7e4;
+  --accent: #e8a5b5;
+  --primary: #a63d52;
+  --on-primary: #ffffff;
+  --blossom: #ffffff;
+  --petal: #e3778d;
+  --branch: #4a3a40;
   --font-body: Atkinson, Arial, sans-serif;
   --font-heading: Georgia, 'Times New Roman', serif;
   --mono: var(--font-body);
@@ -36,18 +43,24 @@
   background: var(--bg);
 }
 :root[data-theme='dark'] {
-  --bg: #202822;
-  --paper: #29332c;
-  --ink: #f0eee5;
-  --muted: #bfc8bd;
-  --line: #4b584e;
-  --sage: #354a39;
+  /* Dark: deep plum night, lavender pastels */
+  --bg: #1c1727;
+  --paper: #262033;
+  --wash: #211b2e;
+  --ink: #efe9f6;
+  --muted: #b9b0c9;
+  --line: #3d3550;
+  --sage: #2f3448;
   --mint: var(--sage);
-  --lavender: #443c51;
-  --blue: #334952;
-  --peach: #514138;
-  --primary: #dde6d6;
-  --on-primary: #25382a;
+  --lavender: #3a3150;
+  --blue: #2c3650;
+  --peach: #46333f;
+  --accent: #c9b8e8;
+  --primary: #d8c8f2;
+  --on-primary: #221b30;
+  --blossom: #f2c6dc;
+  --petal: #d9c6f0;
+  --branch: #6c5a84;
   color-scheme: dark;
 }
 * {
@@ -351,7 +364,7 @@ button:focus-visible {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 8px;
-  box-shadow: 0 5px 15px #29362f08;
+  box-shadow: 0 5px 15px color-mix(in srgb, var(--ink) 4%, transparent);
 }
 .mobile-nav a {
   display: flex;
@@ -422,13 +435,10 @@ button:focus-visible {
 }
 .desk {
   padding: 24px 25px 25px;
-  background: #f2f0e8;
+  background: var(--wash);
   border: 1px solid var(--line);
   border-radius: 13px;
   min-width: 0;
-}
-[data-theme='dark'] .desk {
-  background: var(--paper);
 }
 .desk-heading {
   padding: 0 2px 18px;
@@ -455,7 +465,7 @@ button:focus-visible {
   gap: 14px;
   min-height: 107px;
   padding: 10px 18px 10px 10px;
-  border: 1px solid #29362f0b;
+  border: 1px solid color-mix(in srgb, var(--ink) 5%, transparent);
   border-radius: 10px;
   transition: border-color 0.18s;
 }
@@ -556,9 +566,9 @@ button:focus-visible {
   height: auto;
   max-height: 176px;
   object-fit: contain;
-  border: 1px solid #29362f16;
+  border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
   border-radius: 5px;
-  box-shadow: 0 4px 12px #29362f08;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ink) 4%, transparent);
 }
 .work-art figcaption {
   position: absolute;
@@ -685,12 +695,9 @@ button:focus-visible {
   background: var(--sage);
 }
 .notes-section {
-  background: #f0ede4;
+  background: var(--wash);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-}
-[data-theme='dark'] .notes-section {
-  background: #252e27;
 }
 .notes-grid {
   display: grid;
@@ -699,7 +706,7 @@ button:focus-visible {
 }
 .note-card {
   border-radius: 12px;
-  border: 1px solid #29362f12;
+  border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
   padding: 30px 32px 25px;
   display: flex;
   flex-direction: column;

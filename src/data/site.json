@@ -12,16 +12,40 @@
     "title": "Mihir Karbelkar — Software, models & notes"
   },
   "nav": [
-    { "label": "Work", "href": "/#work" },
-    { "label": "Notes", "href": "/#notes" },
-    { "label": "About", "href": "/#about" },
-    { "label": "Say hello", "href": "/#contact" }
+    {
+      "label": "Work",
+      "href": "/#work"
+    },
+    {
+      "label": "Notes",
+      "href": "/#notes"
+    },
+    {
+      "label": "About",
+      "href": "/#about"
+    },
+    {
+      "label": "Say hello",
+      "href": "/#contact"
+    }
   ],
   "footer": [
-    { "label": "Work", "href": "/#work" },
-    { "label": "Notes", "href": "/#notes" },
-    { "label": "Writing archive", "href": "/blog" },
-    { "label": "The Brain", "href": "/lab/brain" }
+    {
+      "label": "Work",
+      "href": "/#work"
+    },
+    {
+      "label": "Notes",
+      "href": "/#notes"
+    },
+    {
+      "label": "Writing archive",
+      "href": "/blog"
+    },
+    {
+      "label": "The Brain",
+      "href": "/lab/brain"
+    }
   ],
   "home": {
     "eyebrow": "Engineering / AI / Things I’m curious about",
@@ -123,12 +147,91 @@
       "What’s the tech stack?",
       "Show me around"
     ],
-    "contact": "Tell me what you’re working on. I’d like to hear about it. Use the verified links in the contact section. Rates and availability are not published."
+    "contact": "Tell me what you’re working on. I’d like to hear about it. Use the verified links in the contact section. Rates and availability are not published.",
+    "sections": [
+      {
+        "target": "#work",
+        "label": "Selected work",
+        "keywords": [
+          "work",
+          "projects",
+          "project",
+          "portfolio",
+          "case studies"
+        ]
+      },
+      {
+        "target": "#experience",
+        "label": "Interfaces & platforms",
+        "keywords": [
+          "experience",
+          "platforms",
+          "archive",
+          "background work"
+        ]
+      },
+      {
+        "target": "#notes",
+        "label": "Notes",
+        "keywords": [
+          "notes",
+          "writing",
+          "maths",
+          "math",
+          "blog"
+        ]
+      },
+      {
+        "target": "#about",
+        "label": "About",
+        "keywords": [
+          "about",
+          "about you",
+          "bio",
+          "yourself",
+          "who are you"
+        ]
+      },
+      {
+        "target": "#skills",
+        "label": "Tools",
+        "keywords": [
+          "skills",
+          "tools",
+          "stack",
+          "tech stack"
+        ]
+      },
+      {
+        "target": "#contact",
+        "label": "Say hello",
+        "keywords": [
+          "contact",
+          "hire",
+          "email",
+          "say hello",
+          "get in touch",
+          "reach you"
+        ]
+      }
+    ]
   },
   "tour": [
-    { "target": "#work", "say": "Here’s the work I’m proudest of." },
-    { "target": "#notes", "say": "Notes — where I work things out." },
-    { "target": "#about", "say": "A bit about me." },
-    { "target": "#contact", "say": "And this is where you say hello!" }
+    {
+      "target": "#work",
+      "say": "Here’s the work I’m proudest of."
+    },
+    {
+      "target": "#notes",
+      "say": "Notes — where I work things out."
+    },
+    {
+      "target": "#about",
+      "say": "A bit about me."
+    },
+    {
+      "target": "#contact",
+      "say": "And this is where you say hello!"
+    }
   ]
 }

@@ -1,5 +1,5 @@
 import { pipeline, env } from '@huggingface/transformers';
-import { EMBED_MODEL } from '../lib/corpus';
+import { EMBED_MODEL } from '../lib/text';
 env.allowLocalModels = false;
 let extractor: any;
 export type EmbedRequest = { id: number; texts: string[] };
@@ -9,7 +9,9 @@ export type EmbedResponse =
   | { id: number; type: 'error'; text: string };
 const post = (m: EmbedResponse, transfer: Transferable[] = []) =>
   (self as unknown as Worker).postMessage(m, transfer);
-self.onmessage = async ({ data: { id, texts } }: MessageEvent<EmbedRequest>) => {
+self.onmessage = async ({
+  data: { id, texts },
+}: MessageEvent<EmbedRequest>) => {
   try {
     extractor ??= await pipeline('feature-extraction', EMBED_MODEL, {
       dtype: 'q8',

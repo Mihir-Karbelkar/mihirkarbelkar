@@ -1,4 +1,5 @@
-import { stopWords, terms, type Source } from './content.ts';
+import { stopWords, terms } from './text.ts';
+import type { Source } from './prompt.ts';
 import type { Chunk } from './corpus.ts';
 /** Cosine similarity below this is treated as unrelated (MiniLM, normalized vectors). */
 export const MIN_SIMILARITY = 0.3;
@@ -71,10 +72,12 @@ export function hybridSearch(
       if (!entry) byDoc.set(c.doc, { score, chunks: [c] });
       else if (entry.chunks.length < 2) entry.chunks.push(c);
     });
-  return [...byDoc.values()].slice(0, limit).map(({ chunks: [first, ...rest] }) => ({
-    id: first.doc,
-    title: first.title,
-    href: first.href,
-    text: [first, ...rest].map((c) => c.text).join(' … '),
-  }));
+  return [...byDoc.values()]
+    .slice(0, limit)
+    .map(({ chunks: [first, ...rest] }) => ({
+      id: first.doc,
+      title: first.title,
+      href: first.href,
+      text: [first, ...rest].map((c) => c.text).join(' … '),
+    }));
 }

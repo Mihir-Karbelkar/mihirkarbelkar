@@ -135,6 +135,14 @@ export const siteSchema = z.object({
     greeting: z.string(),
     suggestions: z.array(z.string()).max(6),
     contact: z.string(),
+    /** Questions matching these keywords scroll to the section instead of generating an answer. */
+    sections: z.array(
+      z.object({
+        target: z.string().startsWith('#'),
+        label: z.string(),
+        keywords: z.array(z.string()).min(1),
+      }),
+    ),
   }),
   tour: z.array(
     z.object({ target: z.string().startsWith('#'), say: z.string() }),

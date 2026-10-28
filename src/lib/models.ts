@@ -80,4 +80,6 @@ export function route(
   return TIERS.find((t) => statuses[t.id] === 'ready')?.id ?? null;
 }
 export const formatSize = (mb: number) =>
-  mb >= 1000 ? `${(mb / 1000).toFixed(1)} GB` : `${Math.round(mb / 10) * 10} MB`;
+  mb >= 1000
+    ? `${(mb / 1000).toFixed(1)} GB`
+    : `${Math.round(mb / 10) * 10} MB`;
