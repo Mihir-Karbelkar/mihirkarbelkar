@@ -162,7 +162,9 @@ export default function ChatBar(props: ChatBarProps) {
     if (intent.kind === 'tour') {
       setPanel(false);
       setExpanded(false);
-      dispatchEvent(new CustomEvent('portfolio:tour'));
+      if (document.querySelector('.mascot'))
+        dispatchEvent(new CustomEvent('portfolio:tour'));
+      else location.href = '/#tour';
       return;
     }
     const current = ++run.current,

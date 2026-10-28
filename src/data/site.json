@@ -140,7 +140,7 @@
   },
   "chat": {
     "placeholder": "Ask me anything…",
-    "greeting": "Hi! I’m a small AI running in your browser. Ask about my projects, tools, or this site.",
+    "greeting": "Ask about my work or this site. Answers come only from what’s published here, generated in your browser when your device supports it.",
     "suggestions": [
       "Show me Superstocks",
       "How did the robot fleet scale?",
@@ -219,19 +219,19 @@
   "tour": [
     {
       "target": "#work",
-      "say": "Here’s the work I’m proudest of."
+      "say": "Selected work: start here."
     },
     {
       "target": "#notes",
-      "say": "Notes — where I work things out."
+      "say": "Notes, where I work things out."
     },
     {
       "target": "#about",
-      "say": "A bit about me."
+      "say": "A little about me."
     },
     {
       "target": "#contact",
-      "say": "And this is where you say hello!"
+      "say": "And this is where you say hello."
     }
   ]
 }

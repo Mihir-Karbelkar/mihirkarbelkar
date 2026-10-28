@@ -142,3 +142,218 @@ html.js-reveal [data-reveal] {
     transform: none;
   }
 }
+/* Mascot and the "computer use" tour (Mascot.tsx). */
+.mascot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 59;
+  width: 64px;
+  pointer-events: none;
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  will-change: transform;
+}
+.mascot:not(.is-free) {
+  top: auto;
+  left: 22px;
+  bottom: 18px;
+}
+.mascot.is-free {
+  z-index: 70;
+}
+.mascot.is-away {
+  opacity: 0;
+  transition-duration: 0.18s !important;
+}
+.mascot svg {
+  display: block;
+  overflow: visible;
+  transform-origin: 50% 90%;
+  transition: transform 0.25s ease;
+}
+.mascot.is-flipped svg {
+  transform: scaleX(-1);
+}
+.mascot.is-idle svg {
+  animation: mascot-bob 3.2s ease-in-out infinite;
+}
+.mascot.is-fly svg {
+  transform: rotate(-14deg) translateY(-4px);
+}
+.mascot.is-flipped.is-fly svg {
+  transform: scaleX(-1) rotate(-14deg) translateY(-4px);
+}
+.m-skin,
+.m-arm circle {
+  fill: #ffe4d6;
+}
+.m-arm path {
+  fill: none;
+  stroke: #ffe4d6;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+}
+.m-arm {
+  transform-origin: 40px 45px;
+  transform: rotate(38deg);
+  transition: transform 0.2s ease;
+}
+.mascot.is-carry .m-arm,
+.mascot.is-fly .m-arm {
+  transform: none;
+}
+.m-hair,
+.m-legs,
+.m-belt {
+  fill: #3a2c4c;
+}
+.m-body {
+  fill: #cdbcf0;
+}
+.m-scarf,
+.m-scarf-tail {
+  fill: #e3778d;
+}
+.m-scarf-tail {
+  transform-origin: 24px 44px;
+  animation: mascot-scarf 1.4s ease-in-out infinite alternate;
+}
+.mascot.is-fly .m-scarf-tail {
+  animation-duration: 0.25s;
+}
+.mascot.is-fly .m-legs {
+  transform: translate(-3px, -3px) rotate(-8deg);
+  transform-origin: 32px 56px;
+}
+.m-eyes {
+  fill: #2a2030;
+  transform-origin: 32px 29px;
+  animation: mascot-blink 5.5s infinite;
+}
+.m-glint {
+  fill: #fff;
+}
+.m-cheek {
+  fill: #f4a3b4;
+  opacity: 0.75;
+}
+.m-mouth {
+  fill: none;
+  stroke: #2a2030;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.m-shadow {
+  fill: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+.mascot.is-free .m-shadow {
+  opacity: 0;
+}
+.mascot-say {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 32px;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 14px 4px;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 12%, transparent);
+  font-size: 0.86rem;
+  white-space: nowrap;
+  animation: chat-rise 0.25s ease both;
+}
+.mascot.is-flipped .mascot-say {
+  left: auto;
+  right: 32px;
+  border-radius: 14px 14px 4px 14px;
+}
+html.is-touring,
+html.is-touring * {
+  cursor: none !important;
+}
+.fake-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 71;
+  pointer-events: none;
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.25));
+}
+.mascot-flash,
+.tour-ripple {
+  position: fixed;
+  z-index: 72;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.mascot-flash {
+  background: radial-gradient(
+    circle,
+    #fff 0 30%,
+    color-mix(in srgb, var(--accent) 80%, transparent) 60%,
+    transparent 70%
+  );
+  animation: mascot-flash 0.45s ease-out both;
+}
+.tour-ripple {
+  border: 2px solid var(--primary);
+  animation: tour-ripple 0.6s ease-out both;
+}
+@keyframes mascot-bob {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes mascot-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+@keyframes mascot-scarf {
+  to {
+    transform: rotate(-12deg);
+  }
+}
+@keyframes mascot-flash {
+  from {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  to {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
+@keyframes tour-ripple {
+  from {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@media (max-width: 900px) {
+  .mascot:not(.is-free):not(:has(.mascot-say)) {
+    display: none;
+  }
+}
+@media print {
+  .mascot {
+    display: none;
+  }
+}

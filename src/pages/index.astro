@@ -4,8 +4,10 @@ import Icon from '../components/ui/Icon.astro';
 import InterestArt from '../components/portfolio/InterestArt.astro';
 import ProjectArtwork from '../components/portfolio/ProjectArtwork.astro';
 import Sakura from '../components/fx/Sakura.astro';
+import Mascot from '../components/fx/Mascot';
 import {
   profile,
+  site,
   home,
   projects,
   featuredSlugs,
@@ -228,4 +230,5 @@ const contactHref = profile.email
       )}
     </div>
   </section>
+  <Mascot client:idle steps={site.tour} />
 </Layout>
