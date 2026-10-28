@@ -28,19 +28,21 @@ export const sources: Source[] = [
     id: 'services',
     title: 'How I work',
     href: '/#about',
-    text: services.map((s) => s.slice(1).join(': ')).join('\n'),
+    text: services.map((s) => `${s.title}: ${s.body}`).join('\n'),
   },
   {
     id: 'skills',
     title: 'Technology stack',
     href: '/#skills',
-    text: skills.map((s) => s.join(': ')).join('\n'),
+    text: skills.map((s) => `${s.label}: ${s.items}`).join('\n'),
   },
   {
     id: 'experience',
     title: 'Experience',
     href: '/#experience',
-    text: experience.map((s) => s.join(': ')).join('\n'),
+    text: experience
+      .map((s) => `${s.area}: ${s.title}: ${s.body}`)
+      .join('\n'),
   },
   {
     id: 'contact',

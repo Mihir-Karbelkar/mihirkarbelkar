@@ -6,12 +6,12 @@ import ProjectArtwork from '../components/portfolio/ProjectArtwork.astro';
 import {
   profile,
   home,
-  interests,
   projects,
   featuredSlugs,
   archiveSlugs,
   notes,
 } from '../data/portfolio';
+const { desk, work, archive: archiveCopy, about, contact } = home;
 export const prerender = true;
 const featured = featuredSlugs.map((slug) =>
   projects.find((p) => p.slug === slug)!,
@@ -36,22 +36,22 @@ const contactHref = profile.email
       <p class="hero-description">{home.body}</p>
       <div class="hero-actions">
         <a class="button primary" href="#work">
-          See my work
+          {home.primaryAction}
           <Icon name="down" />
         </a>
         <a class="button text-button" href={contactHref}>
-          Get in touch
+          {home.contactAction}
         </a>
       </div>
       <p class="hero-supporting">{home.supporting}</p>
     </div>
     <aside class="desk" aria-labelledby="desk-title">
       <div class="desk-heading">
-        <h2 id="desk-title">On my desk</h2>
-        <p>A few things I keep coming back to.</p>
+        <h2 id="desk-title">{desk.heading}</h2>
+        <p>{desk.body}</p>
       </div>
       <div class="interest-tiles">
-        {interests.map((i) => (
+        {desk.items.map((i) => (
           <a class:list={['interest-tile', i.tone]} href={i.href}>
             <InterestArt kind={i.art} />
             <span class="tile-copy">
@@ -72,18 +72,15 @@ const contactHref = profile.email
     <span id="projects" class="anchor-alias" aria-hidden="true"></span>
     <div class="section-heading">
       <div>
-        <p class="eyebrow">Selected work</p>
-        <h2 id="work-title">{home.workHeading}</h2>
+        <p class="eyebrow">{work.eyebrow}</p>
+        <h2 id="work-title">{work.heading}</h2>
       </div>
-      <p>
-        Research tools, model experiments,
-        <br class="desktop-only" /> and a few things I wanted to try.
-      </p>
+      <p>{work.body}</p>
     </div>
     <div class="work-grid">
       {featured.map((p, i) => (
         <article class:list={['work-card', `work-${i}`]}>
-          <ProjectArtwork slug={p.slug} />
+          <ProjectArtwork artwork={p.artwork} />
           <div class="work-card-copy">
             <p class="work-category">{p.category}</p>
             <h3>
@@ -91,7 +88,7 @@ const contactHref = profile.email
             </h3>
             <p>{p.summary}</p>
             <a class="read-link" href={`/projects/${p.slug}`}>
-              Read about the work
+              {work.readMore}
               <Icon name="right" />
             </a>
           </div>
@@ -101,15 +98,9 @@ const contactHref = profile.email
   </section>
   <section class="section wrap work-archive" aria-labelledby="archive-title">
     <div class="archive-intro">
-      <p class="eyebrow">Interfaces & platforms</p>
-      <h2 id="archive-title">
-        Some of the software
-        <br class="desktop-only" /> behind the experiments.
-      </h2>
-      <p>
-        My background includes frontend engineering, performance work and
-        backend platforms.
-      </p>
+      <p class="eyebrow">{archiveCopy.eyebrow}</p>
+      <h2 id="archive-title">{archiveCopy.heading}</h2>
+      <p>{archiveCopy.body}</p>
     </div>
     <div id="experience" class="archive-list">
       {archive.map((p) => (
@@ -140,11 +131,11 @@ const contactHref = profile.email
     <div class="wrap">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Notes & working things out</p>
-          <h2 id="notes-title">Back to first principles.</h2>
+          <p class="eyebrow">{home.notes.eyebrow}</p>
+          <h2 id="notes-title">{home.notes.heading}</h2>
         </div>
-        <a class="read-link" href="/blog">
-          Writing archive
+        <a class="read-link" href={home.notes.archiveHref}>
+          {home.notes.archiveLabel}
           <Icon name="right" />
         </a>
       </div>
@@ -172,26 +163,25 @@ const contactHref = profile.email
     aria-labelledby="about-title"
   >
     <div>
-      <p class="eyebrow">About</p>
-      <h2 id="about-title">A little about me.</h2>
+      <p class="eyebrow">{about.eyebrow}</p>
+      <h2 id="about-title">{about.heading}</h2>
       <p class="about-location">{profile.location}</p>
     </div>
     <div class="about-copy">
-      {home.about.map((p) => (
+      {about.paragraphs.map((p) => (
         <p>{p}</p>
       ))}
       <div id="skills" class="about-tools">
         <span id="services" class="anchor-alias" aria-hidden="true"></span>
-        <p>Some of the tools I work with</p>
+        <p>{about.toolsLabel}</p>
         <ul>
-          <li>React & TypeScript</li>
-          <li>Python & Go</li>
-          <li>SQL & retrieval</li>
-          <li>Models & fine-tuning</li>
+          {about.tools.map((t) => (
+            <li>{t}</li>
+          ))}
         </ul>
       </div>
       <a class="read-link" href="/about">
-        More about my background
+        {about.more}
         <Icon name="right" />
       </a>
     </div>
@@ -202,9 +192,9 @@ const contactHref = profile.email
     aria-labelledby="contact-title"
   >
     <div>
-      <p class="eyebrow">Say hello</p>
-      <h2 id="contact-title">{home.contactHeading}</h2>
-      <p>{home.contactBody}</p>
+      <p class="eyebrow">{contact.eyebrow}</p>
+      <h2 id="contact-title">{contact.heading}</h2>
+      <p>{contact.body}</p>
     </div>
     <div class="contact-destinations">
       {profile.email && (
@@ -214,7 +204,7 @@ const contactHref = profile.email
       )}
       {profile.linkedin && (
         <a class="button secondary" href={profile.linkedin}>
-          LinkedIn
+          {contact.linkedin}
           <Icon name="external" />
         </a>
       )}
@@ -222,12 +212,12 @@ const contactHref = profile.email
         class:list={['button', profile.email ? 'secondary' : 'primary']}
         href={profile.github}
       >
-        Find me on GitHub
+        {contact.github}
         <Icon name="external" />
       </a>
       {profile.calendar && (
         <a class="read-link" href={profile.calendar}>
-          Book a conversation
+          {contact.calendar}
           <Icon name="external" />
         </a>
       )}

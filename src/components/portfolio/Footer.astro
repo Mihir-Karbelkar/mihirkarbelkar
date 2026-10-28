@@ -1,21 +1,16 @@
 ---
-import { profile } from '../../data/portfolio';
+import { profile, site } from '../../data/portfolio';
 import Icon from '../ui/Icon.astro';
 ---
 
 <footer class="site-footer wrap">
   <div>
-    <a href="/" class="footer-name">
-      Mihir Karbelkar
-    </a>
+    <a href="/" class="footer-name">{profile.name}</a>
     <p>{profile.location}</p>
     <small>© {new Date().getFullYear()}</small>
   </div>
   <nav aria-label="Footer navigation">
-    <a href="/#work">Work</a>
-    <a href="/#notes">Notes</a>
-    <a href="/blog">Writing archive</a>
-    <a href="/lab/brain">The Brain</a>
+    {site.footer.map((l) => <a href={l.href}>{l.label}</a>)}
     <a href={profile.github}>
       GitHub
       <Icon name="external" />

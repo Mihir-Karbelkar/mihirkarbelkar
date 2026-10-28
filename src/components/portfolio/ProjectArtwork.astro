@@ -1,39 +1,40 @@
 ---
+import type { Artwork } from '../../data/portfolio';
 interface Props {
-  slug: string;
+  artwork?: Artwork;
   large?: boolean;
 }
-const { slug, large = false } = Astro.props;
+const { artwork: a, large = false } = Astro.props;
 ---
 
-{slug === 'public-markets-agents' ? (
+{a?.type === 'image' ? (
   <figure class:list={['work-art', 'art-software', { large }]}>
     <img
-      src="/projects/superstocks.webp"
-      width="1280"
-      height="720"
-      alt="Existing Superstocks.ai interface with a company search and research prompt"
+      src={a.src}
+      width={a.width}
+      height={a.height}
+      alt={a.alt}
       loading={large ? 'eager' : 'lazy'}
     />
-    <figcaption>Existing Superstocks.ai interface</figcaption>
+    <figcaption>{a.caption}</figcaption>
   </figure>
-) : slug === 'experimental-brain' ? (
+) : a?.type === 'video' ? (
   <figure class:list={['work-art', 'art-brain', { large }]}>
     <div class="video-artifact">
       <video
-        src="/lab/moving-right.mp4"
-        poster="/projects/brain-sample.webp"
+        src={a.src}
+        poster={a.poster}
         muted
         playsinline
         loop
         controls
         preload="none"
-        aria-label="Original video sample used in the Brain experiment"
+        aria-label={a.label}
       ></video>
     </div>
-    <figcaption>A video sample used in the Brain experiment</figcaption>
+    <figcaption>{a.caption}</figcaption>
   </figure>
-) : slug === 'qwen-fine-tuning' ? (
+) : a?.type === 'diagram' ? (
   <figure class:list={['work-art', 'art-model', { large }]}>
     <svg viewBox="0 0 420 230" fill="none" aria-hidden="true" focusable="false">
       <g stroke="currentColor" stroke-width="1.5">
@@ -60,6 +61,6 @@ const { slug, large = false } = Astro.props;
         LoRA adapter
       </text>
     </svg>
-    <figcaption>LoRA: base weights and a small adapter.</figcaption>
+    <figcaption>{a.caption}</figcaption>
   </figure>
 ) : null}

@@ -1,37 +1,30 @@
 ---
 import Layout from '../layouts/Portfolio.astro';
 import Icon from '../components/ui/Icon.astro';
-import { home, profile, skills } from '../data/portfolio';
+import { home, profile, site, skills } from '../data/portfolio';
+const page = site.aboutPage;
 export const prerender = true;
 ---
 
-<Layout title="About — Mihir Karbelkar">
+<Layout title={page.title}>
   <article class="section wrap case-study">
     <a class="back-link" href="/#about">
       <Icon name="left" />
-      Back to the site
+      {page.backLabel}
     </a>
     <p class="eyebrow">About / {profile.location}</p>
-    <h1>I’m Mihir.</h1>
+    <h1>{page.heading}</h1>
     <div class="case-prose about-page">
-      {home.about.map((p) => (
+      {home.about.paragraphs.map((p) => (
         <p>{p}</p>
       ))}
-      <h2>Some of my background</h2>
-      <p>
-        I’ve worked with React and TypeScript, on frontend performance, and on
-        backend platforms. At Ati Motors, I worked on scaling a robot fleet
-        platform. In payments engineering, my work included high-traffic product
-        surfaces and frontend bundle reductions.
-      </p>
-      <p>
-        My AI work includes research tools for public markets, retrieval
-        workflows and experiments with model learning. I keep the project pages
-        separate so I can describe the actual work and its limits.
-      </p>
-      <h2>Tools I’ve worked with</h2>
+      <h2>{page.backgroundHeading}</h2>
+      {page.background.map((p) => (
+        <p>{p}</p>
+      ))}
+      <h2>{page.toolsHeading}</h2>
       <dl class="background-tools">
-        {skills.map(([label, items]) => (
+        {skills.map(({ label, items }) => (
           <div>
             <dt>{label}</dt>
             <dd>{items}</dd>
@@ -39,7 +32,7 @@ export const prerender = true;
         ))}
       </dl>
       <a class="button primary" href="/#work">
-        See my work
+        {page.action}
         <Icon name="down" />
       </a>
     </div>

@@ -22,7 +22,7 @@ const { project: p } = Astro.props;
     <p class="eyebrow">{p.category}</p>
     <h1>{p.title}</h1>
     <p class="case-intro">{p.summary}</p>
-    <Artwork slug={p.slug} large />
+    <Artwork artwork={p.artwork} large />
     <div class="case-columns">
       <aside>
         <h2 class="aside-heading">The work</h2>

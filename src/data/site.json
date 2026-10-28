@@ -1,0 +1,134 @@
+{
+  "profile": {
+    "name": "Mihir Karbelkar",
+    "location": "Bengaluru, India",
+    "title": "Software engineer",
+    "jobTitle": "Software Engineer",
+    "description": "I’m Mihir, a software engineer in Bengaluru. I build software, experiment with AI, and write about the ideas I want to understand.",
+    "github": "https://github.com/Mihir-Karbelkar",
+    "maths": "https://github.com/Mihir-Karbelkar/maths"
+  },
+  "meta": {
+    "title": "Mihir Karbelkar — Software, models & notes"
+  },
+  "nav": [
+    { "label": "Work", "href": "/#work" },
+    { "label": "Notes", "href": "/#notes" },
+    { "label": "About", "href": "/#about" },
+    { "label": "Say hello", "href": "/#contact" }
+  ],
+  "footer": [
+    { "label": "Work", "href": "/#work" },
+    { "label": "Notes", "href": "/#notes" },
+    { "label": "Writing archive", "href": "/blog" },
+    { "label": "The Brain", "href": "/lab/brain" }
+  ],
+  "home": {
+    "eyebrow": "Engineering / AI / Things I’m curious about",
+    "headline": [
+      "I like figuring things out.",
+      "Then building something with it."
+    ],
+    "body": "I’m Mihir. I build software, experiment with AI, and occasionally end up making something for my room. I like understanding how things work, down to the details.",
+    "supporting": "Software, models, maths, and the occasional physical thing.",
+    "primaryAction": "See my work",
+    "contactAction": "Get in touch",
+    "desk": {
+      "heading": "On my desk",
+      "body": "A few things I keep coming back to.",
+      "items": [
+        {
+          "title": "Smaller models. Deeper questions.",
+          "label": "Qwen / fine-tuning",
+          "href": "/projects/qwen-fine-tuning",
+          "art": "model",
+          "tone": "lavender"
+        },
+        {
+          "title": "A glimpse, an action, a possibility.",
+          "label": "The Brain / experiments",
+          "href": "/lab/brain",
+          "art": "brain",
+          "tone": "sage"
+        },
+        {
+          "title": "Back to first principles.",
+          "label": "Maths / notes",
+          "href": "https://github.com/Mihir-Karbelkar/maths",
+          "art": "maths",
+          "tone": "blue"
+        }
+      ]
+    },
+    "work": {
+      "eyebrow": "Selected work",
+      "heading": "A few things I’ve worked on.",
+      "body": "Research tools, model experiments, and a few things I wanted to try.",
+      "readMore": "Read about the work"
+    },
+    "archive": {
+      "eyebrow": "Interfaces & platforms",
+      "heading": "Some of the software behind the experiments.",
+      "body": "My background includes frontend engineering, performance work and backend platforms."
+    },
+    "notes": {
+      "eyebrow": "Notes & working things out",
+      "heading": "Back to first principles.",
+      "archiveLabel": "Writing archive",
+      "archiveHref": "/blog"
+    },
+    "about": {
+      "eyebrow": "About",
+      "heading": "A little about me.",
+      "paragraphs": [
+        "I’ve spent much of my time building interfaces and making software faster. I also keep finding reasons to go further down the stack: into models, the maths behind them, and sometimes the hardware they run on.",
+        "I like being able to take an idea apart, understand the pieces, and build something with them. That’s what connects most of the work here."
+      ],
+      "toolsLabel": "Some of the tools I work with",
+      "tools": [
+        "React & TypeScript",
+        "Python & Go",
+        "SQL & retrieval",
+        "Models & fine-tuning"
+      ],
+      "more": "More about my background"
+    },
+    "contact": {
+      "eyebrow": "Say hello",
+      "heading": "Have something in mind?",
+      "body": "Tell me what you’re working on. I’d like to hear about it.",
+      "github": "Find me on GitHub",
+      "linkedin": "LinkedIn",
+      "calendar": "Book a conversation"
+    }
+  },
+  "aboutPage": {
+    "title": "About — Mihir Karbelkar",
+    "heading": "I’m Mihir.",
+    "backLabel": "Back to the site",
+    "backgroundHeading": "Some of my background",
+    "background": [
+      "I’ve worked with React and TypeScript, on frontend performance, and on backend platforms. At Ati Motors, I worked on scaling a robot fleet platform. In payments engineering, my work included high-traffic product surfaces and frontend bundle reductions.",
+      "My AI work includes research tools for public markets, retrieval workflows and experiments with model learning. I keep the project pages separate so I can describe the actual work and its limits."
+    ],
+    "toolsHeading": "Tools I’ve worked with",
+    "action": "See my work"
+  },
+  "chat": {
+    "placeholder": "Ask me anything…",
+    "greeting": "Hi! I’m a small AI running in your browser. Ask about my projects, tools, or this site.",
+    "suggestions": [
+      "Show me Superstocks",
+      "How did the robot fleet scale?",
+      "What’s the tech stack?",
+      "Show me around"
+    ],
+    "contact": "Tell me what you’re working on. I’d like to hear about it. Use the verified links in the contact section. Rates and availability are not published."
+  },
+  "tour": [
+    { "target": "#work", "say": "Here’s the work I’m proudest of." },
+    { "target": "#notes", "say": "Notes — where I work things out." },
+    { "target": "#about", "say": "A bit about me." },
+    { "target": "#contact", "say": "And this is where you say hello!" }
+  ]
+}

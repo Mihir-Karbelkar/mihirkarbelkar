@@ -1,12 +1,12 @@
 ---
 import '../../styles/portfolio.css';
-import { profile } from '../../data/portfolio';
+import { profile, site } from '../../data/portfolio';
 interface Props {
   title?: string;
   description?: string;
 }
 const {
-  title = 'Mihir Karbelkar — Software, models & notes',
+  title = site.meta.title,
   description = profile.description,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, 'https://mihirkarbelkar.com');
@@ -62,8 +62,8 @@ const canonical = new URL(Astro.url.pathname, 'https://mihirkarbelkar.com');
     '@type': 'Person',
     name: profile.name,
     url: 'https://mihirkarbelkar.com',
-    jobTitle: 'Software Engineer',
-    homeLocation: { '@type': 'Place', name: 'Bengaluru, India' },
+    jobTitle: profile.jobTitle,
+    homeLocation: { '@type': 'Place', name: profile.location },
     sameAs: [profile.github, ...(profile.linkedin ? [profile.linkedin] : [])],
   })}
 />

@@ -1,0 +1,43 @@
+{
+  "services": [
+    {
+      "title": "How I work",
+      "body": "I work across interfaces, performance, backend platforms and model experiments. I prefer to understand the problem and its constraints before choosing an approach."
+    }
+  ],
+  "skills": [
+    {
+      "label": "Interfaces",
+      "items": "React · TypeScript · Next.js · React Native"
+    },
+    {
+      "label": "Backend & data",
+      "items": "Go · Python · FastAPI · PostgreSQL · Redis · ClickHouse"
+    },
+    {
+      "label": "Models & retrieval",
+      "items": "LoRA · Qwen · RAG · Pinecone · SQL agents"
+    },
+    {
+      "label": "Infrastructure",
+      "items": "Kubernetes · Docker · CI/CD · Observability"
+    }
+  ],
+  "experience": [
+    {
+      "area": "SOFTWARE",
+      "title": "Frontend & performance",
+      "body": "I’ve worked on interfaces, frontend bundles and high-traffic product surfaces."
+    },
+    {
+      "area": "PLATFORMS",
+      "title": "Ati Motors",
+      "body": "I worked on robot fleet scaling, from approximately 8–10 to 100 concurrent robots on the same hardware."
+    },
+    {
+      "area": "RESEARCH TOOLS",
+      "title": "Public markets",
+      "body": "I’ve worked on SQL agents, screeners, analysis and retrieval workflows."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Maths, from the ground up",
+    "summary": "Writing my way through the ideas I want to understand.",
+    "detail": "I start with statements, logical connectives and proof, using definitions and worked examples. The outline includes the topics I want to work through next.",
+    "href": "https://github.com/Mihir-Karbelkar/maths",
+    "label": "Maths notebook",
+    "external": true
+  },
+  {
+    "title": "Logic and mathematical proof",
+    "summary": "Starting with what a statement says—and the domain it says it about.",
+    "detail": "A chapter from my maths notebook, with definitions and worked examples.",
+    "href": "https://github.com/Mihir-Karbelkar/maths/blob/main/part-1-foundations/01-logic-and-proof.md",
+    "label": "Read the chapter",
+    "external": true
+  }
+]
