@@ -124,6 +124,11 @@
       "github": "Find me on GitHub",
       "linkedin": "LinkedIn",
       "calendar": "Book a conversation"
+    },
+    "career": {
+      "eyebrow": "Experience",
+      "heading": "Where I’ve worked.",
+      "more": "The full timeline"
     }
   },
   "aboutPage": {
@@ -132,11 +137,15 @@
     "backLabel": "Back to the site",
     "backgroundHeading": "Some of my background",
     "background": [
-      "I’ve worked with React and TypeScript, on frontend performance, and on backend platforms. At Ati Motors, I worked on scaling a robot fleet platform. In payments engineering, my work included high-traffic product surfaces and frontend bundle reductions.",
+      "I studied Computer Science at VIT Bhopal and started out building interfaces. Most of my work has been on the frontend with React and Next.js: scalable, fast user interfaces, along with the infrastructure, performance and observability work behind them.",
+      "At Razorpay I worked on billing and CRM dashboards and on frontend infrastructure, including a React 18 and Rspack migration that cut the bundle by 90%. Before that, at WIZ, I revamped a freight platform's frontend to scale across regions and built accounting features. I’ve also done backend work and care about developer tooling and experience.",
       "My AI work includes research tools for public markets, retrieval workflows and experiments with model learning. I keep the project pages separate so I can describe the actual work and its limits."
     ],
     "toolsHeading": "Tools I’ve worked with",
-    "action": "See my work"
+    "action": "See my work",
+    "careerHeading": "Where I’ve worked",
+    "educationHeading": "Education",
+    "certificationsHeading": "Certifications"
   },
   "chat": {
     "placeholder": "Ask me anything…",
@@ -152,55 +161,41 @@
       {
         "target": "#work",
         "label": "Selected work",
+        "keywords": ["work", "projects", "project", "portfolio", "case studies"]
+      },
+      {
+        "target": "#career",
+        "label": "Where I’ve worked",
         "keywords": [
-          "work",
-          "projects",
-          "project",
-          "portfolio",
-          "case studies"
+          "experience",
+          "career",
+          "work history",
+          "where have you worked",
+          "companies",
+          "resume",
+          "cv",
+          "jobs"
         ]
       },
       {
         "target": "#experience",
         "label": "Interfaces & platforms",
-        "keywords": [
-          "experience",
-          "platforms",
-          "archive",
-          "background work"
-        ]
+        "keywords": ["platforms", "archive", "background work"]
       },
       {
         "target": "#notes",
         "label": "Notes",
-        "keywords": [
-          "notes",
-          "writing",
-          "maths",
-          "math",
-          "blog"
-        ]
+        "keywords": ["notes", "writing", "maths", "math", "blog"]
       },
       {
         "target": "#about",
         "label": "About",
-        "keywords": [
-          "about",
-          "about you",
-          "bio",
-          "yourself",
-          "who are you"
-        ]
+        "keywords": ["about", "about you", "bio", "yourself", "who are you"]
       },
       {
         "target": "#skills",
         "label": "Tools",
-        "keywords": [
-          "skills",
-          "tools",
-          "stack",
-          "tech stack"
-        ]
+        "keywords": ["skills", "tools", "stack", "tech stack"]
       },
       {
         "target": "#contact",

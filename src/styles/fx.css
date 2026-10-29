@@ -26,21 +26,60 @@
   transform-origin: 100% 10%;
   animation: sakura-sway 9s ease-in-out infinite alternate;
 }
-.sakura-wood {
-  stroke: var(--branch);
+.sakura-wood path {
+  fill: var(--branch);
 }
-.sakura-flower {
-  fill: var(--blossom);
-  stroke: color-mix(in srgb, var(--petal) 55%, transparent);
-  stroke-width: 0.8;
+.sakura-petal-shape {
+  fill: url(#sakura-petal-fill);
+  stroke: color-mix(in srgb, var(--petal) 45%, transparent);
+  stroke-width: 0.6;
 }
-.sakura-flower .sakura-heart,
+.sakura-stop-base {
+  stop-color: var(--petal);
+  stop-opacity: 0.85;
+}
+.sakura-stop-mid {
+  stop-color: var(--blossom);
+}
+.sakura-stop-tip {
+  stop-color: var(--blossom);
+}
+.sakura-stamens path {
+  stroke: var(--stamen);
+  stroke-width: 0.55;
+  stroke-linecap: round;
+}
+.sakura-stamens circle,
 .sakura-heart {
-  fill: var(--petal);
-  stroke: none;
+  fill: var(--stamen);
+}
+.sakura-heart {
+  opacity: 0.7;
+}
+.sakura-bud-shape {
+  fill: color-mix(in srgb, var(--petal) 70%, var(--blossom));
+  stroke: color-mix(in srgb, var(--petal) 60%, transparent);
+  stroke-width: 0.5;
+}
+.sakura-sepal {
+  fill: var(--leaf);
+}
+.sakura-stem {
+  stroke: var(--branch);
+  stroke-width: 1.2;
+  stroke-linecap: round;
 }
 .sakura-leaf {
-  fill: var(--petal);
+  fill: var(--leaf);
+}
+.sakura-leaf.is-under {
+  fill: color-mix(in srgb, var(--leaf) 68%, var(--blossom));
+}
+.sakura-vein {
+  fill: none;
+  stroke: var(--leaf-vein);
+  stroke-width: 0.6;
+  stroke-linecap: round;
   opacity: 0.85;
 }
 .sakura-petals {
@@ -51,9 +90,12 @@
   position: absolute;
   top: -20px;
   width: var(--size);
-  height: calc(var(--size) * 0.75);
-  border-radius: 100% 0 100% 0;
+  height: var(--size);
   background: var(--petal);
+  -webkit-mask: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-8%20-14%2016%2015%22%3E%3Cpath%20d%3D%22M0%200C-5.5-2.5-7.5-8.5-4.2-12.2C-2.8-13.6-1.2-12.6%200-11C1.2-12.6%202.8-13.6%204.2-12.2C7.5-8.5%205.5-2.5%200%200Z%22/%3E%3C/svg%3E')
+    center / contain no-repeat;
+  mask: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-8%20-14%2016%2015%22%3E%3Cpath%20d%3D%22M0%200C-5.5-2.5-7.5-8.5-4.2-12.2C-2.8-13.6-1.2-12.6%200-11C1.2-12.6%202.8-13.6%204.2-12.2C7.5-8.5%205.5-2.5%200%200Z%22/%3E%3C/svg%3E')
+    center / contain no-repeat;
   opacity: 0;
   animation: sakura-fall var(--duration) linear var(--delay) infinite;
 }

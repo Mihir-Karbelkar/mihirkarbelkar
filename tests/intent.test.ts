@@ -79,3 +79,7 @@ test('semantic router picks a confident, unambiguous action only', () => {
     'questions go to the LLM',
   );
 });
+test('career keywords scroll to the timeline', () => {
+  assert.equal(target('experience'), '#career');
+  assert.equal(target('show me your career'), '#career');
+});

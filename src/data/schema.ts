@@ -93,6 +93,11 @@ export const siteSchema = z.object({
       body: z.string(),
       readMore: z.string(),
     }),
+    career: z.object({
+      eyebrow: z.string(),
+      heading: z.string(),
+      more: z.string(),
+    }),
     archive: z.object({
       eyebrow: z.string(),
       heading: z.string(),
@@ -127,6 +132,9 @@ export const siteSchema = z.object({
     backLabel: z.string(),
     backgroundHeading: z.string(),
     background: z.array(z.string()),
+    careerHeading: z.string(),
+    educationHeading: z.string(),
+    certificationsHeading: z.string(),
     toolsHeading: z.string(),
     action: z.string(),
   }),
@@ -180,10 +188,35 @@ export const notesSchema = z.array(
 export const skillsSchema = z.object({
   services: z.array(z.object({ title: z.string(), body: z.string() })),
   skills: z.array(z.object({ label: z.string(), items: z.string() })),
-  experience: z.array(
-    z.object({ area: z.string(), title: z.string(), body: z.string() }),
-  ),
 });
+const month = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/);
+export const careerSchema = z.object({
+  roles: z.array(
+    z.object({
+      id: z.string().regex(/^[a-z0-9-]+$/),
+      company: z.string(),
+      location: z.string().optional(),
+      positions: z
+        .array(
+          z
+            .object({ title: z.string(), start: month, end: month })
+            .refine((p) => p.start <= p.end, 'start must not be after end'),
+        )
+        .min(1),
+      highlights: z.array(z.string()),
+    }),
+  ),
+  education: z.array(
+    z.object({
+      school: z.string(),
+      degree: z.string(),
+      start: z.string(),
+      end: z.string(),
+    }),
+  ),
+  certifications: z.array(z.string()),
+});
+export type Career = z.infer<typeof careerSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type Artwork = z.infer<typeof artwork>;
 export type Site = z.infer<typeof siteSchema>;

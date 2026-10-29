@@ -3,7 +3,7 @@ import {
   profile,
   services,
   skills,
-  experience,
+  career,
 } from '../data/portfolio.ts';
 import { stopWords, terms } from './text.ts';
 import type { Source } from './prompt.ts';
@@ -35,11 +35,21 @@ export const sources: Source[] = [
     href: '/#skills',
     text: skills.map((s) => `${s.label}: ${s.items}`).join('\n'),
   },
+  ...career.roles.map((r) => ({
+    id: `career-${r.id}`,
+    title: `${r.company}: ${r.positions.map((p) => p.title).join(', ')}`,
+    href: `/about#${r.id}`,
+    text: `${r.company}${r.location ? `, ${r.location}` : ''}. ${r.positions
+      .map((p) => `${p.title} from ${p.start} to ${p.end}`)
+      .join('; ')}. ${r.highlights.join(' ')}`,
+  })),
   {
-    id: 'experience',
-    title: 'Experience',
-    href: '/#experience',
-    text: experience.map((s) => `${s.area}: ${s.title}: ${s.body}`).join('\n'),
+    id: 'education',
+    title: 'Education and certifications',
+    href: '/about#education',
+    text: `${career.education
+      .map((e) => `${e.degree} at ${e.school}, ${e.start} to ${e.end}`)
+      .join('. ')}. Certifications: ${career.certifications.join(', ')}.`,
   },
   {
     id: 'contact',

@@ -13,6 +13,8 @@ import {
   featuredSlugs,
   archiveSlugs,
   notes,
+  career,
+  roleYears,
 } from '../data/portfolio';
 const { desk, work, archive: archiveCopy, about, contact } = home;
 export const prerender = true;
@@ -129,6 +131,36 @@ const contactHref = profile.email
         </article>
       ))}
     </div>
+  </section>
+  <section
+    id="career"
+    class="section wrap career-section"
+    aria-labelledby="career-title"
+    data-reveal
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">{home.career.eyebrow}</p>
+        <h2 id="career-title">{home.career.heading}</h2>
+      </div>
+      <a class="read-link" href="/about#career">
+        {home.career.more}
+        <Icon name="right" />
+      </a>
+    </div>
+    <ol class="career-list">
+      {career.roles.map((r) => (
+        <li>
+          <a href={`/about#${r.id}`}>
+            <span class="career-company">{r.company}</span>
+            <span class="career-role">
+              {r.positions.map((pos) => pos.title).join(' · ')}
+            </span>
+            <span class="career-years">{roleYears(r)}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
   </section>
   <section
     id="notes"

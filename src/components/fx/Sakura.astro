@@ -1,74 +1,141 @@
 ---
 // Decorative sakura branch with a few drifting petals. Colours come from
-// --branch / --blossom / --petal so it follows the theme; motion is off
-// under prefers-reduced-motion.
-const blossoms: [number, number, number, number][] = [
-  // x, y, scale, rotation
-  [252, 44, 1, 0],
-  [214, 78, 0.8, 30],
-  [178, 58, 0.9, 12],
-  [150, 104, 0.7, 50],
-  [118, 82, 0.85, 20],
-  [86, 132, 0.65, 40],
-  [232, 126, 0.75, 8],
-  [196, 150, 0.6, 60],
-  [58, 112, 0.7, 15],
-  [274, 98, 0.65, 35],
+// --branch / --blossom / --petal / --leaf / --stamen so it follows the theme;
+// motion is off under prefers-reduced-motion.
+type Placed = [x: number, y: number, scale: number, rotate: number];
+// Clustered at twig nodes, as cherry blossoms grow.
+const blooms: Placed[] = [
+  [262, 30, 1.15, 10],
+  [244, 54, 0.95, -20],
+  [212, 64, 1.05, 30],
+  [228, 96, 0.8, 5],
+  [240, 122, 0.9, 40],
+  [178, 86, 1, 15],
+  [198, 140, 0.85, -10],
+  [140, 104, 0.95, 25],
+  [114, 64, 0.85, 0],
+  [122, 90, 0.7, 50],
+  [78, 118, 0.85, -15],
+  [56, 104, 0.7, 20],
 ];
-const leaves: [number, number, number][] = [
-  [164, 86, 40],
-  [228, 102, -30],
-  [102, 116, 70],
-  [262, 70, 120],
-  [136, 140, 10],
+const halfOpen: Placed[] = [
+  [278, 52, 0.9, -30],
+  [188, 112, 0.8, 20],
+  [100, 100, 0.75, -40],
 ];
+const buds: Placed[] = [
+  [252, 142, 0.9, 10],
+  [208, 156, 0.8, -20],
+  [110, 50, 0.8, -10],
+  [44, 100, 0.75, -60],
+];
+// x, y, rotation (leaf points along +x), scale, shows its paler underside
+const leaves: [number, number, number, number, boolean][] = [
+  [292, 22, 150, 1, false],
+  [252, 74, 60, 0.9, true],
+  [220, 112, 110, 0.85, false],
+  [168, 120, 70, 0.9, true],
+  [150, 88, -120, 0.8, false],
+  [128, 72, -150, 0.75, true],
+  [90, 126, 160, 0.85, false],
+];
+const at = ([x, y, s, r]: Placed) =>
+  `translate(${x} ${y}) rotate(${r}) scale(${s})`;
+// A cherry petal: rounded, with the characteristic notch at its tip.
+const PETAL =
+  'M0 0C-5.5-2.5-7.5-8.5-4.2-12.2C-2.8-13.6-1.2-12.6 0-11C1.2-12.6 2.8-13.6 4.2-12.2C7.5-8.5 5.5-2.5 0 0Z';
 const petals = [
-  { left: '18%', delay: '0s', duration: '17s', size: 9 },
-  { left: '42%', delay: '-6s', duration: '21s', size: 7 },
-  { left: '63%', delay: '-11s', duration: '19s', size: 10 },
-  { left: '78%', delay: '-3s', duration: '23s', size: 8 },
-  { left: '88%', delay: '-14s', duration: '18s', size: 6 },
-  { left: '30%', delay: '-17s', duration: '25s', size: 7 },
+  { left: '18%', delay: '0s', duration: '17s', size: 11 },
+  { left: '42%', delay: '-6s', duration: '21s', size: 9 },
+  { left: '63%', delay: '-11s', duration: '19s', size: 12 },
+  { left: '78%', delay: '-3s', duration: '23s', size: 10 },
+  { left: '88%', delay: '-14s', duration: '18s', size: 8 },
+  { left: '30%', delay: '-17s', duration: '25s', size: 9 },
 ];
 ---
 
 <div class="sakura" aria-hidden="true">
-  <svg class="sakura-branch" viewBox="0 0 320 190" fill="none">
+  <svg class="sakura-branch" viewBox="0 0 320 200" fill="none">
     <defs>
-      <g id="sakura-blossom">
+      <radialGradient
+        id="sakura-petal-fill"
+        gradientUnits="userSpaceOnUse"
+        cx="0"
+        cy="0"
+        r="13"
+      >
+        <stop offset="0" class="sakura-stop-base"></stop>
+        <stop offset="0.5" class="sakura-stop-mid"></stop>
+        <stop offset="1" class="sakura-stop-tip"></stop>
+      </radialGradient>
+      <g id="sakura-bloom">
         {
           [0, 72, 144, 216, 288].map((r) => (
-            <ellipse cx="0" cy="-7" rx="5" ry="7.5" transform={`rotate(${r})`} />
+            <path class="sakura-petal-shape" d={PETAL} transform={`rotate(${r})`} />
           ))
         }
-        <circle class="sakura-heart" r="2.4" />
+        <g class="sakura-stamens">
+          {
+            [18, 70, 122, 174, 226, 278, 330].map((r) => (
+              <g transform={`rotate(${r})`}>
+                <path d="M0 -1.6V-6.4" />
+                <circle cy="-6.8" r="0.95" />
+              </g>
+            ))
+          }
+        </g>
+        <circle class="sakura-heart" r="2.2" />
+      </g>
+      <g id="sakura-half">
+        <path class="sakura-sepal" d="M-3.5 1.5C-2 5 2 5 3.5 1.5L0 -1Z" />
+        {
+          [-48, 0, 48].map((r) => (
+            <path
+              class="sakura-petal-shape"
+              d={PETAL}
+              transform={`rotate(${r}) scale(0.9 1)`}
+            />
+          ))
+        }
+      </g>
+      <g id="sakura-bud">
+        <path class="sakura-stem" d="M0 0V6" />
+        <path
+          class="sakura-bud-shape"
+          d="M0 0C-3.6-3-3.8-9 0-12.5C3.8-9 3.6-3 0 0Z"
+        />
+        <path class="sakura-sepal" d="M-3 -1.2C-2 2 2 2 3 -1.2L0 -3Z" />
+      </g>
+      <g id="sakura-leaf">
+        <path class="sakura-stem" d="M0 0H-4" />
+        <path d="M0 0C7-8 19-10 30 0C19 10 7 8 0 0Z" />
+        <path
+          class="sakura-vein"
+          d="M1 0H28M8 0L12.5 -5.4M8 0L12.5 5.4M14 0L18.5 -5.8M14 0L18.5 5.8M20 0L24 -4.2M20 0L24 4.2"
+        />
       </g>
     </defs>
-    <g class="sakura-wood" stroke-linecap="round">
-      <path d="M330 18C270 30 232 50 196 78 160 106 120 116 70 120" stroke-width="5" />
-      <path d="M232 52c-8 22-6 50 2 76" stroke-width="3" />
-      <path d="M160 102c18 14 30 30 38 50" stroke-width="2.5" />
-      <path d="M120 112c-12-14-12-34-2-52" stroke-width="2.5" />
-      <path d="M96 118c-14 6-26 0-40-8" stroke-width="2" />
+    <g class="sakura-wood">
+      <path
+        d="M334 6C282 18 236 40 198 70C160 100 118 114 70 121C120 123 164 111 202 81C240 53 286 29 334 20Z"
+      />
+      <path d="M234 44C226 70 230 100 244 128C236 100 235 72 241 47Z" />
+      <path d="M160 100C178 112 192 128 205 151C190 130 177 116 167 96Z" />
+      <path d="M126 110C112 96 108 78 113 58C117 78 121 94 133 107Z" />
+      <path d="M116 114C96 119 72 117 48 104C70 113 94 115 112 110Z" />
     </g>
     {
-      leaves.map(([x, y, r]) => (
-        <path
-          class="sakura-leaf"
-          d="M0 0c4-7 13-8 18-5-3 6-12 9-18 5Z"
-          transform={`translate(${x} ${y}) rotate(${r})`}
-        />
-      ))
-    }
-    {
-      blossoms.map(([x, y, s, r]) => (
+      leaves.map(([x, y, r, s, under]) => (
         <use
-          href="#sakura-blossom"
-          class="sakura-flower"
-          transform={`translate(${x} ${y}) scale(${s}) rotate(${r})`}
+          href="#sakura-leaf"
+          class:list={['sakura-leaf', { 'is-under': under }]}
+          transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}
         />
       ))
     }
+    {buds.map((b) => <use href="#sakura-bud" transform={at(b)} />)}
+    {halfOpen.map((b) => <use href="#sakura-half" transform={at(b)} />)}
+    {blooms.map((b) => <use href="#sakura-bloom" transform={at(b)} />)}
   </svg>
   <div class="sakura-petals">
     {

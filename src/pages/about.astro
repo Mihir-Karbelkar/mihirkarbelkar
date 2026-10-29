@@ -1,7 +1,14 @@
 ---
 import Layout from '../layouts/Portfolio.astro';
 import Icon from '../components/ui/Icon.astro';
-import { home, profile, site, skills } from '../data/portfolio';
+import {
+  career,
+  formatMonth,
+  home,
+  profile,
+  site,
+  skills,
+} from '../data/portfolio';
 const page = site.aboutPage;
 export const prerender = true;
 ---
@@ -22,6 +29,49 @@ export const prerender = true;
       {page.background.map((p) => (
         <p>{p}</p>
       ))}
+      <h2 id="career">{page.careerHeading}</h2>
+      <ol class="timeline">
+        {career.roles.map((r) => (
+          <li id={r.id}>
+            <h3>
+              {r.company}
+              {r.location && <span class="timeline-place">{r.location}</span>}
+            </h3>
+            {r.positions.map((pos) => (
+              <p class="timeline-role">
+                <strong>{pos.title}</strong>
+                <span>
+                  {formatMonth(pos.start)} – {formatMonth(pos.end)}
+                </span>
+              </p>
+            ))}
+            {r.highlights.length > 0 && (
+              <ul>
+                {r.highlights.map((h) => (
+                  <li>{h}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+      <h2 id="education">{page.educationHeading}</h2>
+      {career.education.map((e) => (
+        <p class="timeline-role">
+          <strong>
+            {e.degree}, {e.school}
+          </strong>
+          <span>
+            {e.start} – {e.end}
+          </span>
+        </p>
+      ))}
+      <h3 class="certifications-heading">{page.certificationsHeading}</h3>
+      <ul class="certifications">
+        {career.certifications.map((c) => (
+          <li>{c}</li>
+        ))}
+      </ul>
       <h2>{page.toolsHeading}</h2>
       <dl class="background-tools">
         {skills.map(({ label, items }) => (

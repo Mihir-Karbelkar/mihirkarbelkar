@@ -28,3 +28,19 @@ test('unknown featured slug is rejected', () => {
   });
   assert.equal(r.success, false);
 });
+import { career, roleYears, formatMonth } from '../src/data/portfolio.ts';
+import { searchContent, sources as chatSources } from '../src/lib/content.ts';
+test('career data drives the timeline and the chat', () => {
+  assert.ok(career.roles.length >= 4);
+  assert.equal(formatMonth('2023-12'), 'Dec 2023');
+  assert.equal(
+    roleYears(career.roles.find((r) => r.id === 'wiz')!),
+    '2021–2023',
+  );
+  assert.equal(searchContent('Razorpay')[0].id, 'career-razorpay');
+  assert.ok(
+    searchContent('education degree').some((s) => s.id === 'education'),
+  );
+  const all = JSON.stringify(chatSources);
+  assert.ok(!all.includes('99.98') && !all.includes('900,000'));
+});

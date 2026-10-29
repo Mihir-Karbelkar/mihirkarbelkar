@@ -10,21 +10,21 @@ export interface Pun {
 export const punsData: Pun[] = [
   {
     id: 1,
-    text: "Are female babas called bebos?",
-    category: "Babas",
-    dateAdded: "May 4, 2025",
+    text: 'Are female babas called bebos?',
+    category: 'Babas',
+    dateAdded: 'May 4, 2025',
   },
   {
     id: 2,
-    text: "Marathi people have japanese food everyday the way they go to su shi everyday.",
-    category: "Food",
-    dateAdded: "May 4, 2025",
+    text: 'Marathi people have japanese food everyday the way they go to su shi everyday.',
+    category: 'Food',
+    dateAdded: 'May 4, 2025',
   },
   {
     id: 3,
     text: "My single friends are always in debt the way they're all a loan.",
-    category: "Finance",
-    dateAdded: "May 4, 2025",
+    category: 'Finance',
+    dateAdded: 'May 4, 2025',
   },
 ];
 

@@ -22,22 +22,5 @@
       "label": "Infrastructure",
       "items": "Kubernetes · Docker · CI/CD · Observability"
     }
-  ],
-  "experience": [
-    {
-      "area": "SOFTWARE",
-      "title": "Frontend & performance",
-      "body": "I’ve worked on interfaces, frontend bundles and high-traffic product surfaces."
-    },
-    {
-      "area": "PLATFORMS",
-      "title": "Ati Motors",
-      "body": "I worked on robot fleet scaling, from approximately 8–10 to 100 concurrent robots on the same hardware."
-    },
-    {
-      "area": "RESEARCH TOOLS",
-      "title": "Public markets",
-      "body": "I’ve worked on SQL agents, screeners, analysis and retrieval workflows."
-    }
   ]
 }

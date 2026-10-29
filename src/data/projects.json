@@ -7,6 +7,8 @@
   "archive": [
     "high-scale-platforms",
     "robot-fleet",
+    "wiz-freight-platform",
+    "mad-street-den-tryon",
     "production-rag",
     "prompt-studio"
   ],
@@ -26,12 +28,7 @@
       "reflection": "I keep the source material, the query and the generated interpretation distinct. A well-written answer is easier to assess when I can see what it was based on.",
       "metric": "SQL + retrieval",
       "metricLabel": "Research workflows",
-      "tags": [
-        "Python",
-        "SQL agents",
-        "ClickHouse",
-        "Pinecone"
-      ],
+      "tags": ["Python", "SQL agents", "ClickHouse", "Pinecone"],
       "tone": "blue",
       "status": "Professional work",
       "kind": "professional",
@@ -59,12 +56,7 @@
       "reflection": "A similarity score is not a confidence estimate, and a plausible narration is not an observation. I make those distinctions visible in the experiment.",
       "metric": "Observe / act / dream",
       "metricLabel": "An inspectable experiment",
-      "tags": [
-        "V-JEPA 2",
-        "Python",
-        "Simulation",
-        "Local models"
-      ],
+      "tags": ["V-JEPA 2", "Python", "Simulation", "Local models"],
       "tone": "mint",
       "status": "Experiment",
       "kind": "experiment",
@@ -92,12 +84,7 @@
       "reflection": "A lower loss and a better answer are different checks. Source-word overlap can help me inspect an answer, but it cannot establish that the answer addresses the question.",
       "metric": "LoRA + evaluation",
       "metricLabel": "Training and answer checks",
-      "tags": [
-        "Qwen",
-        "LoRA",
-        "PyTorch",
-        "Evaluation"
-      ],
+      "tags": ["Qwen", "LoRA", "PyTorch", "Evaluation"],
       "tone": "lavender",
       "status": "Experiment",
       "kind": "experiment",
@@ -120,11 +107,7 @@
       "outcome": "The platform scaled from approximately 8–10 to 100 concurrent robots on the same hardware.",
       "metric": "100 robots",
       "metricLabel": "Concurrent, on the same hardware",
-      "tags": [
-        "Backend",
-        "Performance",
-        "Robotics"
-      ],
+      "tags": ["Backend", "Performance", "Robotics"],
       "tone": "peach",
       "status": "Professional work",
       "kind": "professional"
@@ -132,23 +115,18 @@
     {
       "slug": "high-scale-platforms",
       "title": "Frontend performance & scale",
-      "category": "Frontend and platform work / payments",
-      "summary": "Working on interfaces, bundle size and high-traffic software.",
-      "problem": "I worked on product surfaces that needed to load efficiently while supporting substantial daily traffic.",
+      "category": "Frontend and platform work / Razorpay",
+      "summary": "Faster frontends, better observability and billing dashboards at Razorpay.",
+      "problem": "At Razorpay I worked on billing and CRM product surfaces that needed to load quickly, stay available and be cheap to serve.",
       "approach": [
-        "I supported systems serving over 900,000 bill views per day.",
-        "I contributed frontend performance work that reduced bundle size by 90%.",
-        "I helped achieve 99.98% availability through production engineering work."
+        "I built dashboards for digital billing and CRM, covering customer engagement insights, campaign creation and multi-tenant bill management, with Node.js, Express and Kubernetes.",
+        "I worked on infrastructure upgrades, including a React 18 migration that cut the bundle size by 90% and CloudFront costs by 50%, and a move from Create React App to Rspack.",
+        "I set up real-time alerts and observability with Coralogix, Grafana and Coralogix RUM, and worked on a microfrontend architecture to migrate a legacy site to Razorpay PG."
       ],
-      "outcome": "These are separate outcomes across the work: 900,000+ daily bill views supported, a 90% frontend bundle reduction and contributions to 99.98% availability.",
+      "outcome": "The bundle shrank by 90% and CloudFront costs dropped by 50%. I also helped raise application availability to 99.92%.",
       "metric": "90% smaller",
       "metricLabel": "Frontend bundle size",
-      "tags": [
-        "React",
-        "TypeScript",
-        "Performance",
-        "Observability"
-      ],
+      "tags": ["React", "Rspack", "Node.js", "Kubernetes", "Observability"],
       "tone": "mint",
       "status": "Professional work",
       "kind": "professional"
@@ -167,12 +145,7 @@
       "outcome": "This work connects vector search with the backend and analysis workflows that consume the retrieved material.",
       "metric": "Pinecone + RAG",
       "metricLabel": "Research context and retrieval",
-      "tags": [
-        "RAG",
-        "Pinecone",
-        "Python",
-        "Analytics"
-      ],
+      "tags": ["RAG", "Pinecone", "Python", "Analytics"],
       "tone": "mint",
       "status": "Professional work",
       "kind": "professional"
@@ -191,16 +164,49 @@
       "outcome": "The source is available on GitHub. I haven’t published usage or adoption figures.",
       "metric": "Streaming chat",
       "metricLabel": "A public software project",
-      "tags": [
-        "Next.js",
-        "TypeScript",
-        "shadcn/ui",
-        "AI SDK"
-      ],
+      "tags": ["Next.js", "TypeScript", "shadcn/ui", "AI SDK"],
       "tone": "lavender",
       "status": "Public project",
       "kind": "project",
       "source": "https://github.com/Mihir-Karbelkar/prompt-studio"
+    },
+    {
+      "slug": "wiz-freight-platform",
+      "title": "Freight platform frontend",
+      "category": "Frontend and platform work / WIZ",
+      "summary": "Scaling a logistics frontend to new regions, with real-time and accounting features.",
+      "problem": "At WIZ, a freight and logistics platform, the frontend needed to work across multiple regions and support accounting and collaboration workflows.",
+      "approach": [
+        "I revamped and refactored the frontend codebase so it could scale to multiple regions.",
+        "I built real-time task sharing over WebSockets and the UI for searching vessel schedules.",
+        "I used Next.js to build accounting features, including invoices, bulk payments and a Zoho Books integration, and set up a Docker Compose development environment for the microservices."
+      ],
+      "outcome": "The Docker Compose environment saved the team about two months a year and kept the git history clean. I was promoted from SDE 1 to SDE 2.",
+      "metric": "~2 months / year",
+      "metricLabel": "Developer time saved",
+      "tags": ["Next.js", "React", "WebSockets", "Docker"],
+      "tone": "blue",
+      "status": "Professional work",
+      "kind": "professional"
+    },
+    {
+      "slug": "mad-street-den-tryon",
+      "title": "Apparel try-on web app",
+      "category": "Frontend work / Mad Street Den",
+      "summary": "Letting shoppers see outfits on a model that resembles them.",
+      "problem": "Mad Street Den needed a web app where customers could try different combinations of apparel and see the result on a model that resembles them.",
+      "approach": [
+        "I built the responsive web app on my own in React and Bootstrap.",
+        "I cut subsequent dev build times by 87.5% using webpack dev server and hot module reloading.",
+        "As an intern, I rewrote about 40% of the codebase to functional components and hooks."
+      ],
+      "outcome": "I was promoted within six months for exceeding goals and supporting the company culture.",
+      "metric": "87.5% faster",
+      "metricLabel": "Dev rebuilds",
+      "tags": ["React", "Bootstrap", "webpack"],
+      "tone": "peach",
+      "status": "Professional work",
+      "kind": "professional"
     }
   ]
 }
