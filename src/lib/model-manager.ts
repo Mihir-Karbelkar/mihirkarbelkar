@@ -3,6 +3,7 @@ import {
   autoDownload,
   fallbackTier,
   modelId,
+  needsWebGPU,
   pickTier,
   route,
   type Capability,
@@ -117,7 +118,7 @@ export class ModelManager {
     const tiers = blank();
     await Promise.all(
       TIERS.map(async (t) => {
-        if (!capability.webgpu) tiers[t.id].status = 'unsupported';
+        if (!capability.webgpu && needsWebGPU(t)) tiers[t.id].status = 'unsupported';
         else
           tiers[t.id].cached = await this.deps.isCached(modelId(t, capability));
       }),

@@ -1,4 +1,4 @@
-export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m';
+export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m' | 'tiny-30m';
 export interface Tier {
   id: TierId;
   label: string;
@@ -9,6 +9,11 @@ export interface Tier {
   downloadMB: number;
   /** From WebLLM's prebuilt catalog (f16 build). */
   vramMB: number;
+  /**
+   * `onnx`: the site's own small model (src/lib/tiny.ts) on onnxruntime-web's WASM backend, so it
+   * runs without WebGPU. Others are WebLLM models and need WebGPU.
+   */
+  runtime?: 'onnx';
 }
 /** Largest first. Auto routes to the first ready tier in this order. */
 export const TIERS: Tier[] = [
@@ -39,7 +44,27 @@ export const TIERS: Tier[] = [
     downloadMB: 220,
     vramMB: 380,
   },
+  {
+    id: 'tiny-30m',
+    label: 'Tiny 30M',
+    note: 'Runs without WebGPU',
+    f16: 'tiny-30m',
+    f32: 'tiny-30m',
+    downloadMB: 44,
+    vramMB: 0,
+    runtime: 'onnx',
+  },
 ];
+/** Whether a tier can only run on WebGPU (all but the site's own WASM model). */
+export const needsWebGPU = (t: Tier) => t.runtime !== 'onnx';
+/**
+ * Whether Auto uses Tiny 30M (on devices without WebGPU, and as the last
+ * fallback). Off for now: on this site's own questions it answers about 10 of
+ * 22 right but shows a confident wrong answer about 12 times in 35 that the
+ * grounding check can't catch, while the result cards it would replace are
+ * never wrong (tiny-paraphraser LEDGER §20). It can still be picked by hand.
+ */
+export const TINY_IN_AUTO = false;
 export interface Capability {
   webgpu: boolean;
   shaderF16: boolean;
@@ -56,15 +81,17 @@ export const modelId = (t: Tier, cap: Pick<Capability, 'shaderF16'>) =>
   cap.shaderF16 ? t.f16 : t.f32;
 const GB = 1024 ** 3;
 /**
- * The tier to download first on this device, or null when local generation
- * shouldn't run (no WebGPU, or a phone too small to hold a model without the
- * GPU being dropped mid-answer). Phones get the small models only.
+ * The tier to download first on this device. Without WebGPU, or on a phone
+ * too small to hold a WebLLM model without the GPU being dropped mid-answer,
+ * that is Tiny 30M (on the CPU) when TINY_IN_AUTO, else nothing (result
+ * cards). Phones get the small models only.
  */
 export function pickTier(cap: Capability): TierId | null {
-  if (!cap.webgpu) return null;
+  const cpu = TINY_IN_AUTO ? 'tiny-30m' : null;
+  if (!cap.webgpu) return cpu;
   if (cap.mobile) {
     const memory = cap.deviceMemory ?? 4;
-    if (memory < 6 || cap.maxBufferSize < GB / 2) return null;
+    if (memory < 6 || cap.maxBufferSize < GB / 2) return cpu;
     return memory >= 8 && cap.maxBufferSize >= 2 * GB && cap.shaderF16
       ? 'qwen-0.5b'
       : 'smollm-360m';
@@ -76,8 +103,8 @@ export function pickTier(cap: Capability): TierId | null {
 }
 /** The next smaller tier, prefetched in the background as a fallback. */
 export function fallbackTier(id: TierId): TierId | null {
-  const i = TIERS.findIndex((t) => t.id === id);
-  return TIERS[i + 1]?.id ?? null;
+  const next = TIERS[TIERS.findIndex((t) => t.id === id) + 1];
+  return next && (TINY_IN_AUTO || needsWebGPU(next)) ? next.id : null;
 }
 /** Desktop on an unmetered connection downloads straight away; everyone else is asked first. */
 export const autoDownload = (cap: Capability) => !cap.mobile && !cap.metered;

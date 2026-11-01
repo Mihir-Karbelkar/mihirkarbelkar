@@ -42,3 +42,6 @@ services/brain/references.json
 services/brain/.cache/
 __pycache__/
 *.pyc
+
+# Tiny 30M weights: served from Hugging Face (see src/lib/tiny.ts), too big for git and Workers assets
+public/models/tiny30m/*.onnx

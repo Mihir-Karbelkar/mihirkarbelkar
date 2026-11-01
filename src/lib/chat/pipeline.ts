@@ -88,8 +88,7 @@ export function retrievalQuery(query: string, history: ChatMessage[]): string {
 }
 /** Streams an answer, abandoning it if the first token or any later token takes too long. */
 function generateWithWatchdog(
-  engine: AnswerEngine,
-  messages: Parameters<AnswerEngine['generate']>[0],
+  start: (onToken: (t: string) => void, signal: AbortSignal) => Promise<void>,
   onToken: (t: string) => void,
   { firstToken, idle }: Budgets,
   outer?: AbortSignal,
@@ -107,15 +106,10 @@ function generateWithWatchdog(
       }, ms);
     };
     arm(firstToken);
-    engine
-      .generate(
-        messages,
-        (t) => {
-          arm(idle);
-          onToken(t);
-        },
-        controller.signal,
-      )
+    start((t) => {
+      arm(idle);
+      onToken(t);
+    }, controller.signal)
       .then(resolve, reject)
       .finally(() => {
         clearTimeout(timer);
@@ -173,13 +167,16 @@ export async function runChat(
     };
   let text = '';
   try {
+    const messages = [
+      { role: 'system' as const, content: systemPrompt(sources) },
+      ...history.slice(-2).map(({ role, content }) => ({ role, content })),
+      { role: 'user' as const, content: query },
+    ];
     await generateWithWatchdog(
-      engine,
-      [
-        { role: 'system', content: systemPrompt(sources) },
-        ...history.slice(-2).map(({ role, content }) => ({ role, content })),
-        { role: 'user', content: query },
-      ],
+      (onToken, s) =>
+        engine.answer
+          ? engine.answer(sources, query, onToken, s)
+          : engine.generate(messages, onToken, s),
       (t) => {
         text += t;
         onProgress({ stage: 'writing', partial: text, sources });

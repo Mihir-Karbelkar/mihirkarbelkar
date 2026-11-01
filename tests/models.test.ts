@@ -4,7 +4,9 @@ import { prebuiltAppConfig } from '@mlc-ai/web-llm';
 import {
   TIERS,
   autoDownload,
+  TINY_IN_AUTO,
   fallbackTier,
+  needsWebGPU,
   pickTier,
   route,
   type Capability,
@@ -18,22 +20,30 @@ const desktop: Capability = {
   mobile: false,
   metered: false,
 };
-test('every tier maps to a WebLLM prebuilt model', () => {
+test('every WebGPU tier maps to a WebLLM prebuilt model', () => {
   const ids = new Set(prebuiltAppConfig.model_list.map((m) => m.model_id));
-  for (const t of TIERS) assert.ok(ids.has(t.f16) && ids.has(t.f32), t.id);
+  for (const t of TIERS.filter(needsWebGPU))
+    assert.ok(ids.has(t.f16) && ids.has(t.f32), t.id);
+  assert.deepEqual(
+    TIERS.filter((t) => !needsWebGPU(t)).map((t) => t.id),
+    ['tiny-30m'],
+  );
 });
+const cpu = TINY_IN_AUTO ? 'tiny-30m' : null;
 test('pickTier chooses by capability', () => {
   const cases: [Partial<Capability>, string | null][] = [
     [{}, 'qwen-1.5b'],
-    [{ webgpu: false }, null],
+    // no WebGPU: the CPU model when Auto uses it, else result cards
+    [{ webgpu: false }, cpu],
+    [{ webgpu: false, mobile: true, deviceMemory: 2 }, cpu],
     [{ maxBufferSize: 2 ** 28 }, 'qwen-0.5b'],
     [{ deviceMemory: 4 }, 'qwen-0.5b'],
     [{ deviceMemory: undefined }, 'qwen-1.5b'],
     [{ deviceMemory: 2 }, 'smollm-360m'],
-    // phones: small models only, none on low-memory devices
-    [{ mobile: true, deviceMemory: 4 }, null],
-    [{ mobile: true, deviceMemory: undefined }, null],
-    [{ mobile: true, deviceMemory: 8, maxBufferSize: 2 ** 28 }, null],
+    // phones: small models only; low-memory phones get the CPU model or cards
+    [{ mobile: true, deviceMemory: 4 }, cpu],
+    [{ mobile: true, deviceMemory: undefined }, cpu],
+    [{ mobile: true, deviceMemory: 8, maxBufferSize: 2 ** 28 }, cpu],
     [{ mobile: true, deviceMemory: 8, shaderF16: false }, 'smollm-360m'],
     [{ mobile: true, deviceMemory: 6 }, 'smollm-360m'],
     [{ mobile: true, deviceMemory: 8 }, 'qwen-0.5b'],
@@ -47,7 +57,8 @@ test('pickTier chooses by capability', () => {
 });
 test('fallbacks, auto download and auto routing', () => {
   assert.equal(fallbackTier('qwen-1.5b'), 'qwen-0.5b');
-  assert.equal(fallbackTier('smollm-360m'), null);
+  assert.equal(fallbackTier('smollm-360m'), cpu);
+  assert.equal(fallbackTier('tiny-30m'), null);
   assert.equal(autoDownload(desktop), true);
   assert.equal(autoDownload({ ...desktop, metered: true }), false);
   assert.equal(autoDownload({ ...desktop, mobile: true }), false);
@@ -120,7 +131,7 @@ test('mobile waits for consent unless the model is already cached', async () => 
   assert.equal(n.state.needsConsent, false);
   assert.equal(n.state.active, 'smollm-360m');
 });
-test('auto steps down when a model fails; no WebGPU marks every tier unsupported', async () => {
+test('auto steps down when a model fails; no WebGPU leaves only the CPU model', async () => {
   const a = fakeDeps(desktop, { fail: ['Qwen2.5-1.5B-Instruct-q4f16_1-MLC'] });
   const m = new ModelManager(a.deps);
   await m.init();
@@ -131,11 +142,21 @@ test('auto steps down when a model fails; no WebGPU marks every tier unsupported
   const b = fakeDeps({ ...desktop, webgpu: false });
   const n = new ModelManager(b.deps);
   await n.init();
-  assert.equal(n.state.active, null);
-  assert.ok(
-    Object.values(n.state.tiers).every((t) => t.status === 'unsupported'),
-  );
-  assert.deepEqual(b.calls, []);
+  await settle();
+  for (const t of TIERS)
+    assert.notEqual(n.state.tiers[t.id].status === 'unsupported', !needsWebGPU(t), t.id);
+  if (TINY_IN_AUTO) {
+    assert.equal(n.state.active, 'tiny-30m');
+    assert.deepEqual(b.calls, ['load tiny-30m']);
+  } else {
+    assert.equal(n.state.active, null);
+    assert.deepEqual(b.calls, []);
+  }
+  // picked by hand, the CPU model loads without WebGPU
+  n.choose('tiny-30m');
+  await settle();
+  assert.equal(n.state.active, 'tiny-30m');
+  assert.equal(n.state.tiers['tiny-30m'].status, 'ready');
 });
 test('choosing a model loads it and frees the previous one', async () => {
   const { deps, calls } = fakeDeps(desktop);
@@ -172,7 +193,8 @@ test('GPU loss steps down now and caps the tier on later visits', async () => {
   assert.deepEqual(b.calls, ['load Qwen2.5-0.5B-Instruct-q4f16_1-MLC']);
   assert.equal(capTier('qwen-0.5b', 'qwen-1.5b'), 'qwen-0.5b');
   assert.equal(capTier('qwen-0.5b', 'qwen-0.5b'), 'smollm-360m');
-  assert.equal(capTier('smollm-360m', 'smollm-360m'), null);
+  assert.equal(capTier('smollm-360m', 'smollm-360m'), cpu);
+  assert.equal(capTier('tiny-30m', 'tiny-30m'), null);
 });
 test('recognises WebGPU device-loss errors', () => {
   assert.ok(

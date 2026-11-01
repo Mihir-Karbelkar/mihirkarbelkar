@@ -1,0 +1,196 @@
+{
+  "about": "Questions about this site for scoring Tiny 30M (scripts/tiny-prompts.ts builds the prompts the chat would send). `expect`: the answer must contain one of these (case-insensitive). No `expect`: the site does not say, so the model should refuse. Keep in step with the site content.",
+  "questions": [
+    {
+      "q": "How many robots did the fleet platform support?",
+      "expect": [
+        "100"
+      ]
+    },
+    {
+      "q": "How did the robot fleet scale?",
+      "expect": [
+        "100"
+      ]
+    },
+    {
+      "q": "Where did Mihir work on robot fleets?",
+      "expect": [
+        "Ati Motors"
+      ]
+    },
+    {
+      "q": "Where is Mihir based?",
+      "expect": [
+        "Bengaluru"
+      ]
+    },
+    {
+      "q": "What is the Experimental Brain?",
+      "expect": [
+        "V-JEPA",
+        "observ",
+        "perception",
+        "actor",
+        "simulation"
+      ]
+    },
+    {
+      "q": "Which encoder does the Experimental Brain use?",
+      "expect": [
+        "V-JEPA"
+      ]
+    },
+    {
+      "q": "What does Mihir use for vector retrieval?",
+      "expect": [
+        "Pinecone"
+      ]
+    },
+    {
+      "q": "Which analytics database did Mihir connect the multi-agent workflows to?",
+      "expect": [
+        "ClickHouse"
+      ]
+    },
+    {
+      "q": "How much did Mihir reduce the frontend bundle size?",
+      "expect": [
+        "90"
+      ]
+    },
+    {
+      "q": "What is Prompt Studio built with?",
+      "expect": [
+        "Next.js",
+        "TypeScript",
+        "shadcn",
+        "AI SDK"
+      ]
+    },
+    {
+      "q": "Where can I find the Prompt Studio source code?",
+      "expect": [
+        "GitHub"
+      ]
+    },
+    {
+      "q": "What is Mihir working on right now?",
+      "expect": [
+        "smaller models",
+        "fine-tun",
+        "Experimental Brain",
+        "maths"
+      ]
+    },
+    {
+      "q": "Does Mihir know Kubernetes?",
+      "expect": [
+        "yes",
+        "Kubernetes"
+      ]
+    },
+    {
+      "q": "What method does Mihir use to fine-tune Qwen?",
+      "expect": [
+        "LoRA"
+      ]
+    },
+    {
+      "q": "How can I contact Mihir?",
+      "expect": [
+        "contact section",
+        "verified links",
+        "links"
+      ]
+    },
+    {
+      "q": "Which backend languages does Mihir use?",
+      "expect": [
+        "Go",
+        "Python"
+      ]
+    },
+    {
+      "q": "What is Superstocks.ai about?",
+      "expect": [
+        "public-markets",
+        "public markets",
+        "research"
+      ]
+    },
+    {
+      "q": "What was Mihir's role at Razorpay?",
+      "expect": [
+        "Product Development Engineer"
+      ]
+    },
+    {
+      "q": "When did Mihir work at WIZ?",
+      "expect": [
+        "2021",
+        "2023"
+      ]
+    },
+    {
+      "q": "What did Mihir build at Mad Street Den?",
+      "expect": [
+        "web app",
+        "apparel",
+        "outfit",
+        "React"
+      ]
+    },
+    {
+      "q": "How much did Mihir cut build times at Mad Street Den?",
+      "expect": [
+        "87.5"
+      ]
+    },
+    {
+      "q": "Where is WIZ based?",
+      "expect": [
+        "Chennai"
+      ]
+    },
+    {
+      "q": "How many bill views per day did the system serve?"
+    },
+    {
+      "q": "What availability did the production engineering work reach?"
+    },
+    {
+      "q": "What is Mihir's GitHub?"
+    },
+    {
+      "q": "Which embedding model does this chat use?"
+    },
+    {
+      "q": "What is Needle?"
+    },
+    {
+      "q": "What does Mihir's maths writing cover?"
+    },
+    {
+      "q": "What are Mihir's rates?"
+    },
+    {
+      "q": "Where did Mihir go to university?"
+    },
+    {
+      "q": "How many years of experience does Mihir have?"
+    },
+    {
+      "q": "What is Mihir's phone number?"
+    },
+    {
+      "q": "Did Mihir work at Google?"
+    },
+    {
+      "q": "What salary does Mihir expect?"
+    },
+    {
+      "q": "What is Mihir's favourite film?"
+    }
+  ]
+}

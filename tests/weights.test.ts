@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { prebuiltAppConfig } from '@mlc-ai/web-llm';
-import { TIERS } from '../src/lib/models.ts';
+import { TIERS, needsWebGPU } from '../src/lib/models.ts';
 import { downloadWeights, modelBaseUrl } from '../src/lib/weights.ts';
 
 const BASE = 'https://huggingface.co/mlc-ai/Test-MLC/resolve/main/';
@@ -53,8 +53,8 @@ function server(
   };
   return { fetcher, requests };
 }
-test('modelBaseUrl matches WebLLM for every tier', () => {
-  for (const t of TIERS)
+test('modelBaseUrl matches WebLLM for every WebGPU tier', () => {
+  for (const t of TIERS.filter(needsWebGPU))
     for (const id of [t.f16, t.f32]) {
       const rec = prebuiltAppConfig.model_list.find((m) => m.model_id === id)!;
       assert.equal(modelBaseUrl(rec.model), `${rec.model}/resolve/main/`);

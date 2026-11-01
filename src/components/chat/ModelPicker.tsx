@@ -68,13 +68,11 @@ export default function ModelPicker({
   const preferred = TIERS.find((t) => t.id === m.preferred);
   const label = !m.capability
     ? 'Checking this device…'
-    : !m.capability.webgpu
-      ? 'Search mode'
-      : loading
-        ? `${loading.t.label} · ${Math.round(loading.s.progress * 100)}%`
-        : active
-          ? `${m.choice === 'auto' ? 'Auto · ' : ''}${active.label}`
-          : 'Search mode';
+    : loading
+      ? `${loading.t.label} · ${Math.round(loading.s.progress * 100)}%`
+      : active
+        ? `${m.choice === 'auto' ? 'Auto · ' : ''}${active.label}`
+        : 'Search mode';
   const pick = (choice: TierId | 'auto') => {
     manager.choose(choice);
     setOpen(false);
@@ -107,14 +105,14 @@ export default function ModelPicker({
           <p className="model-menu-note">
             {m.capability?.webgpu
               ? 'Models run entirely in your browser. Weights are cached after the first download.'
-              : 'This browser has no WebGPU, so answers come from site search.'}
+              : 'This browser has no WebGPU, so answers come from site search. Tiny 30M (experimental) runs on the CPU if you pick it.'}
           </p>
           <button
             type="button"
             role="menuitemradio"
             aria-checked={m.choice === 'auto'}
             onClick={() => pick('auto')}
-            disabled={!m.capability?.webgpu}
+            disabled={!m.capability}
           >
             <span>
               <strong>Auto</strong>
