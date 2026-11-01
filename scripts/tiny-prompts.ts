@@ -24,11 +24,11 @@ const embed = async (texts: string[]) => {
 const vectors = await embed(chunks.map((c) => `${c.title}. ${c.text}`));
 const { questions } = JSON.parse(readFileSync('tests/tiny-site-eval.json', 'utf8'));
 const lines: string[] = [];
-for (const { q, expect } of questions as { q: string; expect?: string[] }[]) {
+for (const { q, expect, chat } of questions as { q: string; expect?: string[]; chat?: boolean }[]) {
   const [queryVector] = await embed([q]);
   const sources = hybridSearch(q, chunks, { queryVector, vectors, limit: 4 });
   // the sources too, so the scorer can try other passage rules
-  lines.push(JSON.stringify({ question: q, prompt: tinySources(sources), sources, expect: expect ?? null }));
+  lines.push(JSON.stringify({ question: q, prompt: tinySources(sources), sources, expect: expect ?? null, chat: !!chat }));
 }
 writeFileSync(out, lines.join('\n') + '\n');
 console.log(`Wrote ${lines.length} prompts to ${out}.`);

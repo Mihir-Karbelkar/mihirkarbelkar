@@ -1,5 +1,5 @@
 {
-  "about": "Questions about this site for scoring Tiny 30M (scripts/tiny-prompts.ts builds the prompts the chat would send). `expect`: the answer must contain one of these (case-insensitive). No `expect`: the site does not say, so the model should refuse. Keep in step with the site content.",
+  "about": "Questions about this site for scoring Tiny 30M (scripts/tiny-prompts.ts builds the prompts the chat would send). `expect`: the answer must contain one of these (case-insensitive). No `expect`: the site does not say, so the model should refuse. `chat`: small talk, which should get a short reply with no facts. Keep in step with the site content.",
   "questions": [
     {
       "q": "How many robots did the fleet platform support?",
@@ -154,6 +154,23 @@
       ]
     },
     {
+      "q": "What is superstocks",
+      "expect": [
+        "research",
+        "public-markets",
+        "public markets",
+        "SQL"
+      ]
+    },
+    {
+      "q": "Tell me about Mihir",
+      "expect": [
+        "software",
+        "engineer",
+        "Bengaluru"
+      ]
+    },
+    {
       "q": "How many bill views per day did the system serve?"
     },
     {
@@ -191,6 +208,18 @@
     },
     {
       "q": "What is Mihir's favourite film?"
+    },
+    {
+      "q": "Hello",
+      "chat": true
+    },
+    {
+      "q": "thanks!",
+      "chat": true
+    },
+    {
+      "q": "Who are you?",
+      "chat": true
     }
   ]
 }

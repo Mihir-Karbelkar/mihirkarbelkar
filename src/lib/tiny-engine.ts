@@ -5,9 +5,17 @@ import type { TinyRequest } from '../workers/tiny.worker';
  * local-engine.ts's WebLLM functions so the model manager can treat it as a tier.
  */
 type Progress = (text: string, value: number) => void;
+/**
+ * How a reply ended: refused (the sources don't say), answer (quote verified
+ * in passage `source`), chat (small talk), or unverified (nothing shown).
+ */
+export interface TinyReply {
+  kind: 'refused' | 'answer' | 'chat' | 'unverified';
+  source?: number;
+}
 interface Call {
   onToken: (t: string) => void;
-  done: (refused: boolean) => void;
+  done: (reply: TinyReply) => void;
   fail: (e: Error) => void;
 }
 let worker: Worker | null = null,
@@ -42,7 +50,7 @@ export function loadTiny(progress: Progress): Promise<void> {
         const call = calls.get(d.id);
         calls.delete(d.id);
         if (d.error) call?.fail(new Error(d.error));
-        else call?.done(!!d.refused);
+        else call?.done({ kind: d.kind, source: d.source });
       }
     });
     worker = w;
@@ -96,14 +104,14 @@ export async function deleteTiny() {
 }
 
 /**
- * Answers from `sources` (tinySources() text; empty for ordinary chat).
- * Streams tokens unless the model refuses; resolves with whether it refused.
+ * Answers from `sources` (tinySources() text). Streams the answer only once its
+ * quote is verified; resolves with how the reply ended.
  */
 export function answerTiny(
   sources: string,
   question: string,
   onToken: (token: string) => void,
-): Promise<boolean> {
+): Promise<TinyReply> {
   if (!worker || !ready) return Promise.reject(new Error('Load the on-device model first.'));
   const id = ++seq;
   return new Promise((done, fail) => {

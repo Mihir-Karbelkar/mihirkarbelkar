@@ -27,28 +27,32 @@ export function localEngine(manager: ModelManager): AnswerEngine | null {
   };
 }
 /**
- * Tiny 30M answers from the search results in its trained format; its
- * refusal becomes the site's "not covered" reply.
+ * Tiny 30M answers from the search results in its trained format, citing the
+ * passage it quoted; a refusal becomes the site's "not covered" reply and an
+ * unverified quote shows result cards.
  */
 function tinyEngine(): AnswerEngine {
-  const run = async (sources: string, query: string, onToken: (t: string) => void, signal: AbortSignal) => {
-    const stop = () => stopModel(TINY_MODEL);
-    signal.addEventListener('abort', stop);
-    try {
-      const refused = await answerTiny(sources, query, onToken);
-      if (signal.aborted) throw aborted();
-      if (refused) onToken(NOT_COVERED_REPLY);
-    } finally {
-      signal.removeEventListener('abort', stop);
-    }
-  };
   return {
     id: TINY_MODEL,
-    answer: (sources, query, onToken, signal) =>
-      run(tinySources(sources), query, onToken, signal),
-    // without search results it answers as ordinary chat
-    generate: (messages, onToken, signal) =>
-      run('', messages.filter((m) => m.role === 'user').at(-1)?.content ?? '', onToken, signal),
+    async answer(sources, query, onToken, signal) {
+      const stop = () => stopModel(TINY_MODEL);
+      signal.addEventListener('abort', stop);
+      try {
+        const passages = tinySources(sources);
+        const reply = await answerTiny(passages.text, query, onToken);
+        if (signal.aborted) throw aborted();
+        if (reply.kind === 'refused') onToken(NOT_COVERED_REPLY);
+        if (reply.kind === 'answer' && reply.source)
+          onToken(` [${passages.sourceOf[reply.source - 1] + 1}]`);
+        return { grounded: reply.kind !== 'unverified', chat: reply.kind === 'chat' };
+      } finally {
+        signal.removeEventListener('abort', stop);
+      }
+    },
+    // only ever called with search results (answer() above); without them there's nothing to cite
+    async generate(_messages, onToken) {
+      onToken(NOT_COVERED_REPLY);
+    },
   };
 }
 /**

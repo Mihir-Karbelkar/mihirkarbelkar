@@ -22,5 +22,14 @@ export interface AnswerEngine {
     query: string,
     onToken: (token: string) => void,
     signal: AbortSignal,
-  ): Promise<void>;
+  ): Promise<AnswerCheck>;
+}
+/**
+ * An engine's own verdict on its answer, replacing the pipeline's word-overlap
+ * check: `grounded` false shows result cards instead; `chat` marks a reply to
+ * small talk, shown without source links.
+ */
+export interface AnswerCheck {
+  grounded: boolean;
+  chat?: boolean;
 }

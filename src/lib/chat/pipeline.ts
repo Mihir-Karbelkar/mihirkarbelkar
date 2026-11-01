@@ -5,7 +5,7 @@ import type { Source } from '../prompt.ts';
 import { systemPrompt } from '../prompt.ts';
 import type { ChatMessage } from '../contracts.ts';
 import { GpuLostError } from '../models.ts';
-import type { AnswerEngine } from './engine.ts';
+import type { AnswerCheck, AnswerEngine } from './engine.ts';
 import {
   finalizeAnswer,
   isGrounded,
@@ -87,16 +87,16 @@ export function retrievalQuery(query: string, history: ChatMessage[]): string {
     : query;
 }
 /** Streams an answer, abandoning it if the first token or any later token takes too long. */
-function generateWithWatchdog(
-  start: (onToken: (t: string) => void, signal: AbortSignal) => Promise<void>,
+function generateWithWatchdog<T>(
+  start: (onToken: (t: string) => void, signal: AbortSignal) => Promise<T>,
   onToken: (t: string) => void,
   { firstToken, idle }: Budgets,
   outer?: AbortSignal,
-): Promise<void> {
+): Promise<T> {
   const controller = new AbortController();
   const abort = () => controller.abort();
   outer?.addEventListener('abort', abort);
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     let timer: ReturnType<typeof setTimeout>;
     const arm = (ms: number) => {
       clearTimeout(timer);
@@ -166,13 +166,14 @@ export async function runChat(
       reason: 'no-engine',
     };
   let text = '';
+  let check: AnswerCheck | void;
   try {
     const messages = [
       { role: 'system' as const, content: systemPrompt(sources) },
       ...history.slice(-2).map(({ role, content }) => ({ role, content })),
       { role: 'user' as const, content: query },
     ];
-    await generateWithWatchdog(
+    check = await generateWithWatchdog<AnswerCheck | void>(
       (onToken, s) =>
         engine.answer
           ? engine.answer(sources, query, onToken, s)
@@ -189,18 +190,19 @@ export async function runChat(
     if (e instanceof GpuLostError) deps.onGpuLost?.(engine.id);
     return { kind: 'cards', intro: deps.copy.error, sources, reason: 'error' };
   }
-  if (!isGrounded(text, sources))
+  if (check ? !check.grounded : !isGrounded(text, sources))
     return {
       kind: 'cards',
       intro: deps.copy.ungrounded,
       sources,
       reason: 'ungrounded',
     };
+  const shown = check?.chat ? [] : sources;
   return {
     kind: 'answer',
     text: plainAnswer(text),
-    segments: finalizeAnswer(text, sources),
-    sources,
+    segments: finalizeAnswer(text, shown),
+    sources: shown,
     engine: engine.id,
   };
 }

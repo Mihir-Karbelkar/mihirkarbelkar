@@ -3,13 +3,14 @@ import type { Source } from './prompt.ts';
  * Tiny 30M: the site's own question-answering model (pretrained from scratch,
  * fine-tuned to answer from retrieved passages and to refuse when they don't
  * say). One int8 ONNX graph on onnxruntime-web's WASM backend, so it runs on
- * devices without WebGPU. Built in the tiny-paraphraser repo (LEDGER §16–19).
+ * devices without WebGPU. Built in the tiny-paraphraser repo (LEDGER §16–21).
  *
- * Input: `<rag> SOURCE 1: title\ntext … <q> question <sep>`, or
- * `<ask> question <sep>` when there are no sources.
+ * Input: `<rag> SOURCE 1: title\ntext … <q> question <sep>`. Output (round 3,
+ * evidence first): `Source 2: "exact quote"\nAnswer: …`, `Source: none\nAnswer:
+ * The context does not say.` to refuse, or `Chat: …` for small talk.
  */
 /** Hugging Face model repo with the weights, pinned to a commit (Workers assets max out at 25 MB). */
-const HF = 'https://huggingface.co/Mihir-Karbelkar/tiny-30m-site-qa/resolve/7349ba1dd683d25912e2b83a9b724300025ecb7b';
+const HF = 'https://huggingface.co/Mihir-Karbelkar/tiny-30m-site-qa/resolve/bc1caa4ef872c9db2f372f6f8b080a67de56183f';
 export const TINY = {
   model: `${HF}/decoder.int8.onnx`,
   tokenizer: '/models/tiny30m/tokenizer.json',
@@ -20,12 +21,14 @@ export const TINY = {
   maxPromptTokens: 1800,
   maxNewTokens: 160,
   repetitionPenalty: 1.1,
-  /** The trained refusal, scored before answering. */
-  refusal: 'The context does not say.',
+  /** Scored before answering: the start of the trained refusal. */
+  refusal: 'Source: none',
+  /** "Source" then ":" is the refusal branch; banning that ":" makes the model cite a source. */
+  cite: 'Source:',
   /**
    * Refuse when p(refusal) is at least this, otherwise answer. At 0.3 the
-   * int8 model refuses ~96% of held-out questions its sources don't answer
-   * and wrongly refuses ~5% it could answer.
+   * model refuses ~96% of held-out questions its sources don't answer and
+   * wrongly refuses ~5% it could answer (refusal AUROC 0.99).
    */
   refusalThreshold: 0.3,
   /** Characters of passages per prompt (its training prompts held up to 3,000). */
@@ -61,21 +64,53 @@ export function thirdPerson(text: string, name = TINY.person) {
 /**
  * Search results in the model's training format, best first: each source's
  * chunks (joined with " … " by hybridSearch) become separate passages, kept
- * within the passage and character budgets.
+ * within the passage and character budgets. `sourceOf[i]` is the index in
+ * `sources` of passage i + 1, for citation links.
  */
 export function tinySources(sources: Source[]) {
-  const passages = sources.flatMap((s) =>
+  const passages = sources.flatMap((s, i) =>
     s.text
       .split(' … ')
-      .map((text) => ({ title: s.title, text: text.trim() }))
+      .map((text) => ({ title: s.title, text: text.trim(), source: i }))
       .filter((p) => p.text),
   );
   const blocks: string[] = [];
+  const sourceOf: number[] = [];
   let used = 0;
   for (const p of passages.slice(0, TINY.maxPassages)) {
     if (used + p.text.length > TINY.budget && blocks.length) break;
     blocks.push(`SOURCE ${blocks.length + 1}: ${p.title}\n${thirdPerson(p.text)}`);
+    sourceOf.push(p.source);
     used += p.text.length;
   }
-  return blocks.join('\n\n');
+  return { text: blocks.join('\n\n'), sourceOf };
+}
+
+export type Evidence =
+  | { kind: 'answer'; source: number; quote: string; answer: string }
+  | { kind: 'chat'; answer: string }
+  | { kind: 'pending' }
+  | { kind: 'malformed' };
+
+/** Reads the model's output so far: which kind of reply it is, and the answer text once it starts. */
+export function parseEvidence(text: string): Evidence {
+  const t = text.trimStart();
+  const chat = /^Chat:\s*([\s\S]*)$/.exec(t);
+  if (chat) return { kind: 'chat', answer: chat[1] };
+  const m = /^Source (\d+): "([^"\n]*)"\s*\nAnswer:\s?([\s\S]*)$/.exec(t);
+  if (m) return { kind: 'answer', source: +m[1], quote: m[2], answer: m[3] };
+  // still writing the evidence line: a prefix of `Source n: "…"\nAnswer: ` or `Chat:`
+  if (!t || 'Chat:'.startsWith(t) || 'Source'.startsWith(t)) return { kind: 'pending' };
+  if (/^Source \d*(:\s*("[^"\n]*("\s*(\n\s*(A|An|Ans|Answ|Answe|Answer)?)?)?)?)?$/.test(t))
+    return { kind: 'pending' };
+  return { kind: 'malformed' };
+}
+
+const squash = (s: string) =>
+  s.replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, ' ').trim().toLowerCase();
+
+/** Whether `quote` really occurs in passage `n` (1-based) of a tinySources() text. */
+export function quoteInSource(sources: string, n: number, quote: string) {
+  const block = sources.split(/\n\n(?=SOURCE \d+: )/)[n - 1];
+  return !!block && squash(quote).length > 2 && squash(block).includes(squash(quote));
 }
