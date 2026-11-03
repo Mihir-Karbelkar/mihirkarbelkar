@@ -1,4 +1,4 @@
-export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m' | 'tiny-30m';
+export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m' | 'ant-15m' | 'tiny-30m';
 export interface Tier {
   id: TierId;
   label: string;
@@ -10,12 +10,12 @@ export interface Tier {
   /** From WebLLM's prebuilt catalog (f16 build). */
   vramMB: number;
   /**
-   * `onnx`: the site's own small model (src/lib/tiny.ts) on onnxruntime-web's WASM backend, so it
-   * runs without WebGPU. Others are WebLLM models and need WebGPU.
+   * `onnx`: the site's own small models (src/lib/tiny.ts) on onnxruntime-web's WASM backend, so
+   * they run without WebGPU. Others are WebLLM models and need WebGPU.
    */
   runtime?: 'onnx';
 }
-/** Largest first. Auto routes to the first ready tier in this order. */
+/** Best first (WebLLM by size, then the site's own models). Auto routes to the first ready tier in this order. */
 export const TIERS: Tier[] = [
   {
     id: 'qwen-1.5b',
@@ -45,6 +45,16 @@ export const TIERS: Tier[] = [
     vramMB: 380,
   },
   {
+    id: 'ant-15m',
+    label: 'Ant 15M',
+    note: 'Runs without WebGPU',
+    f16: 'ant-15m',
+    f32: 'ant-15m',
+    downloadMB: 21,
+    vramMB: 0,
+    runtime: 'onnx',
+  },
+  {
     id: 'tiny-30m',
     label: 'Tiny 30M',
     note: 'Runs without WebGPU',
@@ -55,14 +65,15 @@ export const TIERS: Tier[] = [
     runtime: 'onnx',
   },
 ];
-/** Whether a tier can only run on WebGPU (all but the site's own WASM model). */
+/** Whether a tier can only run on WebGPU (all but the site's own WASM models). */
 export const needsWebGPU = (t: Tier) => t.runtime !== 'onnx';
 /**
- * Whether Auto uses Tiny 30M (on devices without WebGPU, and as the last
- * fallback). Off for now: on this site's own questions it answers about 10 of
- * 22 right but shows a confident wrong answer about 12 times in 35 that the
- * grounding check can't catch, while the result cards it would replace are
- * never wrong (tiny-paraphraser LEDGER §20). It can still be picked by hand.
+ * Whether Auto uses the site's own models (Ant 15M on devices without WebGPU,
+ * then Tiny 30M as the last fallback). Off for now: on this site's own
+ * questions Ant answers 9 of 24 right but shows a confident wrong answer about
+ * as often, which the grounding check can't catch, while the result cards it
+ * would replace are never wrong (tiny-paraphraser LEDGER §20, §31). They can
+ * still be picked by hand.
  */
 export const TINY_IN_AUTO = false;
 export interface Capability {
@@ -83,11 +94,11 @@ const GB = 1024 ** 3;
 /**
  * The tier to download first on this device. Without WebGPU, or on a phone
  * too small to hold a WebLLM model without the GPU being dropped mid-answer,
- * that is Tiny 30M (on the CPU) when TINY_IN_AUTO, else nothing (result
+ * that is Ant 15M (on the CPU) when TINY_IN_AUTO, else nothing (result
  * cards). Phones get the small models only.
  */
 export function pickTier(cap: Capability): TierId | null {
-  const cpu = TINY_IN_AUTO ? 'tiny-30m' : null;
+  const cpu = TINY_IN_AUTO ? 'ant-15m' : null;
   if (!cap.webgpu) return cpu;
   if (cap.mobile) {
     const memory = cap.deviceMemory ?? 4;

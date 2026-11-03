@@ -12,8 +12,8 @@ import {
   stopTiny,
   unloadTiny,
 } from './tiny-engine';
-/** Model id of the site's own WASM model (the `tiny-30m` tier); everything else is WebLLM. */
-export const TINY_MODEL = 'tiny-30m';
+import { isOnnxModel } from './tiny';
+export { isOnnxModel };
 export const LOCAL_MODEL = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';
 type Progress = (text: string, value: number) => void;
 interface Slot {
@@ -34,7 +34,7 @@ export function loadModel(
   model: string,
   progress: Progress,
 ): Promise<WebWorkerMLCEngine | void> {
-  if (model === TINY_MODEL) return loadTiny(progress);
+  if (isOnnxModel(model)) return loadTiny(model, progress);
   const existing = slots.get(model);
   if (existing)
     return existing.engine
@@ -127,7 +127,7 @@ export function loadModel(
 }
 export const isLoaded = (model: string) => !!slots.get(model)?.engine;
 export async function isCached(model: string): Promise<boolean> {
-  if (model === TINY_MODEL) return isTinyCached();
+  if (isOnnxModel(model)) return isTinyCached(model);
   try {
     const { hasModelInCache } = await import('@mlc-ai/web-llm');
     return await hasModelInCache(model);
@@ -137,7 +137,7 @@ export async function isCached(model: string): Promise<boolean> {
 }
 /** Stops a load or frees a loaded model's GPU memory. Downloaded weights stay cached. */
 export function unloadModel(model: string) {
-  if (model === TINY_MODEL) return unloadTiny();
+  if (isOnnxModel(model)) return unloadTiny(model);
   const slot = slots.get(model);
   if (!slot) return;
   slots.delete(model);
@@ -148,18 +148,18 @@ export function unloadModel(model: string) {
 }
 /** Downloads a model into the browser cache without keeping it in GPU memory. */
 export async function prefetchModel(model: string, progress: Progress) {
-  if (model === TINY_MODEL)
-    return (await isTinyCached()) ? undefined : prefetchTiny(progress);
+  if (isOnnxModel(model))
+    return (await isTinyCached(model)) ? undefined : prefetchTiny(model, progress);
   if (slots.has(model) || (await isCached(model))) return;
   await loadModel(model, progress);
   unloadModel(model);
 }
 export function stopModel(model: string) {
-  if (model === TINY_MODEL) return stopTiny();
+  if (isOnnxModel(model)) return stopTiny(model);
   slots.get(model)?.engine?.interruptGenerate();
 }
 export async function deleteModel(model: string) {
-  if (model === TINY_MODEL) return deleteTiny();
+  if (isOnnxModel(model)) return deleteTiny(model);
   unloadModel(model);
   const { deleteModelAllInfoInCache } = await import('@mlc-ai/web-llm');
   await deleteModelAllInfoInCache(model);

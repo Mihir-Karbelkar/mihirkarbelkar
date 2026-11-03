@@ -1,7 +1,9 @@
 /**
- * Tiny 30M in onnxruntime-web (WASM). One graph reads the prompt and
- * generates: decoder(input_ids, past) -> last-position logits and the grown
- * cache, which starts with one dummy slot the graph masks out.
+ * The site's own models (Ant 15M, Tiny 30M; src/lib/tiny.ts) in onnxruntime-web
+ * (WASM). One graph reads the prompt and generates: decoder(input_ids, *states)
+ * -> last-position logits and the next states (attention caches start with one
+ * dummy slot the graph masks out; Mamba2 states are fixed-size). The prompt is
+ * read in `promptChunk`-token calls, which carry the states over exactly.
  *
  * Evidence first: it scores the refusal ("Source: none") and refuses when that
  * is at least `refusalThreshold` likely. Otherwise it must cite a source
@@ -11,7 +13,14 @@
  */
 import * as ort from 'onnxruntime-web/wasm';
 import { PreTrainedTokenizer } from '@huggingface/transformers';
-import { TINY, parseEvidence, quoteInSource } from '../lib/tiny';
+import {
+  ONNX_MODELS,
+  TINY,
+  parseEvidence,
+  quoteInSource,
+  type OnnxModel,
+  type OnnxModelId,
+} from '../lib/tiny';
 
 ort.env.wasm.wasmPaths = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ort.env.versions.web}/dist/`;
 // threads need SharedArrayBuffer, i.e. a cross-origin isolated page
@@ -22,9 +31,11 @@ ort.env.wasm.numThreads = self.crossOriginIsolated
 type Loaded = { decoder: ort.InferenceSession; tokenizer: PreTrainedTokenizer };
 let ready: Promise<Loaded> | null = null;
 let stopped = 0;
+/** Set by the first load message; one worker runs one model. */
+let cfg: OnnxModel = ONNX_MODELS['tiny-30m'];
 
 export type TinyRequest =
-  | { type: 'load'; prefetch?: boolean }
+  | { type: 'load'; model: OnnxModelId; prefetch?: boolean }
   | { type: 'stop' }
   | { type: 'answer'; id: number; sources: string; question: string };
 
@@ -33,7 +44,7 @@ const progress = (value: number, text: string) =>
 
 /** Fetches through the Cache API, so the weights download once per browser. */
 async function download(url: string, share: [number, number]) {
-  const cache = await caches.open(TINY.cache).catch(() => null);
+  const cache = await caches.open(cfg.cache).catch(() => null);
   const cached = await cache?.match(url);
   if (cached) return new Uint8Array(await cached.arrayBuffer());
   const response = await fetch(url);
@@ -66,7 +77,7 @@ async function download(url: string, share: [number, number]) {
 async function load(): Promise<Loaded> {
   const [tokenizerBytes, decoderBytes] = await Promise.all([
     download(TINY.tokenizer, [0, 0]),
-    download(TINY.model, [0, 0.95]),
+    download(cfg.model, [0, 0.95]),
   ]);
   progress(0.97, 'Starting the model…');
   return {
@@ -83,12 +94,29 @@ async function load(): Promise<Loaded> {
 
 const int64 = (ids: number[]) =>
   new ort.Tensor('int64', BigInt64Array.from(ids.map(BigInt)), [1, ids.length]);
-const emptyPast = () =>
-  new ort.Tensor(
-    'float32',
-    new Float32Array(TINY.kvShape.reduce((a, b) => a * b, 1)),
-    TINY.kvShape,
+type States = ort.Tensor[];
+const emptyStates = (): States =>
+  cfg.states.map(
+    (s) => new ort.Tensor('float32', new Float32Array(s.shape.reduce((a, b) => a * b, 1)), s.shape),
   );
+
+/** One call: `ids` after `states` -> the last position's logits and the next states. */
+async function step(decoder: ort.InferenceSession, ids: number[], states: States) {
+  const feeds: Record<string, ort.Tensor> = { input_ids: int64(ids) };
+  cfg.states.forEach((s, i) => (feeds[s.input] = states[i]));
+  const out = await decoder.run(feeds);
+  return {
+    logits: out.logits.data as Float32Array,
+    states: cfg.states.map((s) => out[s.output]),
+  };
+}
+
+async function readPrompt(decoder: ort.InferenceSession, ids: number[]) {
+  const size = cfg.promptChunk || ids.length;
+  let r = { logits: new Float32Array(0), states: emptyStates() };
+  for (let i = 0; i < ids.length; i += size) r = await step(decoder, ids.slice(i, i + size), r.states);
+  return r;
+}
 
 function logSoftmaxAt(logits: Float32Array, id: number) {
   let max = -Infinity;
@@ -108,19 +136,17 @@ async function answer(id: number, sources: string, question: string) {
   const s = encode(sources).slice(0, Math.max(0, TINY.maxPromptTokens - q.length - 3));
   const prompt = [sp.rag, ...s, sp.q, ...q, sp.sep];
 
-  let out = await decoder.run({ input_ids: int64(prompt), past: emptyPast() });
-  const first = out.logits.data as Float32Array;
-  const afterPrompt = out.present;
+  const { logits: first, states: afterPrompt } = await readPrompt(decoder, prompt);
 
   // p(refusal) is the product of its token probabilities; stop once it's clearly below threshold
   const refusal = encode(TINY.refusal);
   const minLog = Math.log(TINY.refusalThreshold);
   let logp = logSoftmaxAt(first, refusal[0]);
-  let past = afterPrompt;
+  let states = afterPrompt;
   for (let i = 1; i < refusal.length && logp >= minLog; i++) {
-    const r = await decoder.run({ input_ids: int64([refusal[i - 1]]), past });
-    past = r.present;
-    logp += logSoftmaxAt(r.logits.data as Float32Array, refusal[i]);
+    const r = await step(decoder, [refusal[i - 1]], states);
+    states = r.states;
+    logp += logSoftmaxAt(r.logits, refusal[i]);
   }
   if (logp >= minLog) {
     self.postMessage({ type: 'done', id, kind: 'refused' });
@@ -131,7 +157,7 @@ async function answer(id: number, sources: string, question: string) {
   const cite = encode(TINY.cite);
   const generated: number[] = [];
   let logits = first;
-  past = afterPrompt;
+  states = afterPrompt;
   let sent = 0;
   let source = 0;
   let verdict: 'answer' | 'chat' | 'unverified' = 'unverified';
@@ -156,9 +182,7 @@ async function answer(id: number, sources: string, question: string) {
       self.postMessage({ type: 'token', id, text: e.answer.slice(sent) });
       sent = e.answer.length;
     }
-    out = await decoder.run({ input_ids: int64([next]), past });
-    past = out.present;
-    logits = out.logits.data as Float32Array;
+    ({ logits, states } = await step(decoder, [next], states));
   }
   self.postMessage({ type: 'done', id, kind: sent ? verdict : 'unverified', source });
 }
@@ -170,9 +194,10 @@ self.onmessage = async (event: MessageEvent<TinyRequest>) => {
     return;
   }
   if (data.type === 'load') {
+    cfg = ONNX_MODELS[data.model];
     try {
       if (data.prefetch) {
-        await Promise.all([download(TINY.tokenizer, [0, 0]), download(TINY.model, [0, 1])]);
+        await Promise.all([download(TINY.tokenizer, [0, 0]), download(cfg.model, [0, 1])]);
       } else {
         ready ??= load();
         await ready;

@@ -1,7 +1,7 @@
 import { readTokens } from '../client-stream';
-import { TINY_MODEL, generate, stopModel } from '../local-engine';
+import { generate, isOnnxModel, stopModel } from '../local-engine';
 import { NOT_COVERED_REPLY } from '../prompt';
-import { tinySources } from '../tiny';
+import { tinySources, type OnnxModelId } from '../tiny';
 import { answerTiny } from '../tiny-engine';
 import type { ModelManager } from '../model-manager';
 import type { AnswerEngine } from './engine';
@@ -11,7 +11,7 @@ export function localEngine(manager: ModelManager): AnswerEngine | null {
   const tier = manager.getState().active;
   if (!tier) return null;
   const model = manager.model(tier);
-  if (model === TINY_MODEL) return tinyEngine();
+  if (isOnnxModel(model)) return tinyEngine(model);
   return {
     id: tier,
     async generate(messages, onToken, signal) {
@@ -27,19 +27,19 @@ export function localEngine(manager: ModelManager): AnswerEngine | null {
   };
 }
 /**
- * Tiny 30M answers from the search results in its trained format, citing the
- * passage it quoted; a refusal becomes the site's "not covered" reply and an
- * unverified quote shows result cards.
+ * The site's own models (Ant 15M, Tiny 30M) answer from the search results in
+ * their trained format, citing the passage they quoted; a refusal becomes the
+ * site's "not covered" reply and an unverified quote shows result cards.
  */
-function tinyEngine(): AnswerEngine {
+function tinyEngine(model: OnnxModelId): AnswerEngine {
   return {
-    id: TINY_MODEL,
+    id: model,
     async answer(sources, query, onToken, signal) {
-      const stop = () => stopModel(TINY_MODEL);
+      const stop = () => stopModel(model);
       signal.addEventListener('abort', stop);
       try {
         const passages = tinySources(sources);
-        const reply = await answerTiny(passages.text, query, onToken);
+        const reply = await answerTiny(model, passages.text, query, onToken);
         if (signal.aborted) throw aborted();
         if (reply.kind === 'refused') onToken(NOT_COVERED_REPLY);
         if (reply.kind === 'answer' && reply.source)

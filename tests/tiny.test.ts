@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { PreTrainedTokenizer } from '@huggingface/transformers';
-import { TINY, parseEvidence, quoteInSource, thirdPerson, tinySources } from '../src/lib/tiny.ts';
+import { ONNX_MODELS, TINY, isOnnxModel, parseEvidence, quoteInSource, thirdPerson, tinySources } from '../src/lib/tiny.ts';
 
 // ids from the Python tokenizers library Tiny 30M was trained with (tests/tiny-tokens.json)
 test('the browser tokenizer matches the one Tiny 30M was trained with', () => {
@@ -60,4 +60,16 @@ test('quotes are checked against the passage they cite', () => {
   assert.ok(!quoteInSource(sources, 2, 'scaled to 100 robots'), 'wrong passage');
   assert.ok(!quoteInSource(sources, 1, 'scaled to 4,000 robots'), 'not in the text');
   assert.ok(!quoteInSource(sources, 3, 'anything'), 'no such passage');
+});
+
+test('Ant 15M states follow its layer pattern and match the exported graph', () => {
+  const ant = ONNX_MODELS['ant-15m'];
+  // tiny-paraphraser's export (ant_export.py): kv per attention layer, conv + ssm per Mamba2 layer
+  assert.equal(ant.states.length, 12);
+  assert.deepEqual(ant.states.slice(0, 4).map((s) => s.input), ['kv0', 'conv1', 'ssm2', 'kv3']);
+  assert.deepEqual(ant.states[0].shape, [2, 1, 2, 1, 64]);
+  assert.deepEqual(ant.states[1].shape, [1, 768, 3]);
+  assert.deepEqual(ant.states[2].shape, [1, 10, 64, 64]);
+  assert.equal(ant.states[11].output, 'new_ssm11');
+  assert.ok(isOnnxModel('ant-15m') && isOnnxModel('tiny-30m') && !isOnnxModel('qwen-0.5b'));
 });
