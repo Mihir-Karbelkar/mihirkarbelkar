@@ -87,37 +87,16 @@ export const TINY = {
   budget: 2000,
   /** Passages per prompt: weak extra passages mislead it more than they help. */
   maxPassages: 3,
-  /** The site says "I"; visitors ask about Mihir by name. */
-  person: 'Mihir',
 };
-
-const FIRST_PERSON: [RegExp, string][] = [
-  [/\bI[’']m\b/g, '$ is'],
-  [/\bI[’']ve\b/g, '$ has'],
-  [/\bI[’']d\b/g, '$ would'],
-  [/\bI[’']ll\b/g, '$ will'],
-  [/\bI\b/g, '$'],
-  [/\b[Mm]y\b/g, '$’s'],
-  [/\bme\b/g, '$'],
-];
-
-/**
- * "I’ve worked on…" → "Mihir has worked on…". The model answers questions
- * about Mihir far better from third-person sources (+2–3 of 23 site
- * questions in tiny-paraphraser's site_eval.py).
- */
-export function thirdPerson(text: string, name = TINY.person) {
-  return FIRST_PERSON.reduce(
-    (t, [pattern, by]) => t.replace(pattern, by.replace('$', name)),
-    text,
-  );
-}
 
 /**
  * Search results in the model's training format, best first: each source's
  * chunks (joined with " … " by hybridSearch) become separate passages, kept
  * within the passage and character budgets. `sourceOf[i]` is the index in
- * `sources` of passage i + 1, for citation links.
+ * `sources` of passage i + 1, for citation links. The text reaches the model as
+ * written: both models were trained on first-person pages with third-person
+ * questions, and rewriting "I" to the name garbled it ("Mihir build") and cost
+ * Ant 2 of 24 site answers (tiny-paraphraser LEDGER §33).
  */
 export function tinySources(sources: Source[]) {
   const passages = sources.flatMap((s, i) =>
@@ -131,7 +110,7 @@ export function tinySources(sources: Source[]) {
   let used = 0;
   for (const p of passages.slice(0, TINY.maxPassages)) {
     if (used + p.text.length > TINY.budget && blocks.length) break;
-    blocks.push(`SOURCE ${blocks.length + 1}: ${p.title}\n${thirdPerson(p.text)}`);
+    blocks.push(`SOURCE ${blocks.length + 1}: ${p.title}\n${p.text}`);
     sourceOf.push(p.source);
     used += p.text.length;
   }
