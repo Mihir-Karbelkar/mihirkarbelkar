@@ -12,7 +12,10 @@ const choices: { value: Answer; label: string }[] = [
   { value: 'no', label: 'No' },
   { value: 'unsure', label: 'Don’t know' },
 ];
-const CTA = 'Email me about a cost audit';
+/** The docked button: sends the answers by email. */
+const SEND = 'Send me your answers';
+/** The floating button: takes the reader to the questions. */
+const FIND = 'Find where you need help';
 
 /**
  * The interactive audit. Its email button floats at the bottom of the screen
@@ -100,7 +103,7 @@ export default function CostAudit() {
     );
 
   return (
-    <div className="cost-audit">
+    <div className="cost-audit" id="cost-audit">
       <ol className="audit-list">
         {auditQuestions.map((q, i) => (
           <li key={q} className="audit-item">
@@ -142,7 +145,7 @@ export default function CostAudit() {
           aria-hidden={!dockShown}
           tabIndex={dockShown ? 0 : -1}
         >
-          {CTA} <span aria-hidden="true">→</span>
+          {SEND} <span aria-hidden="true">→</span>
         </a>
       </div>
 
@@ -151,11 +154,19 @@ export default function CostAudit() {
           <a
             ref={float}
             className={`button primary audit-cta audit-float${floatShown ? ' is-shown' : ''}`}
-            href={href}
+            href="#cost-audit"
+            onClick={(e) => {
+              e.preventDefault();
+              const box = document.getElementById('cost-audit');
+              box?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              box
+                ?.querySelector<HTMLButtonElement>('.audit-choice')
+                ?.focus({ preventScroll: true });
+            }}
             aria-hidden={!floatShown}
             tabIndex={floatShown ? 0 : -1}
           >
-            {CTA} <span aria-hidden="true">→</span>
+            {FIND} <span aria-hidden="true">↓</span>
           </a>,
           document.body,
         )}

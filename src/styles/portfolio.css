@@ -2568,6 +2568,9 @@ button:focus-visible {
   text-decoration: none !important;
   white-space: nowrap;
 }
+.cost-audit {
+  scroll-margin-top: 24px;
+}
 .audit-float {
   position: fixed;
   right: 24px;
@@ -2599,6 +2602,11 @@ button:focus-visible {
     bottom: 16px;
     width: fit-content;
     margin: 0 auto;
+  }
+  .audit-cta {
+    font-size: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
   .audit-result .audit-cta {
     display: flex;
