@@ -2594,6 +2594,9 @@ button:focus-visible {
   }
   .audit-choice {
     flex: 1;
+    white-space: nowrap;
+    padding-left: 6px;
+    padding-right: 6px;
   }
   /* centred on phones: margins, not transform, so the glide can use transform */
   .audit-float {
@@ -2617,5 +2620,22 @@ button:focus-visible {
 @media print {
   .audit-float {
     display: none;
+  }
+}
+.cost-audit .audit-cta.is-urgent {
+  animation: audit-pulse 2.2s ease-out infinite;
+}
+@keyframes audit-pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 12px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cost-audit .audit-cta.is-urgent {
+    animation: none;
   }
 }

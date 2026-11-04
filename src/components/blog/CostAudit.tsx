@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
+  auditCta,
   auditMailto,
   auditQuestions,
   openItems,
@@ -12,8 +13,6 @@ const choices: { value: Answer; label: string }[] = [
   { value: 'no', label: 'No' },
   { value: 'unsure', label: 'Don’t know' },
 ];
-/** The docked button: sends the answers by email. */
-const SEND = 'Send me your answers';
 /** The floating button: takes the reader to the questions. */
 const FIND = 'Find your AI cost leaks';
 
@@ -29,6 +28,7 @@ export default function CostAudit() {
   const answered = answers.filter(Boolean).length;
   const open = openItems(answers);
   const href = auditMailto(answers);
+  const cta = auditCta(answers);
 
   const dock = useRef<HTMLAnchorElement>(null);
   const float = useRef<HTMLAnchorElement>(null);
@@ -47,7 +47,7 @@ export default function CostAudit() {
     let io: IntersectionObserver | undefined;
     if (el && 'IntersectionObserver' in window) {
       io = new IntersectionObserver(([e]) => setDocked(e.isIntersecting), {
-        rootMargin: '0px 0px -12% 0px',
+        rootMargin: '0px 0px -4% 0px',
       });
       io.observe(el);
     }
@@ -131,7 +131,9 @@ export default function CostAudit() {
             ? 'Tap an answer for each question.'
             : open === 0 && answered === auditQuestions.length
               ? 'All seven are yes. Your model spend is under control.'
-              : `${open} likely saving${open === 1 ? '' : 's'} so far, from ${answered} of ${auditQuestions.length} answered.`}
+              : cta.urgency === 'urgent'
+                ? `${open} of ${answered} answers point to money leaking now. That is worth fixing soon.`
+                : `${open} likely saving${open === 1 ? '' : 's'} so far, from ${answered} of ${auditQuestions.length} answered.`}
         </p>
         <p className="audit-note">
           The button below opens an email to me with your answers already in it.
@@ -139,13 +141,13 @@ export default function CostAudit() {
         </p>
         <a
           ref={dock}
-          className="button primary audit-cta"
+          className={`button primary audit-cta is-${cta.urgency}`}
           href={href}
           style={{ visibility: dockShown ? 'visible' : 'hidden' }}
           aria-hidden={!dockShown}
           tabIndex={dockShown ? 0 : -1}
         >
-          {SEND} <span aria-hidden="true">→</span>
+          {cta.label} <span aria-hidden="true">→</span>
         </a>
       </div>
 

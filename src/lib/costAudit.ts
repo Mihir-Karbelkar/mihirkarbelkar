@@ -1,4 +1,4 @@
-/** The 30-minute cost audit from "The inference bill", and the email it prefills. */
+/** The quick 5-minute cost audit from "The inference bill", and the email it prefills. */
 export type Answer = 'yes' | 'no' | 'unsure';
 
 export const AUDIT_EMAIL = 'mihirkarbelkar@gmail.com';
@@ -51,4 +51,32 @@ export function auditMailto(answers: (Answer | undefined)[]): string {
           '',
         ];
   return `mailto:${AUDIT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+}
+
+export type Urgency = 'calm' | 'some' | 'urgent';
+
+/**
+ * The email button's label, which gets more pressing as the "no" and
+ * "don't know" answers add up. Kept short enough for one line on a phone.
+ */
+export function auditCta(answers: (Answer | undefined)[]): {
+  label: string;
+  urgency: Urgency;
+} {
+  const answered = answers.filter(Boolean).length;
+  const open = openItems(answers);
+  if (open === 0)
+    return {
+      label:
+        answered === auditQuestions.length
+          ? 'Get a second opinion'
+          : 'Get help with your AI costs',
+      urgency: 'calm',
+    };
+  if (open === 1) return { label: 'Fix your 1 cost leak', urgency: 'some' };
+  if (open <= 3)
+    return { label: `Fix your ${open} cost leaks`, urgency: 'some' };
+  if (open <= 5)
+    return { label: `${open} leaks: get help now`, urgency: 'urgent' };
+  return { label: `${open} leaks: let’s talk today`, urgency: 'urgent' };
 }
