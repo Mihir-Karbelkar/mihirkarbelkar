@@ -36,11 +36,17 @@ export default function CostAudit() {
   const [docked, setDocked] = useState(false);
   const [moving, setMoving] = useState(false);
   const [pastIntro, setPastIntro] = useState(false);
+  // Is the audit above the screen? Then the floating button points up.
+  const [auditAbove, setAuditAbove] = useState(false);
   const first = useRef(true);
 
   useEffect(() => {
     setMounted(true);
-    const onScroll = () => setPastIntro(scrollY > 480);
+    const onScroll = () => {
+      setPastIntro(scrollY > 480);
+      const box = document.getElementById('cost-audit');
+      if (box) setAuditAbove(box.getBoundingClientRect().bottom < 0);
+    };
     onScroll();
     addEventListener('scroll', onScroll, { passive: true });
     const el = dock.current;
@@ -168,7 +174,7 @@ export default function CostAudit() {
             aria-hidden={!floatShown}
             tabIndex={floatShown ? 0 : -1}
           >
-            {FIND} <span aria-hidden="true">↓</span>
+            {FIND} <span aria-hidden="true">{auditAbove ? '↑' : '↓'}</span>
           </a>,
           document.body,
         )}
