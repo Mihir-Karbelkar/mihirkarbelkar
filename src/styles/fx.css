@@ -159,6 +159,10 @@ html.js-reveal [data-reveal] {
   }
 }
 @media (max-width: 700px) {
+  /* keep the eyebrow clear of the branch in the top-right corner */
+  .hero-copy > .eyebrow {
+    padding-right: 120px;
+  }
   .sakura-branch {
     top: -8px;
     width: 150px;

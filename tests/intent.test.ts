@@ -10,10 +10,14 @@ const target = (q: string) => {
 };
 test('navigation requests scroll instead of generating', () => {
   const cases: [string, string][] = [
-    ['Show me Superstocks', '#project-public-markets-agents'],
-    ['show me superstocks.ai', '#project-public-markets-agents'],
+    [
+      'Show me the SQL agents for public-markets research',
+      '#project-public-markets-agents',
+    ],
     ['Take me to the Experimental Brain', '#project-experimental-brain'],
-    ['open prompt studio', '#project-prompt-studio'],
+    ['open billing platform at scale', '#project-high-scale-platforms'],
+    ['services', '#services'],
+    ['hire you', '#services'],
     ['projects', '#work'],
     ['Show me your work', '#work'],
     ['contact', '#contact'],
@@ -28,7 +32,7 @@ test('questions and tours', () => {
   for (const q of [
     'How did the robot fleet scale?',
     'What’s the tech stack?',
-    'What did you build at Superstocks with Pinecone?',
+    'What did you build with Pinecone at the stealth startup?',
     'what is LoRA',
     '',
   ])

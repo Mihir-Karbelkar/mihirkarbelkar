@@ -44,3 +44,27 @@ test('career data drives the timeline and the chat', () => {
   const all = JSON.stringify(chatSources);
   assert.ok(!all.includes('99.98') && !all.includes('900,000'));
 });
+
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+test('positioning: current roles, no retired claims or names', () => {
+  const stealth = career.roles.find((r) => r.id === 'stealth-startup')!;
+  assert.equal(roleYears(stealth), '2026–Present');
+  const files = (dir: string): string[] =>
+    readdirSync(dir).flatMap((f) => {
+      const p = join(dir, f);
+      return statSync(p).isDirectory() ? files(p) : [p];
+    });
+  const text = files('src/data')
+    .concat(files('src/pages'), files('src/components'))
+    .map((f) => readFileSync(f, 'utf8'))
+    .join('\n');
+  for (const banned of [
+    /superstocks/i,
+    /99\.9\d?%/,
+    /cloudfront/i,
+    /frontend engineer/i,
+  ])
+    assert.ok(!banned.test(text), String(banned));
+  assert.ok(featuredSlugs.includes('knowledge-injection'));
+});

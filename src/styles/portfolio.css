@@ -818,6 +818,40 @@ button:focus-visible {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
 }
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 30px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+.service-card:first-child {
+  background: color-mix(in srgb, var(--lavender) 60%, var(--paper));
+}
+.service-card h3 {
+  font-size: 26px;
+}
+.service-card p {
+  color: var(--muted);
+}
+.services-cta {
+  margin-top: 28px;
+}
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .notes-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

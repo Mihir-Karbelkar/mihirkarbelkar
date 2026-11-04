@@ -1,13 +1,40 @@
 {
   "roles": [
     {
+      "id": "stealth-startup",
+      "company": "Stealth Startup (public markets / equities)",
+      "location": "Bengaluru",
+      "positions": [{ "title": "Lead Software Engineer", "start": "2026-03" }],
+      "highlights": [
+        "Building LLM systems for equity-market workflows: SQL agents over 14 relational tables, RAG with Pinecone, and ClickHouse for high-volume market and analytics queries.",
+        "Security guardrails on the SQL agent: allowlisted schemas and operations, and blocked destructive or out-of-scope statements, so model output cannot freely mutate or exfiltrate data.",
+        "ReAct and supervisor multi-agent patterns so planning, tool use and specialist agents stay coordinated.",
+        "Designed an internal Go agent-orchestration library with typed state, graph-style control flow, composable nodes and durable runs.",
+        "Built a scraping service from scratch to ingest market data into the pipeline."
+      ]
+    },
+    {
+      "id": "freelance",
+      "company": "Freelance",
+      "positions": [
+        { "title": "LLM fine-tuning & AI engineer", "start": "2026-03" }
+      ],
+      "highlights": [
+        "Taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and stays within about 1 point of base on IFEval, GSM8K and MMLU.",
+        "Book-1 retention held at 0.95–0.99 across three books. Delivered as a frozen, hash-verified package the client re-runs on their own GPUs.",
+        "Data side: Q&A and trap-question generation with open teacher models on vLLM, deduplication, and contamination checks against benchmark test sets. Evaluation with lm-evaluation-harness, custom exams and LLM-as-judge."
+      ]
+    },
+    {
       "id": "ati-motors",
-      "company": "Ati Motors",
+      "company": "ATI Motors (robotics)",
       "location": "Bengaluru",
       "positions": [
-        { "title": "Full Stack Engineer", "start": "2025-12", "end": "2026-02" }
+        { "title": "Fullstack Engineer", "start": "2025-11", "end": "2026-02" }
       ],
-      "highlights": []
+      "highlights": [
+        "A queue redesign took the robot fleet platform from 8–10 to 100 concurrent robots on the same 4-core / 16 GB hardware."
+      ]
     },
     {
       "id": "razorpay",
@@ -15,33 +42,26 @@
       "location": "Bengaluru",
       "positions": [
         {
-          "title": "Product Development Engineer 2",
+          "title": "Product Development Engineer II",
           "start": "2023-12",
           "end": "2025-11"
         }
       ],
       "highlights": [
-        "Built interactive dashboards for digital billing and CRM: customer engagement insights, campaign creation and multi-tenant bill management, using Node.js, Express and Kubernetes.",
-        "Improved frontend performance and observability through infrastructure upgrades, including a React 18 migration, reducing bundle size by 90%, improving page-load metrics and cutting CloudFront costs by 50%.",
-        "Helped raise application availability to 99.92% by setting up real-time alerts and observability with Coralogix, Grafana and Coralogix RUM.",
-        "Worked on a microfrontend architecture to migrate a legacy site to Razorpay PG.",
-        "Migrated from Create React App to Rspack and upgraded React from v16 to v18, improving build and runtime efficiency."
+        "Worked on an app serving 900K+ bill views a day.",
+        "Cut frontend bundles by 90% as part of a React 18 migration.",
+        "Migrated a legacy site to Razorpay PG with a microfrontend architecture."
       ]
     },
     {
       "id": "wiz",
-      "company": "WIZ",
+      "company": "Wiz Freight",
       "location": "Chennai",
       "positions": [
-        { "title": "SDE 2", "start": "2023-07", "end": "2023-12" },
-        { "title": "SDE 1", "start": "2021-12", "end": "2023-07" }
+        { "title": "SDE I–II", "start": "2021-12", "end": "2023-12" }
       ],
       "highlights": [
-        "Built a Docker Compose development environment for the microservices, saving the team about two months a year and keeping the git history clean.",
-        "Used Next.js to build accounting features, including invoices, bulk payments and a Zoho Books integration.",
-        "Revamped and refactored the frontend codebase to scale to multiple regions.",
-        "Worked on the frontend for sharing tasks in real time over WebSockets.",
-        "Built the UI for searching and finding vessel schedules."
+        "Built accounting features and scaled a freight platform to multiple regions."
       ]
     },
     {
@@ -49,35 +69,10 @@
       "company": "Mad Street Den",
       "location": "Chennai",
       "positions": [
-        {
-          "title": "Engineering Trainee",
-          "start": "2021-07",
-          "end": "2021-11"
-        },
-        { "title": "Engineer Intern", "start": "2021-01", "end": "2021-06" }
+        { "title": "Engineering Trainee", "start": "2021-01", "end": "2021-12" }
       ],
       "highlights": [
-        "Built a responsive web app in React and Bootstrap on my own, letting customers try combinations of apparel and see the outfit on a model that resembles them.",
-        "Cut subsequent dev build times by 87.5% using webpack dev server and hot module reloading.",
-        "Rewrote about 40% of the codebase to functional components and hooks.",
-        "Was promoted within six months."
-      ]
-    },
-    {
-      "id": "internships",
-      "company": "Internships",
-      "positions": [
-        {
-          "title": "Fullstack Developer Intern",
-          "start": "2019-06",
-          "end": "2020-06"
-        }
-      ],
-      "highlights": [
-        "Mentororg: an EdTech app in Python Flask and Ionic (Angular) that helps teachers create exams and extract questions from PDFs using OpenCV.",
-        "Daphnis Labs: accounting software with Django REST Framework and React.",
-        "Aidetic: a Raspberry Pi system managing SSH tunnels with Flask, and property-site scrapers that compare downloaded images with a database, halving scraping time.",
-        "StackRaft: a PDF scanner that extracts relevant information from resumes."
+        "Built a web app for trying on apparel combinations on a model that resembles the shopper; promoted within six months."
       ]
     }
   ],

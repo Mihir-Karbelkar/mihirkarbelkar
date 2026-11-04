@@ -32,7 +32,13 @@ const { project: p } = Astro.props;
             <li>{t}</li>
           ))}
         </ul>
-        {p.source && (
+        {p.links?.map((l) => (
+          <a class="read-link" href={l.href}>
+            {l.label}
+            <Icon name="external" />
+          </a>
+        ))}
+        {p.source && !p.links && (
           <a class="read-link" href={p.source}>
             {p.source.startsWith('https:')
               ? 'View the source'

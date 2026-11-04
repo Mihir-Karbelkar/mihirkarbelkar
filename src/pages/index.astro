@@ -16,7 +16,7 @@ import {
   career,
   roleYears,
 } from '../data/portfolio';
-const { desk, work, archive: archiveCopy, about, contact } = home;
+const { desk, work, archive: archiveCopy, about, contact, services } = home;
 export const prerender = true;
 const featured = featuredSlugs.map((slug) =>
   projects.find((p) => p.slug === slug)!,
@@ -41,12 +41,13 @@ const contactHref = profile.email
       </h1>
       <p class="hero-description">{home.body}</p>
       <div class="hero-actions">
-        <a class="button primary" href="#work">
+        <a class="button primary" href={contactHref}>
+          {home.contactAction}
+          <Icon name="right" />
+        </a>
+        <a class="button text-button" href="#work">
           {home.primaryAction}
           <Icon name="down" />
-        </a>
-        <a class="button text-button" href={contactHref}>
-          {home.contactAction}
         </a>
       </div>
       <p class="hero-supporting">{home.supporting}</p>
@@ -104,6 +105,33 @@ const contactHref = profile.email
         </article>
       ))}
     </div>
+  </section>
+  <section
+    id="services"
+    class="section wrap services-section"
+    data-reveal
+    aria-labelledby="services-title"
+  >
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">{services.eyebrow}</p>
+        <h2 id="services-title">{services.heading}</h2>
+      </div>
+      <p>{services.body}</p>
+    </div>
+    <ol class="services-grid">
+      {services.items.map((item, i) => (
+        <li class="service-card">
+          <span class="note-number">0{i + 1}</span>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </li>
+      ))}
+    </ol>
+    <a class="button primary services-cta" href={`mailto:${profile.email}`}>
+      {services.cta}
+      <Icon name="right" />
+    </a>
   </section>
   <section class="section wrap work-archive" data-reveal aria-labelledby="archive-title">
     <div class="archive-intro">
@@ -189,7 +217,7 @@ const contactHref = profile.email
             <p class="note-detail">{note.detail}</p>
             <a class="read-link" href={note.href}>
               {note.label}
-              <Icon name="external" />
+              <Icon name={note.external ? 'external' : 'right'} />
             </a>
           </article>
         ))}
@@ -211,7 +239,6 @@ const contactHref = profile.email
         <p>{p}</p>
       ))}
       <div id="skills" class="about-tools">
-        <span id="services" class="anchor-alias" aria-hidden="true"></span>
         <p>{about.toolsLabel}</p>
         <ul>
           {about.tools.map((t) => (
@@ -236,21 +263,20 @@ const contactHref = profile.email
       <p>{contact.body}</p>
     </div>
     <div class="contact-destinations">
-      {profile.email && (
-        <a class="button primary" href={`mailto:${profile.email}`}>
-          {profile.email}
-        </a>
-      )}
+      <a class="button primary" href={`mailto:${profile.email}`}>
+        {contact.email}: {profile.email}
+      </a>
       {profile.linkedin && (
         <a class="button secondary" href={profile.linkedin}>
           {contact.linkedin}
           <Icon name="external" />
         </a>
       )}
-      <a
-        class:list={['button', profile.email ? 'secondary' : 'primary']}
-        href={profile.github}
-      >
+      <a class="button secondary" href={profile.huggingface}>
+        {contact.huggingface}
+        <Icon name="external" />
+      </a>
+      <a class="button secondary" href={profile.github}>
         {contact.github}
         <Icon name="external" />
       </a>

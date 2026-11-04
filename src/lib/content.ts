@@ -40,7 +40,7 @@ export const sources: Source[] = [
     title: `${r.company}: ${r.positions.map((p) => p.title).join(', ')}`,
     href: `/about#${r.id}`,
     text: `${r.company}${r.location ? `, ${r.location}` : ''}. ${r.positions
-      .map((p) => `${p.title} from ${p.start} to ${p.end}`)
+      .map((p) => `${p.title} from ${p.start} to ${p.end ?? 'present'}`)
       .join('; ')}. ${r.highlights.join(' ')}`,
   })),
   {

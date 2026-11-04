@@ -3,6 +3,7 @@ import Layout from '../layouts/Portfolio.astro';
 import Icon from '../components/ui/Icon.astro';
 import {
   career,
+  formatEnd,
   formatMonth,
   home,
   profile,
@@ -41,7 +42,7 @@ export const prerender = true;
               <p class="timeline-role">
                 <strong>{pos.title}</strong>
                 <span>
-                  {formatMonth(pos.start)} – {formatMonth(pos.end)}
+                  {formatMonth(pos.start)} – {formatEnd(pos.end)}
                 </span>
               </p>
             ))}

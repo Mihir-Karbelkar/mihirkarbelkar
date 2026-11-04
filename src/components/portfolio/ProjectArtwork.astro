@@ -34,6 +34,30 @@ const { artwork: a, large = false } = Astro.props;
     </div>
     <figcaption>{a.caption}</figcaption>
   </figure>
+) : a?.type === 'diagram' && a.name === 'browser' ? (
+  <figure class:list={['work-art', 'art-model', { large }]}>
+    <svg viewBox="0 0 420 230" fill="none" aria-hidden="true" focusable="false">
+      <g stroke="currentColor" stroke-width="1.5">
+        <rect x="40" y="30" width="340" height="170" rx="12" />
+        <path d="M40 58h340" />
+        <circle cx="60" cy="44" r="4" />
+        <circle cx="76" cy="44" r="4" />
+        <circle cx="92" cy="44" r="4" />
+        <rect x="64" y="78" width="120" height="96" rx="7" />
+        <path d="M80 98h88M80 112h88M80 126h88M80 140h60" opacity=".35" />
+        <path d="M194 126h26m-8-7 8 7-8 7" />
+        <rect x="230" y="96" width="70" height="60" rx="8" fill="var(--paper)" />
+        <path d="M310 126h20m-8-7 8 7-8 7" />
+        <path d="M338 104v44" opacity=".5" />
+      </g>
+      <text x="124" y="194" text-anchor="middle">passages</text>
+      <text x="265" y="131" text-anchor="middle">15M</text>
+      <text x="265" y="172" text-anchor="middle">int8 · WASM</text>
+      <text x="352" y="96" text-anchor="middle">quote</text>
+      <text x="352" y="164" text-anchor="middle">or refuse</text>
+    </svg>
+    <figcaption>{a.caption}</figcaption>
+  </figure>
 ) : a?.type === 'diagram' ? (
   <figure class:list={['work-art', 'art-model', { large }]}>
     <svg viewBox="0 0 420 230" fill="none" aria-hidden="true" focusable="false">

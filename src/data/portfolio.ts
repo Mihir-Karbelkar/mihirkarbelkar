@@ -16,8 +16,9 @@ export const site = siteSchema.parse(siteJson);
 const projectData = projectsSchema.parse(projectsJson);
 export const profile = {
   ...site.profile,
-  email: import.meta.env?.PUBLIC_CONTACT_EMAIL || '',
-  linkedin: import.meta.env?.PUBLIC_LINKEDIN_URL || '',
+  // Env vars override the published defaults in site.json.
+  email: import.meta.env?.PUBLIC_CONTACT_EMAIL || site.profile.email,
+  linkedin: import.meta.env?.PUBLIC_LINKEDIN_URL || site.profile.linkedin,
   calendar: import.meta.env?.PUBLIC_CALENDAR_URL || '',
 };
 export const home = site.home;
@@ -31,11 +32,17 @@ const MONTHS = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
 /** "2023-12" -> "Dec 2023" */
 export const formatMonth = (m: string) =>
   `${MONTHS[Number(m.slice(5, 7)) - 1]} ${m.slice(0, 4)}`;
-/** First and last year a role spans, e.g. "2021–2023". */
+/** "Dec 2023", or "Present" for a role without an end. */
+export const formatEnd = (m?: string) => (m ? formatMonth(m) : 'Present');
+/** First and last year a role spans, e.g. "2021–2023" or "2026–Present". */
 export function roleYears(role: (typeof career.roles)[number]) {
   const starts = role.positions.map((p) => p.start).sort();
-  const ends = role.positions.map((p) => p.end).sort();
-  const a = starts[0].slice(0, 4),
-    b = ends.at(-1)!.slice(0, 4);
+  const a = starts[0].slice(0, 4);
+  if (role.positions.some((p) => !p.end)) return `${a}–Present`;
+  const b = role.positions
+    .map((p) => p.end!)
+    .sort()
+    .at(-1)!
+    .slice(0, 4);
   return a === b ? a : `${a}–${b}`;
 }

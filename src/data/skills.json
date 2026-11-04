@@ -1,26 +1,38 @@
 {
   "services": [
     {
-      "title": "How I work",
-      "body": "I work across interfaces, performance, backend platforms and model experiments. I prefer to understand the problem and its constraints before choosing an approach."
+      "title": "LLM fine-tuning & evaluation",
+      "body": "Contract work on fine-tuning, continual learning, domain adaptation and evaluation of open-weight LLMs."
+    },
+    {
+      "title": "Training-data pipelines",
+      "body": "Contract work on dataset building, scraping and cleaning."
+    },
+    {
+      "title": "AI agents & backends",
+      "body": "Contract work on AI agents and backends (secondary)."
     }
   ],
   "skills": [
     {
-      "label": "Interfaces",
-      "items": "React · TypeScript · Next.js · React Native"
-    },
-    {
-      "label": "Backend & data",
-      "items": "Go · Python · FastAPI · PostgreSQL · Redis · ClickHouse"
+      "label": "Fine-tuning & evaluation",
+      "items": "PyTorch · Hugging Face · Unsloth · LoRA · vLLM · lm-evaluation-harness · LLM-as-judge"
     },
     {
       "label": "Models & retrieval",
-      "items": "LoRA · Qwen · RAG · Pinecone · SQL agents"
+      "items": "RAG · Pinecone · SQL agents · ReAct / supervisor agents · ONNX / WASM"
+    },
+    {
+      "label": "Backend & data",
+      "items": "Python · Go · FastAPI · Celery · PostgreSQL · Redis · ClickHouse"
     },
     {
       "label": "Infrastructure",
-      "items": "Kubernetes · Docker · CI/CD · Observability"
+      "items": "Docker · Kubernetes · Cloudflare · Exoscale · Grafana"
+    },
+    {
+      "label": "Product",
+      "items": "TypeScript · React · Next.js · React Native"
     }
   ]
 }

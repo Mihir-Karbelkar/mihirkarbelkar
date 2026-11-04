@@ -18,7 +18,7 @@ const artwork = z.discriminatedUnion('type', [
   }),
   z.object({
     type: z.literal('diagram'),
-    name: z.literal('lora'),
+    name: z.enum(['lora', 'browser']),
     caption: z.string(),
   }),
 ]);
@@ -39,6 +39,8 @@ export const projectSchema = z.object({
   kind: z.enum(['professional', 'experiment', 'project']),
   reflection: z.string().optional(),
   artwork: artwork.optional(),
+  /** Extra outbound links shown on the project page (e.g. model cards). */
+  links: z.array(link).optional(),
 });
 export const projectsSchema = z
   .object({
@@ -63,6 +65,9 @@ export const siteSchema = z.object({
     description: z.string(),
     github: z.string().url(),
     maths: z.string().url(),
+    email: z.string().email(),
+    linkedin: z.string().url(),
+    huggingface: z.string().url(),
   }),
   meta: z.object({ title: z.string() }),
   nav: z.array(link).min(1),
@@ -92,6 +97,13 @@ export const siteSchema = z.object({
       heading: z.string(),
       body: z.string(),
       readMore: z.string(),
+    }),
+    services: z.object({
+      eyebrow: z.string(),
+      heading: z.string(),
+      body: z.string(),
+      cta: z.string(),
+      items: z.array(z.object({ title: z.string(), body: z.string() })).min(1),
     }),
     career: z.object({
       eyebrow: z.string(),
@@ -123,6 +135,8 @@ export const siteSchema = z.object({
       body: z.string(),
       github: z.string(),
       linkedin: z.string(),
+      huggingface: z.string(),
+      email: z.string(),
       calendar: z.string(),
     }),
   }),
@@ -199,8 +213,12 @@ export const careerSchema = z.object({
       positions: z
         .array(
           z
-            .object({ title: z.string(), start: month, end: month })
-            .refine((p) => p.start <= p.end, 'start must not be after end'),
+            // no end: the role is current
+            .object({ title: z.string(), start: month, end: month.optional() })
+            .refine(
+              (p) => !p.end || p.start <= p.end,
+              'start must not be after end',
+            ),
         )
         .min(1),
       highlights: z.array(z.string()),

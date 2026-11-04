@@ -1,44 +1,124 @@
 {
   "featured": [
-    "public-markets-agents",
-    "experimental-brain",
-    "qwen-fine-tuning"
+    "knowledge-injection",
+    "site-qa-models",
+    "public-markets-agents"
   ],
   "archive": [
-    "high-scale-platforms",
+    "qwen-fine-tuning",
+    "experimental-brain",
     "robot-fleet",
-    "wiz-freight-platform",
-    "mad-street-den-tryon",
-    "production-rag",
-    "prompt-studio"
+    "high-scale-platforms"
   ],
   "items": [
     {
-      "slug": "public-markets-agents",
-      "title": "Superstocks.ai",
-      "category": "Software / public-markets research",
-      "summary": "Making messy information easier to work with.",
-      "problem": "Public-markets research brings together structured data, screening and longer analysis. I’m interested in how AI can help turn that material into something I can query and work through.",
+      "slug": "knowledge-injection",
+      "title": "Teaching a 7B model new books without forgetting",
+      "category": "Fine-tuning / client work",
+      "summary": "Qwen2.5-7B learned a series of fact books one at a time and kept its general skills.",
+      "problem": "A client needed Qwen2.5-7B to learn a series of fact books in another language, one book at a time, without forgetting earlier books or losing its general skills.",
       "approach": [
-        "I’ve worked on guarded SQL agents and screening workflows around research data.",
-        "I’ve connected multi-agent analysis workflows with ClickHouse analytics.",
-        "I’ve also worked with retrieval pipelines using Pinecone to bring research context into the workflow."
+        "Book-by-book training with a fresh LoRA per book and a KL anchor.",
+        "Data pipeline: Q&A and trap-question generation with open teacher models on vLLM, deduplication, and contamination checks against benchmark test sets.",
+        "Evaluation with lm-evaluation-harness, custom exams and LLM-as-judge."
       ],
-      "outcome": "I work across research tools, retrieval and structured queries, bringing the source material and the analysis into the same workflow.",
-      "reflection": "I keep the source material, the query and the generated interpretation distinct. A well-written answer is easier to assess when I can see what it was based on.",
-      "metric": "SQL + retrieval",
-      "metricLabel": "Research workflows",
-      "tags": ["Python", "SQL agents", "ClickHouse", "Pinecone"],
-      "tone": "blue",
-      "status": "Professional work",
+      "outcome": "The model answers from the books, rejects false-premise questions, and stays within about 1 point of base on IFEval, GSM8K and MMLU. Book-1 retention held at 0.95–0.99 across three books. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs with their own seeds.",
+      "metric": "0.95–0.99",
+      "metricLabel": "Book-1 retention across three books",
+      "tags": [
+        "Qwen2.5-7B",
+        "LoRA",
+        "KL anchor",
+        "vLLM",
+        "lm-evaluation-harness"
+      ],
+      "tone": "lavender",
+      "status": "Client work",
       "kind": "professional",
       "artwork": {
-        "type": "image",
-        "src": "/projects/superstocks.webp",
-        "width": 1280,
-        "height": 720,
-        "alt": "Existing Superstocks.ai interface with a company search and research prompt",
-        "caption": "Existing Superstocks.ai interface"
+        "type": "diagram",
+        "name": "lora",
+        "caption": "A fresh LoRA adapter per book on top of the base weights."
+      }
+    },
+    {
+      "slug": "site-qa-models",
+      "title": "15M and 30M QA models that run in the browser",
+      "category": "Models / trained from scratch",
+      "summary": "Small question-answering models that answer from a page’s passages, or refuse, on devices without WebGPU.",
+      "problem": "I wanted the chat on this site to answer from its own pages without a large download or WebGPU, and to refuse when the passages don’t say.",
+      "approach": [
+        "Pretrained two small decoders from scratch on FineWeb-Edu and FineWeb: Tiny 30M (30.5M parameters) and Ant 15M (14.9M, alternating attention and Mamba2 layers).",
+        "Fine-tuned both on about 171K evidence-first examples generated with Qwen3-8B: quote the passage first, then answer, or answer “Source: none”.",
+        "Exported each as one int8 ONNX file (SmoothQuant) that runs on onnxruntime-web’s WASM backend: 44 MB for Tiny 30M, 21 MB for Ant 15M."
+      ],
+      "outcome": "Both models are on Hugging Face and run in this site’s chat as opt-in models. On held-out pages they refuse unanswerable questions well (refusal AUROC 0.99 for Tiny 30M, 0.986 for Ant 15M).",
+      "reflection": "They are experiments, not production assistants: on this site’s own questions Ant 15M answers 9 of 24 correctly and shows a wrong answer about as often, so they stay opt-in and the site shows sources instead by default.",
+      "metric": "21 MB",
+      "metricLabel": "Ant 15M, int8, runs on WASM",
+      "tags": ["PyTorch", "Mamba2", "ONNX", "WASM", "onnxruntime-web"],
+      "tone": "mint",
+      "status": "Public models",
+      "kind": "project",
+      "source": "https://huggingface.co/Mihir-Karbelkar/ant-15m-site-qa",
+      "links": [
+        {
+          "label": "Ant 15M on Hugging Face",
+          "href": "https://huggingface.co/Mihir-Karbelkar/ant-15m-site-qa"
+        },
+        {
+          "label": "Tiny 30M on Hugging Face",
+          "href": "https://huggingface.co/Mihir-Karbelkar/tiny-30m-site-qa"
+        }
+      ],
+      "artwork": {
+        "type": "diagram",
+        "name": "browser",
+        "caption": "Passages in, a quoted answer or a refusal out, inside the browser."
+      }
+    },
+    {
+      "slug": "public-markets-agents",
+      "title": "SQL agents for public-markets research",
+      "category": "LLM systems / stealth startup",
+      "summary": "LLM systems for equity-market workflows, with guardrails on what the model can query.",
+      "problem": "At a stealth public-markets startup, analysts need to query market and company data in plain language without the model being able to change or leak data.",
+      "approach": [
+        "SQL agents over 14 relational tables, RAG with Pinecone, and ClickHouse for high-volume market and analytics queries.",
+        "Security guardrails on the SQL agent: allowlisted schemas and operations, and blocked destructive or out-of-scope statements, so model output cannot freely mutate or exfiltrate data.",
+        "ReAct and supervisor multi-agent patterns, an internal Go agent-orchestration library with typed state and durable runs, and a scraping service that ingests market data."
+      ],
+      "outcome": "I lead the engineering of these systems, from the agents and guardrails to the orchestration library and the data ingestion behind them.",
+      "metric": "14 tables",
+      "metricLabel": "Queried by guarded SQL agents",
+      "tags": ["SQL agents", "RAG", "Pinecone", "ClickHouse", "Go"],
+      "tone": "blue",
+      "status": "Current work",
+      "kind": "professional"
+    },
+    {
+      "slug": "qwen-fine-tuning",
+      "title": "Qwen fine-tuning",
+      "category": "Experiment / model learning",
+      "summary": "Looking at what changes when I fine-tune a model—and how I check it.",
+      "problem": "I’ve been working with Qwen fine-tuning to explore how a model learns from source material. The question extends beyond training loss: I want to know whether its answers are supported and whether it retains other capabilities.",
+      "approach": [
+        "I’ve worked with LoRA adapters rather than updating every model weight.",
+        "I’ve kept source-specific training examples separate from general examples, with answer-token losses and isolated sequence packing.",
+        "I’ve used held-out questions and source-based answer reviews alongside training logs. I’ve also explored regularization against the base model’s responses."
+      ],
+      "outcome": "I’m comparing training choices with answer reviews on held-out questions. This is an experiment in training and evaluation. The browser playground on this site uses a separate, unmodified pretrained Qwen model.",
+      "reflection": "A lower loss and a better answer are different checks. Source-word overlap can help me inspect an answer, but it cannot establish that the answer addresses the question.",
+      "metric": "LoRA + evaluation",
+      "metricLabel": "Training and answer checks",
+      "tags": ["Qwen", "LoRA", "PyTorch", "Evaluation"],
+      "tone": "lavender",
+      "status": "Experiment",
+      "kind": "experiment",
+      "artwork": {
+        "type": "diagram",
+        "name": "lora",
+        "caption": "LoRA: base weights and a small adapter."
       }
     },
     {
@@ -70,141 +150,40 @@
       }
     },
     {
-      "slug": "qwen-fine-tuning",
-      "title": "Qwen fine-tuning",
-      "category": "Experiment / model learning",
-      "summary": "Looking at what changes when I fine-tune a model—and how I check it.",
-      "problem": "I’ve been working with Qwen fine-tuning to explore how a model learns from source material. The question extends beyond training loss: I want to know whether its answers are supported and whether it retains other capabilities.",
-      "approach": [
-        "I’ve worked with LoRA adapters rather than updating every model weight.",
-        "I’ve kept source-specific training examples separate from general examples, with answer-token losses and isolated sequence packing.",
-        "I’ve used held-out questions and source-based answer reviews alongside training logs. I’ve also explored regularization against the base model’s responses."
-      ],
-      "outcome": "I’m comparing training choices with answer reviews on held-out questions. This is an experiment in training and evaluation. The browser playground on this site uses a separate, unmodified pretrained Qwen model.",
-      "reflection": "A lower loss and a better answer are different checks. Source-word overlap can help me inspect an answer, but it cannot establish that the answer addresses the question.",
-      "metric": "LoRA + evaluation",
-      "metricLabel": "Training and answer checks",
-      "tags": ["Qwen", "LoRA", "PyTorch", "Evaluation"],
-      "tone": "lavender",
-      "status": "Experiment",
-      "kind": "experiment",
-      "artwork": {
-        "type": "diagram",
-        "name": "lora",
-        "caption": "LoRA: base weights and a small adapter."
-      }
-    },
-    {
       "slug": "robot-fleet",
       "title": "Robot fleet scaling",
-      "category": "Platform work / Ati Motors",
-      "summary": "Supporting more concurrent robots on the same hardware.",
-      "problem": "The fleet platform needed to handle more concurrent robots without a corresponding hardware increase.",
+      "category": "Platform work / ATI Motors",
+      "summary": "10× robot fleet capacity on the same hardware.",
+      "problem": "The robot fleet platform ran on a 4-core / 16 GB machine and topped out at 8–10 concurrent robots.",
       "approach": [
-        "I worked on backend performance and platform scaling for robot fleets.",
-        "I focused on bottlenecks and resource use while supporting concurrent robot workloads."
+        "Replaced nested, in-process event handling and Python RQ with a queue-based Celery pipeline: threads for I/O-bound work, processes reserved for CPU-bound tasks.",
+        "That moved the bottleneck off the CPU and onto the task queue.",
+        "Defined a staged path to a Go-based control plane for the next performance ceiling."
       ],
-      "outcome": "The platform scaled from approximately 8–10 to 100 concurrent robots on the same hardware.",
+      "outcome": "Fleet capacity went from 8–10 to 100 concurrent robots on the same 4-core / 16 GB hardware.",
       "metric": "100 robots",
       "metricLabel": "Concurrent, on the same hardware",
-      "tags": ["Backend", "Performance", "Robotics"],
+      "tags": ["Python", "FastAPI", "Celery", "Redis", "PostgreSQL"],
       "tone": "peach",
       "status": "Professional work",
       "kind": "professional"
     },
     {
       "slug": "high-scale-platforms",
-      "title": "Frontend performance & scale",
-      "category": "Frontend and platform work / Razorpay",
-      "summary": "Faster frontends, better observability and billing dashboards at Razorpay.",
-      "problem": "At Razorpay I worked on billing and CRM product surfaces that needed to load quickly, stay available and be cheap to serve.",
+      "title": "Billing platform at scale",
+      "category": "Platform work / Razorpay",
+      "summary": "An app serving 900K+ bill views a day, with much smaller bundles.",
+      "problem": "At Razorpay I worked on billing and CRM product surfaces that served a lot of traffic.",
       "approach": [
-        "I built dashboards for digital billing and CRM, covering customer engagement insights, campaign creation and multi-tenant bill management, with Node.js, Express and Kubernetes.",
-        "I worked on infrastructure upgrades, including a React 18 migration that cut the bundle size by 90% and CloudFront costs by 50%, and a move from Create React App to Rspack.",
-        "I set up real-time alerts and observability with Coralogix, Grafana and Coralogix RUM, and worked on a microfrontend architecture to migrate a legacy site to Razorpay PG."
+        "Worked on an app serving 900K+ bill views a day, and dashboards for digital billing and CRM with Node.js, Express and Kubernetes.",
+        "A React 18 migration made frontend bundles 90% smaller.",
+        "Migrated a legacy site to Razorpay PG with a microfrontend architecture."
       ],
-      "outcome": "The bundle shrank by 90% and CloudFront costs dropped by 50%. I also helped raise application availability to 99.92%.",
-      "metric": "90% smaller",
-      "metricLabel": "Frontend bundle size",
-      "tags": ["React", "Rspack", "Node.js", "Kubernetes", "Observability"],
+      "outcome": "The app served 900K+ bill views a day, and its frontend bundles became 90% smaller.",
+      "metric": "900K+",
+      "metricLabel": "Bill views a day",
+      "tags": ["Node.js", "Kubernetes", "React 18", "Microfrontends"],
       "tone": "mint",
-      "status": "Professional work",
-      "kind": "professional"
-    },
-    {
-      "slug": "production-rag",
-      "title": "Research retrieval pipelines",
-      "category": "Software / retrieval",
-      "summary": "Bringing source context into research workflows.",
-      "problem": "I’ve worked on connecting language models to research material using retrieval. That includes the movement of data through indexing, search and downstream analysis.",
-      "approach": [
-        "I’ve used Pinecone for vector retrieval in RAG workflows.",
-        "I’ve connected retrieved context to analysis pipelines.",
-        "I’ve worked across the backend, deployment and monitoring parts of those workflows."
-      ],
-      "outcome": "This work connects vector search with the backend and analysis workflows that consume the retrieved material.",
-      "metric": "Pinecone + RAG",
-      "metricLabel": "Research context and retrieval",
-      "tags": ["RAG", "Pinecone", "Python", "Analytics"],
-      "tone": "mint",
-      "status": "Professional work",
-      "kind": "professional"
-    },
-    {
-      "slug": "prompt-studio",
-      "title": "Prompt Studio",
-      "category": "Software / public project",
-      "summary": "A writing assistant with streamed responses and conversation controls.",
-      "problem": "I wanted a chat interface that could handle technical writing, including code, tables and longer responses.",
-      "approach": [
-        "I built around Next.js, TypeScript, shadcn/ui and the AI SDK.",
-        "The public repository documents streamed Markdown, conversation history and responsive navigation.",
-        "The interface includes stop, regenerate and copy controls."
-      ],
-      "outcome": "The source is available on GitHub. I haven’t published usage or adoption figures.",
-      "metric": "Streaming chat",
-      "metricLabel": "A public software project",
-      "tags": ["Next.js", "TypeScript", "shadcn/ui", "AI SDK"],
-      "tone": "lavender",
-      "status": "Public project",
-      "kind": "project",
-      "source": "https://github.com/Mihir-Karbelkar/prompt-studio"
-    },
-    {
-      "slug": "wiz-freight-platform",
-      "title": "Freight platform frontend",
-      "category": "Frontend and platform work / WIZ",
-      "summary": "Scaling a logistics frontend to new regions, with real-time and accounting features.",
-      "problem": "At WIZ, a freight and logistics platform, the frontend needed to work across multiple regions and support accounting and collaboration workflows.",
-      "approach": [
-        "I revamped and refactored the frontend codebase so it could scale to multiple regions.",
-        "I built real-time task sharing over WebSockets and the UI for searching vessel schedules.",
-        "I used Next.js to build accounting features, including invoices, bulk payments and a Zoho Books integration, and set up a Docker Compose development environment for the microservices."
-      ],
-      "outcome": "The Docker Compose environment saved the team about two months a year and kept the git history clean. I was promoted from SDE 1 to SDE 2.",
-      "metric": "~2 months / year",
-      "metricLabel": "Developer time saved",
-      "tags": ["Next.js", "React", "WebSockets", "Docker"],
-      "tone": "blue",
-      "status": "Professional work",
-      "kind": "professional"
-    },
-    {
-      "slug": "mad-street-den-tryon",
-      "title": "Apparel try-on web app",
-      "category": "Frontend work / Mad Street Den",
-      "summary": "Letting shoppers see outfits on a model that resembles them.",
-      "problem": "Mad Street Den needed a web app where customers could try different combinations of apparel and see the result on a model that resembles them.",
-      "approach": [
-        "I built the responsive web app on my own in React and Bootstrap.",
-        "I cut subsequent dev build times by 87.5% using webpack dev server and hot module reloading.",
-        "As an intern, I rewrote about 40% of the codebase to functional components and hooks."
-      ],
-      "outcome": "I was promoted within six months for exceeding goals and supporting the company culture.",
-      "metric": "87.5% faster",
-      "metricLabel": "Dev rebuilds",
-      "tags": ["React", "Bootstrap", "webpack"],
-      "tone": "peach",
       "status": "Professional work",
       "kind": "professional"
     }

@@ -5,8 +5,11 @@
 - Add an approved email, LinkedIn or calendar destination through the existing PUBLIC environment settings. GitHub is the only currently verified contact link. There are no placeholder destinations or inactive form buttons.
 - Confirm public attribution for the retained professional metrics before a public release. No new outcome metrics have been added.
 
-# Career facts (synced from LinkedIn)
+# Career facts and positioning (Nov 2026)
 
-- Career history, education and certifications come from the LinkedIn export in `src/data/career.json`. LinkedIn wins where the two disagreed: availability is 99.92% (not 99.98%), and the unsupported "900,000+ daily bill views" claim was removed.
-- **Confirm:** the `robot-fleet` project (Ati Motors, 8–10 → 100 concurrent robots on the same hardware) isn't on LinkedIn, where Ati Motors has no description. Keep it, add the detail to LinkedIn, or remove the project from `projects.json`.
-- The LinkedIn summary still says Razorpay is the current role. The site doesn't name a current employer.
+- Positioning, intro, client-work and data-side wording come verbatim from the owner's brief, which matches the LinkedIn export (`Profile_1.pdf`). The client is never named.
+- Experience follows the brief and the resume (`Mihir_Karbelkar_Resume_1.pdf`): ATI Motors starts Nov 2025, as in the brief and resume (LinkedIn says Dec 2025). The robot-fleet figure (8–10 → 100 robots on 4-core / 16 GB) is confirmed by the resume.
+- Razorpay: 900K+ bill views a day, 90% smaller bundles, React 18, microfrontend migration to Razorpay PG. **Availability % and CloudFront/CDN savings are deliberately omitted** until the owner confirms them (resume and LinkedIn disagree: 99.98% / 40% vs 99.92% / 50%).
+- The stealth public-markets startup is anonymised (no product name or screenshot).
+- The Hugging Face models are `Mihir-Karbelkar/ant-15m-site-qa` and `Mihir-Karbelkar/tiny-30m-site-qa`; their facts come from the model cards.
+- No testimonials are published, and none should be added until real ones exist.
