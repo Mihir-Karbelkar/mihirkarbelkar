@@ -1,5 +1,21 @@
 [
   {
+    "title": "Teaching a 7B model new books without breaking it",
+    "summary": "Fine-tuning Qwen2.5-7B on a series of fact books without losing its general skills.",
+    "detail": "What kept the general skills: how far the weights move, a KL anchor, near-miss traps. And the bugs that nearly fooled me.",
+    "href": "/blog/teaching-a-7b-model-new-books",
+    "label": "Read the post",
+    "external": false
+  },
+  {
+    "title": "A 15M-parameter model that answers in the browser",
+    "summary": "Training tiny question-answering models from scratch for this site.",
+    "detail": "Latency budgets, an architecture search on a budget, quote-first answers, and why the models are still opt-in.",
+    "href": "/blog/15m-model-in-the-browser",
+    "label": "Read the post",
+    "external": false
+  },
+  {
     "title": "Maths, from the ground up",
     "summary": "Writing my way through the ideas I want to understand.",
     "detail": "I start with statements, logical connectives and proof, using definitions and worked examples. The outline includes the topics I want to work through next.",

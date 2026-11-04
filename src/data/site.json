@@ -52,7 +52,9 @@
   ],
   "home": {
     "eyebrow": "Domain adaptation · Evals · Training data · Ex-Razorpay · Open to contract",
-    "headline": ["LLM fine-tuning & AI engineer."],
+    "headline": [
+      "LLM fine-tuning & AI engineer."
+    ],
     "body": "I fine-tune and evaluate open-weight LLMs for teams that need a model to know their domain without losing its general skills.",
     "supporting": "Open to contract work in fine-tuning, evals and training-data pipelines.",
     "primaryAction": "See my work",
@@ -96,9 +98,9 @@
       "body": "Before contract fine-tuning I worked on backend platforms and products at scale, and ran model experiments of my own."
     },
     "notes": {
-      "eyebrow": "Notes & working things out",
-      "heading": "Back to first principles.",
-      "archiveLabel": "Writing archive",
+      "eyebrow": "Writing",
+      "heading": "Notes from the work.",
+      "archiveLabel": "All writing",
       "archiveHref": "/blog"
     },
     "about": {
@@ -182,7 +184,13 @@
       {
         "target": "#work",
         "label": "Selected work",
-        "keywords": ["work", "projects", "project", "portfolio", "case studies"]
+        "keywords": [
+          "work",
+          "projects",
+          "project",
+          "portfolio",
+          "case studies"
+        ]
       },
       {
         "target": "#services",
@@ -214,22 +222,43 @@
       {
         "target": "#experience",
         "label": "Interfaces & platforms",
-        "keywords": ["platforms", "archive", "background work"]
+        "keywords": [
+          "platforms",
+          "archive",
+          "background work"
+        ]
       },
       {
         "target": "#notes",
         "label": "Notes",
-        "keywords": ["notes", "writing", "maths", "math", "blog"]
+        "keywords": [
+          "notes",
+          "writing",
+          "maths",
+          "math",
+          "blog"
+        ]
       },
       {
         "target": "#about",
         "label": "About",
-        "keywords": ["about", "about you", "bio", "yourself", "who are you"]
+        "keywords": [
+          "about",
+          "about you",
+          "bio",
+          "yourself",
+          "who are you"
+        ]
       },
       {
         "target": "#skills",
         "label": "Tools",
-        "keywords": ["skills", "tools", "stack", "tech stack"]
+        "keywords": [
+          "skills",
+          "tools",
+          "stack",
+          "tech stack"
+        ]
       },
       {
         "target": "#contact",
