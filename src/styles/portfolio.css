@@ -2232,3 +2232,166 @@ button:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 5px;
 }
+
+/* Inference cost calculator (blog). Series colours validated for both themes. */
+:root {
+  --chart-before: #eb6834;
+  --chart-after: #2a78d6;
+}
+:root[data-theme='dark'] {
+  --chart-before: #d95926;
+  --chart-after: #3987e5;
+}
+.cost-calc {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  padding: 22px;
+  margin: 32px 0;
+}
+.cost-calc-title {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.cost-calc-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 18px;
+}
+.cost-field span {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.cost-field strong {
+  color: var(--ink);
+}
+.cost-field input[type='number'] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  padding: 9px 11px;
+}
+.cost-field input[type='range'] {
+  width: 100%;
+  accent-color: var(--primary);
+  margin-top: 8px;
+}
+.cost-calc-advanced,
+.cost-calc-table {
+  margin-top: 16px;
+  font-size: 15px;
+}
+.cost-calc-advanced summary,
+.cost-calc-table summary {
+  cursor: pointer;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+.cost-calc-advanced .button {
+  margin-top: 14px;
+}
+.cost-calc-results {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+.cost-stat {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cost-stat span,
+.cost-stat small {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.cost-stat strong {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.cost-calc-breakeven {
+  margin: 14px 0 8px;
+  color: var(--ink);
+}
+.cost-chart {
+  position: relative;
+  margin-top: 10px;
+}
+.cost-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.cost-calc .swatch {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+.cost-calc .swatch.before { background: var(--chart-before); }
+.cost-calc .swatch.after { background: var(--chart-after); }
+.cost-chart svg { touch-action: pan-y; }
+.cost-chart .grid { stroke: var(--line); stroke-width: 1; }
+.cost-chart .tick { fill: var(--muted); font-size: 11px; }
+.cost-chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; }
+.cost-chart .line.before { stroke: var(--chart-before); }
+.cost-chart .line.after { stroke: var(--chart-after); }
+.cost-chart .dot { stroke: var(--paper); stroke-width: 2; }
+.cost-chart .dot.before { fill: var(--chart-before); }
+.cost-chart .dot.after { fill: var(--chart-after); }
+.cost-chart .you { stroke: var(--muted); stroke-dasharray: 4 4; }
+.cost-chart .cross { stroke: var(--muted); stroke-width: 1; }
+.cost-tip {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+}
+.cost-calc-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.cost-calc-note {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 14px;
+  line-height: 1.5;
+}
+@media (max-width: 700px) {
+  .cost-calc { padding: 16px; }
+  .cost-calc-inputs,
+  .cost-calc-results { grid-template-columns: 1fr; }
+}

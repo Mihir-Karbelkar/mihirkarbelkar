@@ -1,9 +1,11 @@
 ---
 title: 'The inference bill: how AI costs eat startup runway'
-description: 'Why model spend outgrows revenue at AI startups, three public examples, and a 30-minute audit to run on your own numbers.'
+description: 'Why model spend outgrows revenue at AI startups, what pay-per-call pricing costs at scale, and a calculator and 30-minute audit to run on your own numbers.'
 pubDate: '2026-11-04T18:00:00Z'
 category: 'tech'
 ---
+
+import CostCalculator from '../../components/blog/CostCalculator';
 
 For most AI startups, the model bill is the biggest cost nobody planned for. Salaries are budgeted a year ahead. Inference grows with every user, every agent step and every retry.
 
@@ -34,6 +36,20 @@ It is usually down to how the system is built, not what the provider charges. Fo
 - **No per-task cost view.** Teams see one monthly invoice, not which step of which pipeline spends the money.
 - **Context bloat.** Full documents, long system prompts and chat history are resent on every call, so token counts grow faster than traffic.
 
+## Paying per call against paying per hour
+
+Most AI products buy their model the way many apps buy compute on AWS Lambda: you pay for each call, and nothing else. At low volume that is the right choice. When nobody uses the product, you pay nothing, and there are no servers to run.
+
+The catch is that the price of a call never drops as you grow. Ten times the users means ten times the bill. Teams that ran large, steady workloads on Lambda learned this and moved them to EC2, a server rented by the hour. It costs the same whether it is busy or idle. At low volume that is wasted money. At high volume each extra request costs almost nothing, because the server is already paid for.
+
+A model API works like Lambda. A small model on a GPU you rent works like EC2. Think of a taxi against a leased car: the taxi is cheaper if you drive once a week, the lease if you drive all day.
+
+Where the two lines cross depends on your volume, your prompts and your prices. Put in your own numbers:
+
+<CostCalculator client:visible />
+
+The usual answer is not "move everything". It is to keep paying per call for the low-volume and hard steps, and to put the high-volume, repetitive steps on a fixed-cost model once they are past the crossover.
+
 ## Give each task the smallest model that does it
 
 Keep the frontier model for the steps that need it, and move the high-volume, narrow steps to small models you control.
@@ -61,7 +77,7 @@ Answer these with your own numbers. Each "no" or "don't know" is likely money yo
 
 Model spend is the one cost that goes up every time your product succeeds. Track it per task, keep a quality bar, and give each task the smallest model that clears it.
 
-That is the work I do: per-task cost audits, fine-tuning small open models against your own evals, and self-hosting where it pays. If you'd like someone to look over your pipeline, [email me](/#contact).
+That is the work I do: per-task cost audits, fine-tuning small open models against your own evals, and self-hosting where it pays. If you'd like someone to look over your pipeline, email me at [mihirkarbelkar@gmail.com](mailto:mihirkarbelkar@gmail.com).
 
 ## Sources
 
