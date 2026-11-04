@@ -1,5 +1,13 @@
 [
   {
+    "title": "The inference bill: how AI costs eat startup runway",
+    "summary": "Why model spend outgrows revenue at AI startups, and what to check.",
+    "detail": "Three public examples, the four habits behind most of the bill, and a 30-minute cost audit.",
+    "href": "/blog/the-inference-bill",
+    "label": "Read the post",
+    "external": false
+  },
+  {
     "title": "Teaching a 7B model new books without breaking it",
     "summary": "Fine-tuning Qwen2.5-7B on a series of fact books without losing its general skills.",
     "detail": "What kept the general skills: how far the weights move, a KL anchor, near-miss traps. And the bugs that nearly fooled me.",
