@@ -5,6 +5,7 @@ import InterestArt from '../components/portfolio/InterestArt.astro';
 import ProjectArtwork from '../components/portfolio/ProjectArtwork.astro';
 import Sakura from '../components/fx/Sakura.astro';
 import Mascot from '../components/fx/Mascot';
+import Contact from '../components/portfolio/Contact';
 import {
   profile,
   site,
@@ -257,12 +258,11 @@ const contactHref = profile.email
     class="section wrap contact-section" data-reveal
     aria-labelledby="contact-title"
   >
-    <div>
+    <div class="contact-copy">
       <p class="eyebrow">{contact.eyebrow}</p>
       <h2 id="contact-title">{contact.heading}</h2>
       <p>{contact.body}</p>
-    </div>
-    <div class="contact-destinations">
+      <div class="contact-destinations">
       <a class="button primary" href={`mailto:${profile.email}`}>
         {contact.email}: {profile.email}
       </a>
@@ -286,7 +286,13 @@ const contactHref = profile.email
           <Icon name="external" />
         </a>
       )}
+      </div>
     </div>
+    <Contact
+      client:visible
+      email={profile.email}
+      topics={services.items.map((i) => i.title).concat('Something else')}
+    />
   </section>
   <Mascot client:idle steps={site.tour} />
 </Layout>

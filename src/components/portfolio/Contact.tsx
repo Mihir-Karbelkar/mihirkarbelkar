@@ -1,39 +1,66 @@
 import { useState, useEffect } from 'react';
 import type { FormEvent } from 'react';
 import { Button } from '../ui/button';
-export default function Contact() {
-  const [state, setState] = useState('');
+import { mailtoHref } from '../../lib/enquiry';
+export interface ContactProps {
+  email: string;
+  topics: string[];
+}
+export default function Contact({ email, topics }: ContactProps) {
+  const [state, setState] = useState<{ ok: boolean; text: string } | null>(
+    null,
+  );
   const [busy, setBusy] = useState(false);
-  const [ready, setReady] = useState(false);
+  // Server delivery (Resend) when configured; otherwise the visitor's email app.
+  const [delivery, setDelivery] = useState<'server' | 'mail'>('mail');
   useEffect(() => {
     fetch('/api/config')
-      .then((r) => r.json() as Promise<{ chat: boolean; contact: boolean }>)
-      .then((c) => setReady(c.contact))
+      .then((r) => r.json() as Promise<{ contact: boolean }>)
+      .then((c) => c.contact && setDelivery('server'))
       .catch(() => {});
   }, []);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
-    setBusy(true);
-    setState('');
     const form = e.currentTarget;
+    const fields = Object.fromEntries(new FormData(form)) as Record<
+      string,
+      string
+    >;
+    if (fields.website) return;
+    const enquiry = {
+      name: fields.name.trim(),
+      email: fields.email.trim(),
+      projectType: fields.projectType || undefined,
+      message: fields.message.trim(),
+    };
+    if (delivery === 'mail') {
+      location.href = mailtoHref(email, enquiry);
+      setState({
+        ok: true,
+        text: `Your email app should open with the enquiry ready to send. If it doesn’t, email ${email}.`,
+      });
+      return;
+    }
+    setBusy(true);
+    setState(null);
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        body: JSON.stringify({ ...enquiry, website: '' }),
       });
       const data = (await res.json()) as { error?: string };
-      if (!res.ok)
-        throw new Error(data.error || 'Unable to send. Please try again.');
-      setState('Message sent. Thanks for reaching out.');
+      if (!res.ok) throw new Error(data.error);
+      setState({ ok: true, text: 'Thanks, your enquiry is on its way.' });
       form.reset();
-    } catch (err) {
-      setState(
-        err instanceof Error
-          ? err.message
-          : 'Unable to send. Please try again.',
-      );
+    } catch {
+      // Fall back to the email app rather than losing the message.
+      location.href = mailtoHref(email, enquiry);
+      setState({
+        ok: false,
+        text: `Sending failed, so your email app should open instead. You can also email ${email}.`,
+      });
     } finally {
       setBusy(false);
     }
@@ -49,11 +76,10 @@ export default function Contact() {
             required
             maxLength={100}
             autoComplete="name"
-            placeholder="Alex Chen"
           />
         </div>
         <div className="form-field">
-          <label htmlFor="contact-email">Email address</label>
+          <label htmlFor="contact-email">Work email</label>
           <input
             id="contact-email"
             name="email"
@@ -61,32 +87,29 @@ export default function Contact() {
             required
             maxLength={254}
             autoComplete="email"
-            placeholder="alex@company.com"
           />
         </div>
       </div>
       <div className="form-field">
         <label htmlFor="contact-type">
-          What are you working on? <span>(optional)</span>
+          What do you need? <span>(optional)</span>
         </label>
         <select id="contact-type" name="projectType">
-          <option value="">Choose a project type</option>
-          <option>AI agents & automation</option>
-          <option>RAG & data pipelines</option>
-          <option>Backend & cloud platforms</option>
-          <option>Full-stack AI product</option>
-          <option>Something else</option>
+          <option value="">Choose one</option>
+          {topics.map((t) => (
+            <option key={t}>{t}</option>
+          ))}
         </select>
       </div>
       <div className="form-field">
-        <label htmlFor="contact-message">A little about your project</label>
+        <label htmlFor="contact-message">Your project</label>
         <textarea
           id="contact-message"
           name="message"
           required
           minLength={10}
           maxLength={5000}
-          placeholder="The problem, the constraints, the possibilities…"
+          placeholder="The model, the data, the timeline, and what good looks like."
         />
       </div>
       <div hidden aria-hidden="true">
@@ -95,24 +118,22 @@ export default function Contact() {
           <input name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      <Button type="submit" disabled={busy || !ready}>
-        {busy
-          ? 'Sending…'
-          : ready
-            ? 'Send a project note'
-            : 'Contact delivery not configured'}{' '}
+      <Button type="submit" disabled={busy}>
+        {busy ? 'Sending…' : 'Send enquiry'}
       </Button>
       <p className="form-note">
-        {ready
-          ? 'Your details are used only to respond to this enquiry.'
-          : 'The form is awaiting email setup. You can find Mihir on GitHub using the link alongside.'}
+        {delivery === 'server'
+          ? 'Your details are used only to reply to this enquiry.'
+          : 'This opens your email app with the enquiry filled in.'}
       </p>
-      <p
-        role="status"
-        className={`status-message ${state.startsWith('Message sent') ? 'success' : 'error'}`}
-      >
-        {state}
-      </p>
+      {state && (
+        <p
+          role="status"
+          className={`status-message ${state.ok ? 'success' : 'error'}`}
+        >
+          {state.text}
+        </p>
+      )}
     </form>
   );
 }

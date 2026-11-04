@@ -68,3 +68,23 @@ test('positioning: current roles, no retired claims or names', () => {
     assert.ok(!banned.test(text), String(banned));
   assert.ok(featuredSlugs.includes('knowledge-injection'));
 });
+import { mailtoHref } from '../src/lib/enquiry.ts';
+import { profile } from '../src/data/portfolio.ts';
+test('enquiries fall back to a prefilled email to the published address', () => {
+  const href = mailtoHref(profile.email, {
+    name: 'Ada',
+    email: 'ada@example.com',
+    projectType: 'Training-data pipelines',
+    message: 'We need evals & data.',
+  });
+  assert.ok(href.startsWith(`mailto:${profile.email}?subject=`));
+  const u = new URL(href);
+  assert.equal(
+    u.searchParams.get('subject'),
+    'Project enquiry: Training-data pipelines',
+  );
+  assert.equal(
+    u.searchParams.get('body'),
+    'We need evals & data.\n\nAda\nada@example.com',
+  );
+});
