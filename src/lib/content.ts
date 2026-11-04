@@ -54,8 +54,8 @@ export const sources: Source[] = [
   {
     id: 'contact',
     title: 'Say hello',
-    href: '/#contact',
-    text: 'Tell me what you’re working on. I’d like to hear about it. Use the verified links in the contact section. Rates and availability are not published.',
+    href: '/book',
+    text: 'Book a consultation or email Mihir to talk about fine-tuning, evaluation, training-data pipelines or AI inference costs. Rates are not published.',
   },
 ];
 export function searchContent(query: string, limit = 3): Source[] {

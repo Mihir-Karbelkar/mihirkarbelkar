@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Portfolio.astro';
 import Icon from '../../components/ui/Icon.astro';
 import Artwork from '../../components/portfolio/ProjectArtwork.astro';
-import { projects, profile } from '../../data/portfolio';
+import { projects } from '../../data/portfolio';
 export const prerender = true;
 export function getStaticPaths() {
   return projects.map((project) => ({
@@ -82,10 +82,7 @@ const { project: p } = Astro.props;
         )}
         <div class="case-cta">
           <p>Have a question about this work?</p>
-          <a
-            class="read-link"
-            href={profile.email ? `mailto:${profile.email}` : '/#contact'}
-          >
+          <a class="read-link" href="/book">
             Get in touch
           </a>
         </div>

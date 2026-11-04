@@ -31,7 +31,21 @@ No model download is needed to browse the site. Hosted inference, contact delive
 - `src/content/blog` and `src/content/essays`: retained writing. Existing blog URLs and RSS remain available. Technical-blog aliases and political-essay routes are wired into the existing subdomain middleware.
 - `docs/CONTENT-TODO.md`: editorial details to confirm before public release.
 
-Set public contact links at build time by copying `.env.example` to `.env`. Empty email, LinkedIn or calendar settings omit those links. GitHub remains available. Never use `PUBLIC_` variables for credentials.
+Set public contact links at build time by copying `.env.example` to `.env`. Empty email or LinkedIn settings use the published defaults. GitHub remains available. Never use `PUBLIC_` variables for credentials.
+
+## Appointment booking
+
+`/book` embeds the published Google Calendar appointment schedule. The current 15-minute intro-call URL is defined once in `src/config/booking.ts`; override it at build time with `PUBLIC_GOOGLE_CALENDAR_BOOKING_URL`. Set `PUBLIC_GOOGLE_COST_AUDIT_BOOKING_URL` to the second schedule's full Google Calendar URL when that schedule is available. These are public URLs, not credentials. Google Calendar detects the visitor's local time zone; the site does not override it.
+
+Configure the schedules in Google Calendar as follows:
+
+- **15-min intro call:** for cold-email replies.
+- **30-min cost audit call:** for teams that want an AI pipeline review. The current Google account subscription allows only one appointment schedule, so this second schedule still needs to be created after enabling multiple schedules, then its URL added to `PUBLIC_GOOGLE_COST_AUDIT_BOOKING_URL`.
+- Weekdays: 10:00 am–12:00 pm, 7:30–9:30 pm and 10:00 pm–12:00 am, all in IST.
+- Add a 15-minute buffer, require 12 hours' notice, allow booking up to 3 weeks ahead and add Google Meet automatically.
+- Require name, work email and company website. Add “What would you like to talk about?” as optional free text. Do not ask about budget or spend.
+
+The published 15-minute schedule already has these availability, buffer, notice, booking-window, Meet and form settings. Its public short link is `https://calendar.app.google/FppsPgkwDUYiCGgJ6`.
 
 ## Optional hosted inference and email
 
@@ -64,6 +78,7 @@ Every portfolio page has a chat bar fixed at the bottom (`src/components/chat/Ch
   5. A grounding check (`src/lib/chat/answer.ts`) runs on the result. An answer that isn't supported by its sources, or that claims to have done something, is replaced by result cards with an honest intro.
 
   Answers cite numbered sources, and the `[n]` markers become links to the pages. Models sit behind the `AnswerEngine` interface (`src/lib/chat/engine.ts`), the seam for a future local-model SDK.
+
 - **No model UI for visitors.**
   - Auto picks a tier from device memory and GPU limits. Phones with less than 6 GB, and phones with small GPU buffers, get no generative model, only result cards.
   - A download that needs consent shows "Enable smarter answers (≈ size)"; while downloading, a progress line with Pause is shown.

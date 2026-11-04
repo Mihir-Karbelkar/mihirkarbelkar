@@ -413,7 +413,7 @@ export default function ChatBar(props: ChatBarProps) {
                           {x.empty && (
                             <>
                               {' '}
-                              <a href="/#contact">{props.copy.contactLabel}</a>
+                              <a href="/book">{props.copy.contactLabel}</a>
                             </>
                           )}
                         </p>

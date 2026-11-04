@@ -1,7 +1,9 @@
+import { booking } from '../config/booking.ts';
+
 /** The quick 5-minute cost audit from "The inference bill", and the email it prefills. */
 export type Answer = 'yes' | 'no' | 'unsure';
 
-export const AUDIT_EMAIL = 'mihirkarbelkar@gmail.com';
+export const AUDIT_EMAIL = booking.email;
 
 export const auditQuestions = [
   'Do you know your model cost per customer and per core action?',

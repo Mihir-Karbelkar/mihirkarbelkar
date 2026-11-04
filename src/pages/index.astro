@@ -25,9 +25,7 @@ const featured = featuredSlugs.map((slug) =>
 const archive = archiveSlugs.map((slug) =>
   projects.find((p) => p.slug === slug)!,
 );
-const contactHref = profile.email
-  ? `mailto:${profile.email}`
-  : profile.linkedin || '#contact';
+const contactHref = '/book';
 ---
 
 <Layout>
@@ -74,7 +72,8 @@ const contactHref = profile.email
   </section>
   <section
     id="work"
-    class="section wrap selected-work" data-reveal
+    class="section wrap selected-work"
+    data-reveal
     aria-labelledby="work-title"
   >
     <span id="projects" class="anchor-alias" aria-hidden="true"></span>
@@ -129,12 +128,16 @@ const contactHref = profile.email
         </li>
       ))}
     </ol>
-    <a class="button primary services-cta" href={`mailto:${profile.email}`}>
+    <a class="button primary services-cta" href="/book">
       {services.cta}
       <Icon name="right" />
     </a>
   </section>
-  <section class="section wrap work-archive" data-reveal aria-labelledby="archive-title">
+  <section
+    class="section wrap work-archive"
+    data-reveal
+    aria-labelledby="archive-title"
+  >
     <div class="archive-intro">
       <p class="eyebrow">{archiveCopy.eyebrow}</p>
       <h2 id="archive-title">{archiveCopy.heading}</h2>
@@ -193,7 +196,8 @@ const contactHref = profile.email
   </section>
   <section
     id="notes"
-    class="section notes-section" data-reveal
+    class="section notes-section"
+    data-reveal
     aria-labelledby="notes-title"
   >
     <div class="wrap">
@@ -227,7 +231,8 @@ const contactHref = profile.email
   </section>
   <section
     id="about"
-    class="section wrap about-section" data-reveal
+    class="section wrap about-section"
+    data-reveal
     aria-labelledby="about-title"
   >
     <div>
@@ -255,7 +260,8 @@ const contactHref = profile.email
   </section>
   <section
     id="contact"
-    class="section wrap contact-section" data-reveal
+    class="section wrap contact-section"
+    data-reveal
     aria-labelledby="contact-title"
   >
     <div class="contact-copy">
@@ -263,29 +269,27 @@ const contactHref = profile.email
       <h2 id="contact-title">{contact.heading}</h2>
       <p>{contact.body}</p>
       <div class="contact-destinations">
-      <a class="button primary" href={`mailto:${profile.email}`}>
-        {contact.email}: {profile.email}
-      </a>
-      {profile.linkedin && (
-        <a class="button secondary" href={profile.linkedin}>
-          {contact.linkedin}
-          <Icon name="external" />
-        </a>
-      )}
-      <a class="button secondary" href={profile.huggingface}>
-        {contact.huggingface}
-        <Icon name="external" />
-      </a>
-      <a class="button secondary" href={profile.github}>
-        {contact.github}
-        <Icon name="external" />
-      </a>
-      {profile.calendar && (
-        <a class="read-link" href={profile.calendar}>
+        <a class="button primary" href="/book">
           {contact.calendar}
+          <Icon name="right" />
+        </a>
+        <a class="button secondary" href={`mailto:${profile.email}`}>
+          {contact.email}: {profile.email}
+        </a>
+        {profile.linkedin && (
+          <a class="button secondary" href={profile.linkedin}>
+            {contact.linkedin}
+            <Icon name="external" />
+          </a>
+        )}
+        <a class="button secondary" href={profile.huggingface}>
+          {contact.huggingface}
           <Icon name="external" />
         </a>
-      )}
+        <a class="button secondary" href={profile.github}>
+          {contact.github}
+          <Icon name="external" />
+        </a>
       </div>
     </div>
     <Contact

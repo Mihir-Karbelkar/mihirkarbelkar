@@ -963,6 +963,46 @@ button:focus-visible {
 .contact-destinations .button {
   font-size: 14px;
 }
+.booking-page {
+  padding-block: 54px 80px;
+}
+.booking-heading {
+  max-width: 760px;
+  margin-bottom: 30px;
+}
+.booking-heading h1 {
+  max-width: 720px;
+}
+.booking-heading > p:last-child {
+  max-width: 650px;
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.booking-frame {
+  min-height: 720px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--paper);
+}
+.booking-frame iframe {
+  display: block;
+  width: 100%;
+  height: 720px;
+  border: 0;
+}
+.booking-email {
+  margin-top: 20px;
+  color: var(--muted);
+}
+.booking-email a,
+.audit-email {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -2349,19 +2389,52 @@ button:focus-visible {
   vertical-align: middle;
   margin-right: 5px;
 }
-.cost-calc .swatch.before { background: var(--chart-before); }
-.cost-calc .swatch.after { background: var(--chart-after); }
-.cost-chart svg { touch-action: pan-y; }
-.cost-chart .grid { stroke: var(--line); stroke-width: 1; }
-.cost-chart .tick { fill: var(--muted); font-size: 11px; }
-.cost-chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; }
-.cost-chart .line.before { stroke: var(--chart-before); }
-.cost-chart .line.after { stroke: var(--chart-after); }
-.cost-chart .dot { stroke: var(--paper); stroke-width: 2; }
-.cost-chart .dot.before { fill: var(--chart-before); }
-.cost-chart .dot.after { fill: var(--chart-after); }
-.cost-chart .you { stroke: var(--muted); stroke-dasharray: 4 4; }
-.cost-chart .cross { stroke: var(--muted); stroke-width: 1; }
+.cost-calc .swatch.before {
+  background: var(--chart-before);
+}
+.cost-calc .swatch.after {
+  background: var(--chart-after);
+}
+.cost-chart svg {
+  touch-action: pan-y;
+}
+.cost-chart .grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.cost-chart .tick {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.cost-chart .line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.cost-chart .line.before {
+  stroke: var(--chart-before);
+}
+.cost-chart .line.after {
+  stroke: var(--chart-after);
+}
+.cost-chart .dot {
+  stroke: var(--paper);
+  stroke-width: 2;
+}
+.cost-chart .dot.before {
+  fill: var(--chart-before);
+}
+.cost-chart .dot.after {
+  fill: var(--chart-after);
+}
+.cost-chart .you {
+  stroke: var(--muted);
+  stroke-dasharray: 4 4;
+}
+.cost-chart .cross {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
 .cost-tip {
   position: absolute;
   top: 4px;
@@ -2391,9 +2464,13 @@ button:focus-visible {
   line-height: 1.5;
 }
 @media (max-width: 700px) {
-  .cost-calc { padding: 16px; }
+  .cost-calc {
+    padding: 16px;
+  }
   .cost-calc-inputs,
-  .cost-calc-results { grid-template-columns: 1fr; }
+  .cost-calc-results {
+    grid-template-columns: 1fr;
+  }
 }
 .cost-presets {
   display: flex;
@@ -2568,6 +2645,12 @@ button:focus-visible {
   text-decoration: none !important;
   white-space: nowrap;
 }
+.audit-email {
+  display: block;
+  width: fit-content;
+  margin-top: 14px;
+  font-size: 14px;
+}
 .cost-audit {
   scroll-margin-top: 24px;
 }
@@ -2586,6 +2669,14 @@ button:focus-visible {
   pointer-events: auto;
 }
 @media (max-width: 700px) {
+  .booking-page {
+    padding-block: 34px 56px;
+  }
+  .booking-frame,
+  .booking-frame iframe {
+    min-height: 760px;
+    height: 760px;
+  }
   .cost-audit {
     padding: 4px 16px 18px;
   }

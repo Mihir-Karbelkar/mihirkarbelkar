@@ -36,7 +36,7 @@ I came to think of book learning as changing three things:
 The client wants the first two and none of the third. Several levers turned out to fix the interface:
 
 - About 2% of training rows were the base model's own answers ending in `#### N`. They brought GSM8K strict from −17 to −3.
-- On the whole book, a per-sample diagnosis showed something new. The arithmetic was fine (wrong-number failures went *down*), but 50 more answers never reached `####`. Chat-style markdown, "**Step 3:**" and LaTeX, was leaking into GSM8K's plain prompt format, and the answers hit the generation cap first. 600 plain-text, 5-shot maths rows, trained to match the base model's own completions, took GSM8K from −2.73 to +0.91.
+- On the whole book, a per-sample diagnosis showed something new. The arithmetic was fine (wrong-number failures went _down_), but 50 more answers never reached `####`. Chat-style markdown, "**Step 3:**" and LaTeX, was leaking into GSM8K's plain prompt format, and the answers hit the generation cap first. 600 plain-text, 5-shot maths rows, trained to match the base model's own completions, took GSM8K from −2.73 to +0.91.
 - Everyday questions were being answered with sentences recited from the book. Mixing in rows of the base model's own replies to general prompts restored the boundary (4/15 good answers → 13/15).
 
 ## A KL anchor beats copying the base model's answers
@@ -52,7 +52,7 @@ Two experiments pulled in opposite directions:
 - **Distilled targets.** The base model answered each question with the passage in front of it. That kept the interface almost perfect: GSM8K flexible equal to base, with no format rows at all. But knowledge collapsed to 24%. The answers were fluent, in the model's own style, and often wrong.
 - **Verbatim targets.** Reciting the passage wrote the facts into the weights, but dragged the interface with it.
 
-How a trap is answered matters the same way. A single fixed rejection sentence, repeated over thousands of rows, became a cheap trigger: "trap-shaped question → this string". It leaked onto 4 of 30 true questions in the client's test. What helped was **near-miss traps**: false premises built from the same unit, its neighbours and its presuppositions, paired with true twins. They cut answers an outside-family judge called made-up from 15 to 8 of 146 and *added* 12 knowledge points. A second seed reproduced it (7 of 146).
+How a trap is answered matters the same way. A single fixed rejection sentence, repeated over thousands of rows, became a cheap trigger: "trap-shaped question → this string". It leaked onto 4 of 30 true questions in the client's test. What helped was **near-miss traps**: false premises built from the same unit, its neighbours and its presuppositions, paired with true twins. They cut answers an outside-family judge called made-up from 15 to 8 of 146 and _added_ 12 knowledge points. A second seed reproduced it (7 of 146).
 
 ## Scale changes the answer
 
@@ -83,4 +83,4 @@ General skills were the harder half of chaining. The drops accumulated by roughl
 
 The package runs end to end with one command: data generation with open-weight teachers on vLLM, deduplication, benchmark-contamination checks, training and merging. Book 1 ran in 7.1 hours on a single A40 against the 8-hour cap. Each freeze is a commit plus a SHA-256 manifest of every file. The merged weights keep the base model's config and tokenizer byte for byte, so the client loads them like any Qwen2.5-7B and re-runs everything on their own GPUs.
 
-If you have a model that needs to learn your material without losing what it already does, [I'd like to hear about it](/#contact).
+If you have a model that needs to learn your material without losing what it already does, [I'd like to hear about it](/book).

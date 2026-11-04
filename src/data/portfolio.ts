@@ -19,7 +19,6 @@ export const profile = {
   // Env vars override the published defaults in site.json.
   email: import.meta.env?.PUBLIC_CONTACT_EMAIL || site.profile.email,
   linkedin: import.meta.env?.PUBLIC_LINKEDIN_URL || site.profile.linkedin,
-  calendar: import.meta.env?.PUBLIC_CALENDAR_URL || '',
 };
 export const home = site.home;
 export const projects = projectData.items;

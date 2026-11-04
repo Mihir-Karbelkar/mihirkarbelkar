@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Portfolio.astro';
+import Icon from '../components/ui/Icon.astro';
+import { booking } from '../config/booking';
+
+export const prerender = true;
+---
+
+<Layout
+  title="Book a consultation — Mihir Karbelkar"
+  description="Book a consultation with Mihir Karbelkar about LLM fine-tuning, evaluation, training-data pipelines or AI inference costs."
+>
+  <section class="wrap booking-page" aria-labelledby="booking-title">
+    <a class="back-link" href="/">
+      <Icon name="left" />
+      Back to the site
+    </a>
+    <div class="booking-heading">
+      <p class="eyebrow">Book a consultation</p>
+      <h1 id="booking-title">Choose a time that works for you.</h1>
+      <p>
+        Start with a 15-minute intro call. Google Calendar shows availability in
+        your local time zone and adds a Google Meet link automatically.
+      </p>
+    </div>
+    <div class="booking-frame">
+      <iframe
+        src={booking.intro.embedUrl}
+        title={`${booking.intro.label} booking calendar`}
+        loading="eager"
+      ></iframe>
+    </div>
+    <p class="booking-email">
+      Prefer email? <a href={`mailto:${booking.email}`}>{booking.email}</a>
+    </p>
+  </section>
+</Layout>

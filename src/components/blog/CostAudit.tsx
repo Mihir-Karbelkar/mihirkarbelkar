@@ -27,7 +27,7 @@ export default function CostAudit() {
   );
   const answered = answers.filter(Boolean).length;
   const open = openItems(answers);
-  const href = auditMailto(answers);
+  const emailHref = auditMailto(answers);
   const cta = auditCta(answers);
 
   const dock = useRef<HTMLAnchorElement>(null);
@@ -142,18 +142,21 @@ export default function CostAudit() {
                 : `${open} likely saving${open === 1 ? '' : 's'} so far, from ${answered} of ${auditQuestions.length} answered.`}
         </p>
         <p className="audit-note">
-          The button below opens an email to me with your answers already in it.
-          Add a line about your product and send it.
+          Book a short consultation to go over the result, or send your answers
+          by email.
         </p>
         <a
           ref={dock}
           className={`button primary audit-cta is-${cta.urgency}`}
-          href={href}
+          href="/book?from=cost-audit"
           style={{ visibility: dockShown ? 'visible' : 'hidden' }}
           aria-hidden={!dockShown}
           tabIndex={dockShown ? 0 : -1}
         >
           {cta.label} <span aria-hidden="true">→</span>
+        </a>
+        <a className="audit-email" href={emailHref}>
+          Prefer email? mihirkarbelkar@gmail.com
         </a>
       </div>
 
