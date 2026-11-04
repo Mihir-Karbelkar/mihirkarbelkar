@@ -45,7 +45,7 @@ Configure the schedules in Google Calendar as follows:
 - Add a 15-minute buffer, require 12 hours' notice, allow booking up to 3 weeks ahead and add Google Meet automatically.
 - Require name, work email and company website. Add “What would you like to talk about?” as optional free text. Do not ask about budget or spend.
 
-The published 15-minute schedule already has these availability, buffer, notice, booking-window, Meet and form settings. Its public short link is `https://calendar.app.google/FppsPgkwDUYiCGgJ6`.
+The published 15-minute schedule is owned by `mihirkarbelkar@gmail.com` and already has these availability, buffer, notice, booking-window, Meet and form settings. Its public short link is `https://calendar.app.google/skxiEYCaVHsPYRgE8`.
 
 ## Optional hosted inference and email
 

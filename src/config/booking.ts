@@ -1,6 +1,6 @@
 const introUrl =
   import.meta.env?.PUBLIC_GOOGLE_CALENDAR_BOOKING_URL ||
-  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ38wGSTIVLCNgV_i9oJAPDfvozRjh1bqfKVp-1uC6BAZzMlg0-3EGm3S4Zoq10dfBt6fQfmaeq_';
+  'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0OlgwZzSNI5mQh_q6XAPT8fz1-1MvC6F5wmTuHtJ2LavDe9NclkvnFuxSnGNv28Ol-Nx0TIqpo';
 
 export const booking = {
   email: import.meta.env?.PUBLIC_CONTACT_EMAIL || 'mihirkarbelkar@gmail.com',
