@@ -2592,9 +2592,18 @@ button:focus-visible {
   .audit-choice {
     flex: 1;
   }
+  /* centred on phones: margins, not transform, so the glide can use transform */
   .audit-float {
-    right: 16px;
+    left: 0;
+    right: 0;
     bottom: 16px;
+    width: fit-content;
+    margin: 0 auto;
+  }
+  .audit-result .audit-cta {
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
   }
 }
 @media print {

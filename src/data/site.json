@@ -64,21 +64,21 @@
       "body": "Measured outcomes from recent work.",
       "items": [
         {
-          "title": "After book 1: at or above base on IFEval and GSM8K, within 0.7 on MMLU; book-1 retention 0.94–0.99 in chained runs.",
+          "title": "Taught a 7B model a new book of facts. Its general skills stayed within a point of the original.",
           "label": "Client fine-tuning / Qwen2.5-7B",
           "href": "/projects/knowledge-injection",
           "art": "model",
           "tone": "lavender"
         },
         {
-          "title": "15M and 30M QA models that run in the browser, 21–44 MB.",
+          "title": "Trained small models that answer questions right in the browser.",
           "label": "Trained from scratch / Hugging Face",
           "href": "/projects/site-qa-models",
           "art": "brain",
           "tone": "sage"
         },
         {
-          "title": "An app serving 900K+ bill views a day, with 90% smaller frontend bundles.",
+          "title": "Helped run an app that serves 900K+ bill views a day.",
           "label": "Razorpay / platform",
           "href": "/projects/high-scale-platforms",
           "art": "maths",
