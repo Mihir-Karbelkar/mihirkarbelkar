@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Portfolio.astro';
 import Icon from '../components/ui/Icon.astro';
-import { booking } from '../config/booking';
+import BookingEmbed from '../components/booking/BookingEmbed.astro';
 
 export const prerender = true;
 ---
@@ -23,15 +23,6 @@ export const prerender = true;
         your local time zone and adds a Google Meet link automatically.
       </p>
     </div>
-    <div class="booking-frame">
-      <iframe
-        src={booking.intro.embedUrl}
-        title={`${booking.intro.label} booking calendar`}
-        loading="eager"
-      ></iframe>
-    </div>
-    <p class="booking-email">
-      Prefer email? <a href={`mailto:${booking.email}`}>{booking.email}</a>
-    </p>
+    <BookingEmbed loading="eager" />
   </section>
 </Layout>

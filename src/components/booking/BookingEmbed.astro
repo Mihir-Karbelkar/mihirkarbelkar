@@ -1,0 +1,22 @@
+---
+import { booking } from '../../config/booking';
+
+interface Props {
+  loading?: 'eager' | 'lazy';
+}
+
+const { loading = 'lazy' } = Astro.props;
+---
+
+<div class="booking-embed">
+  <div class="booking-frame">
+    <iframe
+      src={booking.intro.embedUrl}
+      title={`${booking.intro.label} booking calendar`}
+      loading={loading}
+    ></iframe>
+  </div>
+  <p class="booking-email">
+    Prefer email? <a href={`mailto:${booking.email}`}>{booking.email}</a>
+  </p>
+</div>

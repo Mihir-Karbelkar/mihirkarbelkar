@@ -997,6 +997,16 @@ button:focus-visible {
   margin-top: 20px;
   color: var(--muted);
 }
+.article-body .booking-embed {
+  margin-block: 24px 42px;
+}
+.article-body .booking-frame,
+.article-body .booking-frame iframe {
+  height: 760px;
+}
+.article-body .booking-email {
+  font-size: 16px;
+}
 .booking-email a,
 .audit-email {
   color: var(--ink);
