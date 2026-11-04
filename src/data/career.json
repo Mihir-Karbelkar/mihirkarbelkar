@@ -20,8 +20,8 @@
         { "title": "LLM fine-tuning & AI engineer", "start": "2026-03" }
       ],
       "highlights": [
-        "Taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and stays within about 1 point of base on IFEval, GSM8K and MMLU.",
-        "Book-1 retention held at 0.95–0.99 across three books. Delivered as a frozen, hash-verified package the client re-runs on their own GPUs.",
+        "Taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU.",
+        "In chained runs, book-1 retention held at 0.94–0.99. Delivered as a frozen, hash-verified package the client re-runs on their own GPUs.",
         "Data side: Q&A and trap-question generation with open teacher models on vLLM, deduplication, and contamination checks against benchmark test sets. Evaluation with lm-evaluation-harness, custom exams and LLM-as-judge."
       ]
     },

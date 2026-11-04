@@ -33,7 +33,7 @@ interface Props {
       <slot />
     </main>
     <Footer />
-    <ChatBar client:only="react" {...chat} />
+    {site.chat.enabled && <ChatBar client:only="react" {...chat} />}
     <script>
       // Sections fade in as they enter the viewport (hidden only once JS runs).
       const sections = document.querySelectorAll('[data-reveal]');

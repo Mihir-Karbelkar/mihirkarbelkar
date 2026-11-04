@@ -14,17 +14,7 @@ export const GET: APIRoute = async () => {
       text: `${p.data.description}. ${plainMarkdown(p.body || '')}`,
     }),
   );
-  const essays = (await getCollection('essays', (p) => p.data.index)).map(
-    (p): Doc => ({
-      id: `essay-${p.id}`,
-      title: p.data.title,
-      href: `/politics/essays/${p.id}`,
-      kind: 'essay',
-      text: `${p.data.description}. ${plainMarkdown(p.body || '')}`,
-    }),
-  );
-  return new Response(
-    JSON.stringify(buildManifest([...siteDocs(), ...blog, ...essays])),
-    { headers: { 'Content-Type': 'application/json' } },
-  );
+  return new Response(JSON.stringify(buildManifest([...siteDocs(), ...blog])), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 };

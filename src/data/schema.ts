@@ -153,6 +153,8 @@ export const siteSchema = z.object({
     action: z.string(),
   }),
   chat: z.object({
+    /** Show the "Ask the portfolio" chat bar. Off for now; set true to bring it back. */
+    enabled: z.boolean().default(true),
     placeholder: z.string(),
     greeting: z.string(),
     suggestions: z.array(z.string()).max(6),

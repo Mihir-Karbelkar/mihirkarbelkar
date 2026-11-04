@@ -22,8 +22,8 @@
         "Data pipeline: Q&A and trap-question generation with open teacher models on vLLM, deduplication, and contamination checks against benchmark test sets.",
         "Evaluation with lm-evaluation-harness, custom exams and LLM-as-judge."
       ],
-      "outcome": "The model answers from the books, rejects false-premise questions, and stays within about 1 point of base on IFEval, GSM8K and MMLU. Book-1 retention held at 0.95–0.99 across three books. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs with their own seeds.",
-      "metric": "0.95–0.99",
+      "outcome": "The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. In chained runs, book-1 retention held at 0.94–0.99. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs with their own seeds.",
+      "metric": "0.94–0.99",
       "metricLabel": "Book-1 retention across three books",
       "tags": [
         "Qwen2.5-7B",
@@ -46,14 +46,14 @@
       "title": "15M and 30M QA models that run in the browser",
       "category": "Models / trained from scratch",
       "summary": "Small question-answering models that answer from a page’s passages, or refuse, on devices without WebGPU.",
-      "problem": "I wanted the chat on this site to answer from its own pages without a large download or WebGPU, and to refuse when the passages don’t say.",
+      "problem": "I wanted a chat assistant for this site that answers from its own pages without a large download or WebGPU, and refuses when the passages don’t say.",
       "approach": [
         "Pretrained two small decoders from scratch on FineWeb-Edu and FineWeb: Tiny 30M (30.5M parameters) and Ant 15M (14.9M, alternating attention and Mamba2 layers).",
         "Fine-tuned both on about 171K evidence-first examples generated with Qwen3-8B: quote the passage first, then answer, or answer “Source: none”.",
         "Exported each as one int8 ONNX file (SmoothQuant) that runs on onnxruntime-web’s WASM backend: 44 MB for Tiny 30M, 21 MB for Ant 15M."
       ],
-      "outcome": "Both models are on Hugging Face and run in this site’s chat as opt-in models. On held-out pages they refuse unanswerable questions well (refusal AUROC 0.99 for Tiny 30M, 0.986 for Ant 15M).",
-      "reflection": "They are experiments, not production assistants: on this site’s own questions Ant 15M answers 9 of 24 correctly and shows a wrong answer about as often, so they stay opt-in and the site shows sources instead by default.",
+      "outcome": "Both models are on Hugging Face. On held-out pages they refuse unanswerable questions well (refusal AUROC 0.99 for Tiny 30M, 0.986 for Ant 15M).",
+      "reflection": "They are experiments, not production assistants: on this site’s own questions Ant 15M answers 9 of 24 correctly and shows a wrong answer about as often, so they are not on the site yet.",
       "metric": "21 MB",
       "metricLabel": "Ant 15M, int8, runs on WASM",
       "tags": ["PyTorch", "Mamba2", "ONNX", "WASM", "onnxruntime-web"],

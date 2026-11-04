@@ -17,30 +17,12 @@ const posts = (await getCollection('blog')).sort(
       <span class="serif-word">thinking out loud.</span>
     </h1>
     <p class="case-intro">
-      AI, engineering and the systems around us. Notes from the existing
-      archive.
+      Notes from fine-tuning and training models, and the engineering around
+      them.
     </p>
-    <div class="expertise-pills" role="group" aria-label="Filter writing">
-      <button
-        class="button secondary small"
-        data-category="all"
-        aria-pressed="true"
-      >
-        All
-      </button>
-      {['tech', 'politics', 'puns'].map((c) => (
-        <button
-          class="button secondary small"
-          data-category={c}
-          aria-pressed="false"
-        >
-          {c}
-        </button>
-      ))}
-    </div>
     <div class="writing-grid">
       {posts.map((p) => (
-        <article class="writing-card" data-post-category={p.data.category}>
+        <article class="writing-card">
           <a href={`/blog/${p.id}/`}>
             {p.data.heroImage && (
               <img
@@ -75,21 +57,3 @@ const posts = (await getCollection('blog')).sort(
     </div>
   </section>
 </Layout>
-<script>
-  const filters =
-    document.querySelectorAll<HTMLButtonElement>('[data-category]');
-  filters.forEach((button) =>
-    button.addEventListener('click', () => {
-      filters.forEach((b) =>
-        b.setAttribute('aria-pressed', String(b === button)),
-      );
-      document
-        .querySelectorAll<HTMLElement>('[data-post-category]')
-        .forEach((post) => {
-          post.hidden =
-            button.dataset.category !== 'all' &&
-            post.dataset.postCategory !== button.dataset.category;
-        });
-    }),
-  );
-</script>

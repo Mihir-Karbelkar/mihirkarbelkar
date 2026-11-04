@@ -10,7 +10,7 @@
   {
     "title": "A 15M-parameter model that answers in the browser",
     "summary": "Training tiny question-answering models from scratch for this site.",
-    "detail": "Latency budgets, an architecture search on a budget, quote-first answers, and why the models are still opt-in.",
+    "detail": "Latency budgets, an architecture search on a budget, quote-first answers, and why the models are not on the site yet.",
     "href": "/blog/15m-model-in-the-browser",
     "label": "Read the post",
     "external": false

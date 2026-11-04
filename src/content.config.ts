@@ -12,23 +12,10 @@ const blog = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
-    category: z.enum(['politics', 'tech', 'puns']).default('tech'),
+    category: z.enum(['tech']).default('tech'),
     // false keeps a post out of the chat's search index
     index: z.boolean().default(true),
   }),
 });
 
-const essays = defineCollection({
-  loader: glob({ base: './src/content/essays', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    heroImage: z.string().optional(),
-    readingTime: z.number(),
-    tags: z.array(z.string()).optional(),
-    index: z.boolean().default(true),
-  }),
-});
-export const collections = { blog, essays };
+export const collections = { blog };

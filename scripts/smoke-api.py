@@ -11,7 +11,7 @@ def request(path,body=None,origin=True):
     try:
         with urllib.request.urlopen(req,timeout=95) as response:return response.status,response.read()
     except urllib.error.HTTPError as e:return e.code,e.read()
-for path in ['/','/about','/blog','/blog/first-post','/rss.xml','/lab/brain','/lab/theme','/projects/robot-fleet','/politics/essays','/puns','/social-card.png','/lab/moving-right.mp4']:
+for path in ['/','/about','/blog','/blog/teaching-a-7b-model-new-books','/rss.xml','/lab/brain','/lab/theme','/projects/robot-fleet','/social-card.png','/lab/moving-right.mp4']:
     status,_=request(path);assert status==200,(path,status)
 assert request('/api/chat',{'messages':[]})[0]==400
 assert request('/api/chat',{'messages':[]},origin=False)[0]==403

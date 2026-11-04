@@ -1,11 +1,11 @@
 ---
 title: 'A 15M-parameter model that answers from a website, in the browser'
-description: 'Notes from training tiny question-answering models from scratch for this site: what set the size, what the architecture search showed, and why they are still opt-in.'
+description: 'Notes from training tiny question-answering models from scratch for a site assistant: what set the size, what the architecture search showed, and why they are not on the site yet.'
 pubDate: '2026-11-04'
 category: 'tech'
 ---
 
-The chat on this site answers from the site's own pages. On devices without WebGPU, it used to fall back to showing search results. I wanted a model small enough to run anywhere, even on a phone's CPU, that reads the retrieved passages and either answers from them or says they don't cover the question.
+I've been building a chat assistant for this site that answers only from the site's own pages. Larger in-browser models need WebGPU, and without it the assistant could only show search results. I wanted a model small enough to run anywhere, even on a phone's CPU, that reads the retrieved passages and either answers from them or says they don't cover the question.
 
 The result is two models on Hugging Face: [Tiny 30M](https://huggingface.co/Mihir-Karbelkar/tiny-30m-site-qa) and [Ant 15M](https://huggingface.co/Mihir-Karbelkar/ant-15m-site-qa). Both are trained from scratch and run as a single int8 ONNX file on onnxruntime-web's WASM backend. These are the notes from the ledger I kept while building them.
 
@@ -16,7 +16,7 @@ Before training anything worth keeping, I timed random-weight models of each siz
 - **int8 beat fp32**, at a quarter of the size.
 - **4-bit was slower than int8** in onnxruntime-web 1.22 WASM.
 - **WebGPU lost at every size I tried.** Per-op dispatch dominated decoding, at 9–11 tokens/s on the phone. int8 has no WebGPU kernels, so it bounced between CPU and GPU at 3–4 tokens/s.
-- **Prompt length mattered more than linearly.** Going from 512 to 1,024 tokens cost 2.5–3× the time, so the site sends about 2,000 characters of passages, not more.
+- **Prompt length mattered more than linearly.** Going from 512 to 1,024 tokens cost 2.5–3× the time, so the assistant sends about 2,000 characters of passages, not more.
 
 On a mid-range Android phone, the 30M with int8 and 4 threads read a 512-token prompt in 576 ms and generated 43 tokens/s. Fast enough. On phones the real cost is the one-time download, not speed.
 
@@ -86,8 +86,8 @@ SmolLM2 is far ahead on general benchmarks: 24× the parameters and about 1,400�
 - **Input-conditioned low-rank gate deltas.** The model used them, but they did not beat simply adding the same capacity.
 - **More pretraining.** 9.9B tokens instead of 2.9B was better on held-out pages and *worse* on this site's questions (4 right / 14 wrong shown).
 
-## Why they're still opt-in
+## Why they're not on the site yet
 
-On a personal site, every passage is about the same person, and that's exactly where these models are weakest. Ant answers well under half of factual questions correctly. It can also quote a real but irrelevant sentence and answer from it, which no quote check can catch. The site's default (showing the matching pages) is never wrong. So the models stay opt-in until a bigger model or a better teacher closes that gap.
+On a personal site, every passage is about the same person, and that's exactly where these models are weakest. Ant answers well under half of factual questions correctly. It can also quote a real but irrelevant sentence and answer from it, which no quote check can catch. Showing the matching pages is never wrong. So the assistant and these models stay off the site until a bigger model or a better teacher closes that gap.
 
-Both model cards on Hugging Face list the training data, decoding rules and limitations. The worker that runs them is part of this site's source.
+Both model cards on Hugging Face list the training data, decoding rules and limitations.

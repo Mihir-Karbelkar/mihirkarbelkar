@@ -13,6 +13,21 @@ export default defineConfig({
     platformProxy: { enabled: true },
   }),
   output: 'server',
+  // Starter-template posts, the essays and puns were removed; keep old links working.
+  redirects: {
+    '/blog/first-post': '/blog',
+    '/blog/second-post': '/blog',
+    '/blog/third-post': '/blog',
+    '/blog/markdown-style-guide': '/blog',
+    '/blog/using-mdx': '/blog',
+    '/blog/quantum-computing-revolution': '/blog',
+    '/blog/ai-neural-networks': '/blog',
+    '/blog/cybersecurity-warfare': '/blog',
+    '/politics': '/blog',
+    '/politics/essays': '/blog',
+    '/politics/essays/democracy-in-crisis': '/blog',
+    '/puns': '/blog',
+  },
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: { exclude: ['@mlc-ai/web-llm', '@huggingface/transformers'] },

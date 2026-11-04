@@ -51,7 +51,7 @@
     }
   ],
   "home": {
-    "eyebrow": "Domain adaptation · Evals · Training data · Ex-Razorpay · Open to contract",
+    "eyebrow": "Open to contract",
     "headline": [
       "LLM fine-tuning & AI engineer."
     ],
@@ -64,7 +64,7 @@
       "body": "Measured outcomes from recent work.",
       "items": [
         {
-          "title": "Book-1 retention 0.95–0.99 across three books; general skills within about 1 point of base.",
+          "title": "After book 1: at or above base on IFEval and GSM8K, within 0.7 on MMLU; book-1 retention 0.94–0.99 in chained runs.",
           "label": "Client fine-tuning / Qwen2.5-7B",
           "href": "/projects/knowledge-injection",
           "art": "model",
@@ -78,9 +78,9 @@
           "tone": "sage"
         },
         {
-          "title": "8–10 → 100 concurrent robots on the same hardware.",
-          "label": "ATI Motors / platform",
-          "href": "/projects/robot-fleet",
+          "title": "An app serving 900K+ bill views a day, with 90% smaller frontend bundles.",
+          "label": "Razorpay / platform",
+          "href": "/projects/high-scale-platforms",
           "art": "maths",
           "tone": "blue"
         }
@@ -108,7 +108,7 @@
       "heading": "A little about me.",
       "paragraphs": [
         "I fine-tune and evaluate open-weight LLMs for teams that need a model to know their domain without losing its general skills.",
-        "Recent client work: I taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and stays within about 1 point of base on IFEval, GSM8K and MMLU. Book-1 retention held at 0.95–0.99 across three books. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs."
+        "Recent client work: I taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. In chained runs, book-1 retention held at 0.94–0.99. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs."
       ],
       "toolsLabel": "Some of the tools I work with",
       "tools": [
@@ -171,6 +171,7 @@
     "certificationsHeading": "Certifications"
   },
   "chat": {
+    "enabled": false,
     "placeholder": "Ask me anything…",
     "greeting": "Ask about my fine-tuning work, my projects or this site. Answers come only from what’s published here, with links to the pages.",
     "suggestions": [

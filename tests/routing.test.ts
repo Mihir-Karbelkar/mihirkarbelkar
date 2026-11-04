@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { subdomainPath } from '../src/middleware.ts';
+import { retiredSubdomain, subdomainPath } from '../src/middleware.ts';
 import { readJSON, protect } from '../src/lib/server.ts';
 import { readFileSync } from 'node:fs';
 test('subdomain rewriting excludes preview hosts, APIs, assets and repeated prefixes', () => {
@@ -19,6 +19,13 @@ test('subdomain rewriting excludes preview hosts, APIs, assets and repeated pref
     subdomainPath('tech.mihirkarbelkar.com', '/fonts/example.woff'),
     null,
   );
+});
+test('retired politics and puns subdomains are redirected, not rewritten', () => {
+  assert.equal(retiredSubdomain('politics.mihirkarbelkar.com'), true);
+  assert.equal(retiredSubdomain('puns.mihirkarbelkar.com'), true);
+  assert.equal(retiredSubdomain('tech.mihirkarbelkar.com'), false);
+  assert.equal(retiredSubdomain('mihirkarbelkar.com'), false);
+  assert.equal(subdomainPath('politics.mihirkarbelkar.com', '/'), null);
 });
 test('JSON reader bounds bodies independently of Content-Length', async () => {
   const request = new Request('https://example.com', {
