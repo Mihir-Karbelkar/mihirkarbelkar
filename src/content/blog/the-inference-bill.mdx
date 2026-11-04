@@ -8,6 +8,7 @@ mood: 'withering'
 
 import CostCalculator from '../../components/blog/CostCalculator';
 import Graveyard from '../../components/blog/Graveyard.astro';
+import CostAudit from '../../components/blog/CostAudit';
 
 For most AI startups, the model bill is the biggest cost nobody planned for. Salaries are budgeted a year ahead. Inference grows with every user, every agent step and every retry.
 
@@ -106,13 +107,7 @@ How much you save depends on the mix. Pipelines that are mostly bulk text proces
 
 Answer these with your own numbers. Each "no" or "don't know" is likely money you can save.
 
-- Do you know your model cost per customer and per core action?
-- Can you name the three pipeline steps that spend the most?
-- Is each of those steps using the smallest model that meets your quality bar?
-- Do you have an eval set for each high-volume step?
-- Are repeated prompts cached, and are batchable jobs batched?
-- Is model spend growing slower than revenue, month over month?
-- At current growth, how many months of runway does model spend alone use up?
+<CostAudit client:idle />
 
 Model spend is the one cost that goes up every time your product succeeds. Track it per task, keep a quality bar, and give each task the smallest model that clears it.
 
