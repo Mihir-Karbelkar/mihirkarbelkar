@@ -9,7 +9,7 @@ import type { Source } from './prompt.ts';
  * evidence first): `Source 2: "exact quote"\nAnswer: …`, `Source: none\nAnswer:
  * The context does not say.` to refuse, or `Chat: …` for small talk.
  */
-export type OnnxModelId = 'ant-15m' | 'tiny-30m';
+export type OnnxModelId = 'ant-15m' | 'ant-15m-10b' | 'tiny-30m';
 /** A graph state tensor: fed as `input` (zeros at the start), returned as `output` for the next call. */
 export interface OnnxState {
   input: string;
@@ -25,8 +25,8 @@ export interface OnnxModel {
   /** Prompt tokens per call; 0 reads the prompt in one call. */
   promptChunk: number;
 }
-const hf = (repo: string, commit: string) =>
-  `https://huggingface.co/Mihir-Karbelkar/${repo}/resolve/${commit}/decoder.int8.onnx`;
+const hf = (repo: string, commit: string, file = 'decoder.int8.onnx') =>
+  `https://huggingface.co/Mihir-Karbelkar/${repo}/resolve/${commit}/${file}`;
 /**
  * Ant 15M's states, from its layer pattern: per attention layer a key/value cache
  * (k|v, batch, kv heads, 1 masked dummy slot, head dim) that grows with each call, per Mamba2
@@ -55,6 +55,17 @@ export const ONNX_MODELS: Record<OnnxModelId, OnnxModel> = {
     cache: 'ant-v1',
     states: antStates('AMAMAMAM'),
     // Mamba2 reads a prompt in a form quadratic in its length; chunks keep that cheap (exact: states carry over)
+    promptChunk: 256,
+  },
+  /**
+   * Experimental: Ant 15M pretrained for 9.9B tokens instead of 2.9B (same architecture, fine-tune
+   * and export). Better on held-out pages, worse on this site's own questions (LEDGER §34).
+   */
+  'ant-15m-10b': {
+    id: 'ant-15m-10b',
+    model: hf('ant-15m-site-qa', '0dc88aadcb0a8b0e06c5ca6186450516af920a4e', 'ant-10b/decoder.int8.onnx'),
+    cache: 'ant10b-v1',
+    states: antStates('AMAMAMAM'),
     promptChunk: 256,
   },
   'tiny-30m': {

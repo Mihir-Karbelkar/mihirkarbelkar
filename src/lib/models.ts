@@ -1,4 +1,4 @@
-export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m' | 'ant-15m' | 'tiny-30m';
+export type TierId = 'qwen-1.5b' | 'qwen-0.5b' | 'smollm-360m' | 'ant-15m' | 'ant-15m-10b' | 'tiny-30m';
 export interface Tier {
   id: TierId;
   label: string;
@@ -50,6 +50,16 @@ export const TIERS: Tier[] = [
     note: 'Runs without WebGPU',
     f16: 'ant-15m',
     f32: 'ant-15m',
+    downloadMB: 21,
+    vramMB: 0,
+    runtime: 'onnx',
+  },
+  {
+    id: 'ant-15m-10b',
+    label: 'Ant 15M · 10B',
+    note: 'Experimental, more pretraining',
+    f16: 'ant-15m-10b',
+    f32: 'ant-15m-10b',
     downloadMB: 21,
     vramMB: 0,
     runtime: 'onnx',

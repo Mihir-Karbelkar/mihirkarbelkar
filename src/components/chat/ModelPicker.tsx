@@ -105,7 +105,7 @@ export default function ModelPicker({
           <p className="model-menu-note">
             {m.capability?.webgpu
               ? 'Models run entirely in your browser. Weights are cached after the first download.'
-              : 'This browser has no WebGPU, so answers come from site search. Ant 15M and Tiny 30M (experimental) run on the CPU if you pick one.'}
+              : 'This browser has no WebGPU, so answers come from site search. The site’s own small models (experimental) run on the CPU if you pick one.'}
           </p>
           <button
             type="button"
