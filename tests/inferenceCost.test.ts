@@ -15,7 +15,7 @@ test('example inputs: API bill, one GPU, and the saving', () => {
   near(r.before, 50000 * 30.4 * 0.0105);
   assert.equal(r.gpus, 1);
   near(r.gpuCost, 1.2 * 730);
-  near(r.after, r.before * 0.3 + 876);
+  near(r.after, r.before * 0.2 + 876);
   assert.ok(r.savings > 0);
 });
 
@@ -26,9 +26,9 @@ test('nothing moved means no GPUs and no change', () => {
 });
 
 test('GPUs are sized for peak traffic', () => {
-  // 1M/day, 70% moved = 8.1 req/s average, x3 peak = 24.3 req/s at 2 per GPU -> 13 GPUs.
+  // 1M/day, 80% moved = 9.26 req/s average, x3 peak = 27.8 req/s at 2 per GPU -> 14 GPUs.
   const r = monthlyCost({ ...exampleInputs, requestsPerDay: 1_000_000 });
-  assert.equal(r.gpus, 13);
+  assert.equal(r.gpus, 14);
 });
 
 test('at low volume the API is cheaper; break-even sits where one GPU pays for itself', () => {
@@ -37,8 +37,8 @@ test('at low volume the API is cheaper; break-even sits where one GPU pays for i
   );
   const be = breakEvenRequestsPerDay(exampleInputs);
   assert.ok(be !== null);
-  // One GPU (876/month) = rpd * 0.7 * 30.4 * 0.0105
-  near(be!, 876 / (0.7 * 30.4 * 0.0105), 2);
+  // One GPU (876/month) = rpd * 0.8 * 30.4 * 0.0105
+  near(be!, 876 / (0.8 * 30.4 * 0.0105), 2);
 });
 
 test('break-even is null when a GPU can never pay off', () => {

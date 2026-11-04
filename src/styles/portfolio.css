@@ -2395,3 +2395,20 @@ button:focus-visible {
   .cost-calc-inputs,
   .cost-calc-results { grid-template-columns: 1fr; }
 }
+.cost-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.cost-presets > span {
+  flex-basis: 100%;
+  font-size: 14px;
+  color: var(--muted);
+}
+.cost-presets .button[aria-pressed='true'] {
+  border-color: var(--primary);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}

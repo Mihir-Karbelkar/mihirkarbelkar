@@ -90,13 +90,15 @@ export function breakEvenRequestsPerDay(
   return null;
 }
 
+/** The post's example: an AI support product, 5 model calls per question, 4 of them narrow. */
+export const CALLS_PER_QUESTION = 5;
 export const exampleInputs: CostInputs = {
-  requestsPerDay: 50000,
+  requestsPerDay: 10000 * CALLS_PER_QUESTION,
   inputTokens: 2000,
   outputTokens: 300,
   apiInputPrice: 3,
   apiOutputPrice: 15,
-  movableShare: 0.7,
+  movableShare: 0.8,
   gpuHourly: 1.2,
   gpuRequestsPerSecond: 2,
   peakFactor: 3,

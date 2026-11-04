@@ -1,6 +1,6 @@
 ---
 title: 'The inference bill: how AI costs eat startup runway'
-description: 'Why model spend outgrows revenue at AI startups, what pay-per-call pricing costs at scale, and a calculator and 30-minute audit to run on your own numbers.'
+description: 'Why model spend outgrows revenue at AI startups, from Character.AI’s bankruptcy to a typical startup stack, with a calculator and a 30-minute audit to run on your own numbers.'
 pubDate: '2026-11-04T18:00:00Z'
 category: 'tech'
 ---
@@ -11,9 +11,22 @@ For most AI startups, the model bill is the biggest cost nobody planned for. Sal
 
 It usually goes the same way. The prototype runs on the best frontier API, because quality matters and volume is tiny. Then usage grows, and the same model handles every task, simple ones included. The bill now scales with traffic rather than with value, and margins that looked like software start to look like services.
 
-Below are companies that hit this in public, the habits that cause it, and what a founder can check this week.
+Below are companies that hit this in public, an example startup stack, the habits that cause it, and what a founder can check this week.
 
-## Three public examples
+## A bankruptcy
+
+In October 2026, Character.AI filed for Chapter 11. It had millions of monthly users, and people spent hours a day talking to its characters. According to [404 Media's reading of the filing](https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/):
+
+- Compute cost about $13.8M a month in 2024 and about $10M a month in 2025.
+- From January to August 2026, it spent $56.1M on compute and $19.7M on salaries and benefits.
+- Revenue, ads included, peaked at $5.3M a month. Subscriptions brought in $2.8M in their best month.
+- After cuts, ads and cheaper GPUs, it was still losing $8–9M a month in August.
+
+The filing also blames legal costs, but by 404 Media's reading the business did not work even without them. Disney has offered $20M for some of its IP ([CNBC](https://www.cnbc.com/2026/10/13/character-ai-chapter-11-disney-bid.html)).
+
+Every conversation cost money to serve, and the product earned less per user than it cost to serve them. More users made the hole deeper, not shallower.
+
+## More public examples
 
 Each comes from press reporting or a published report:
 
@@ -36,6 +49,20 @@ It is usually down to how the system is built, not what the provider charges. Fo
 - **No per-task cost view.** Teams see one monthly invoice, not which step of which pipeline spends the money.
 - **Context bloat.** Full documents, long system prompts and chat history are resent on every call, so token counts grow faster than traffic.
 
+## An example startup stack
+
+Here is a made-up but typical case: an AI support product. Each customer question runs through five model calls, all on the same frontier API:
+
+| Step | What it does | Needs a frontier model? |
+|---|---|---|
+| Classify | Which product, and how urgent | No |
+| Rerank | Picks the right help articles | No |
+| Draft | Writes the reply | Sometimes |
+| Check | Is the reply backed by the articles and within policy? | No |
+| Summarise | Writes the note on the ticket | No |
+
+Four of the five steps are narrow and repetitive, and they are billed at the frontier price anyway. At 10,000 questions a day, that is 50,000 model calls a day. The calculator below starts from this example.
+
 ## Paying per call against paying per hour
 
 Most AI products buy their model the way many apps buy compute on AWS Lambda: you pay for each call, and nothing else. At low volume that is the right choice. When nobody uses the product, you pay nothing, and there are no servers to run.
@@ -43,6 +70,8 @@ Most AI products buy their model the way many apps buy compute on AWS Lambda: yo
 The catch is that the price of a call never drops as you grow. Ten times the users means ten times the bill. Teams that ran large, steady workloads on Lambda learned this and moved them to EC2, a server rented by the hour. It costs the same whether it is busy or idle. At low volume that is wasted money. At high volume each extra request costs almost nothing, because the server is already paid for.
 
 A model API works like Lambda. A small model on a GPU you rent works like EC2. Think of a taxi against a leased car: the taxi is cheaper if you drive once a week, the lease if you drive all day.
+
+Owning the servers is not a cure on its own. Character.AI ran its own models on GPUs it paid for, and in 2025 still spent nearly twice its best month's revenue on compute. A fixed-cost setup only wins when the servers stay busy with traffic that earns more than it costs to serve.
 
 Where the two lines cross depends on your volume, your prompts and your prices. Put in your own numbers:
 
@@ -81,6 +110,8 @@ That is the work I do: per-task cost audits, fine-tuning small open models again
 
 ## Sources
 
+- [404 Media: Character.ai's bankruptcy documents show the economics of AI don't work](https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/) (October 2026)
+- [CNBC: Character.ai files for Chapter 11 bankruptcy, citing costs and litigation](https://www.cnbc.com/2026/10/13/character-ai-chapter-11-disney-bid.html) (October 2026)
 - [The Register: Stability AI reportedly ran out of cash to pay its cloud bills](https://www.theregister.com/2024/04/03/stability_ai_bills/) (April 2024, summarising Forbes)
 - [AI Business: GitHub Copilot loses $20 a month per user](https://aibusiness.com/nlp/github-copilot-loses-20-a-month-per-user) (October 2023, citing the Wall Street Journal)
 - [Bessemer State of AI 2025, summary](https://openlinksw.com/data/html/bessemer-ventures-ai-2025-report-claude.html)

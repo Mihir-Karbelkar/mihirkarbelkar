@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  CALLS_PER_QUESTION,
   breakEvenRequestsPerDay,
   exampleInputs,
   monthlyCost,
@@ -41,10 +42,10 @@ type Field = {
   max?: number;
 };
 const advanced: Field[] = [
-  { key: 'inputTokens', label: 'Tokens sent per request', step: 100, min: 0 },
+  { key: 'inputTokens', label: 'Tokens sent per call', step: 100, min: 0 },
   {
     key: 'outputTokens',
-    label: 'Tokens returned per request',
+    label: 'Tokens returned per call',
     step: 50,
     min: 0,
   },
@@ -68,7 +69,7 @@ const advanced: Field[] = [
   },
   {
     key: 'gpuRequestsPerSecond',
-    label: 'Requests per second one GPU handles',
+    label: 'Calls per second one GPU handles',
     step: 0.5,
     min: 0.1,
   },
@@ -78,6 +79,12 @@ const advanced: Field[] = [
     step: 0.5,
     min: 1,
   },
+];
+
+const presets = [
+  { label: 'Early', questions: 2000 },
+  { label: 'Growing', questions: 10000 },
+  { label: 'At scale', questions: 100000 },
 ];
 
 const W_MIN = 280;
@@ -159,9 +166,29 @@ export default function CostCalculator() {
         Before and after: an estimate with your numbers
       </figcaption>
 
+      <div className="cost-presets" role="group" aria-label="Example stages">
+        <span>
+          The support-product example, {CALLS_PER_QUESTION} calls per question:
+        </span>
+        {presets.map((p) => {
+          const rpd = p.questions * CALLS_PER_QUESTION;
+          return (
+            <button
+              key={p.label}
+              type="button"
+              className="button secondary small"
+              aria-pressed={inputs.requestsPerDay === rpd}
+              onClick={() => set('requestsPerDay', rpd)}
+            >
+              {p.label}: {count.format(p.questions)} questions a day
+            </button>
+          );
+        })}
+      </div>
+
       <div className="cost-calc-inputs">
         <label className="cost-field">
-          <span>Model requests per day</span>
+          <span>Model calls per day</span>
           <input
             type="number"
             min={0}
@@ -214,7 +241,7 @@ export default function CostCalculator() {
 
       <div className="cost-calc-results" aria-live="polite">
         <div className="cost-stat">
-          <span>Today: every request to the API</span>
+          <span>Today: every call to the API</span>
           <strong>{money.format(result.before)}</strong>
           <small>per month</small>
         </div>
@@ -243,7 +270,7 @@ export default function CostCalculator() {
       <p className="cost-calc-breakeven">
         {breakEven === null
           ? 'With these numbers, your own GPUs never become cheaper than the API.'
-          : `Own GPUs start to pay off at about ${count.format(Math.ceil(breakEven))} requests a day. Below that, stay on the API.`}
+          : `Own GPUs start to pay off at about ${count.format(Math.ceil(breakEven))} calls a day. Below that, stay on the API.`}
       </p>
 
       <div className="cost-chart" ref={box}>
@@ -251,7 +278,7 @@ export default function CostCalculator() {
           style={{ width: '100%', height: 'auto', display: 'block' }}
           viewBox={`0 0 ${width} ${H}`}
           role="img"
-          aria-label={`Monthly cost against requests per day, up to ${compactCount(xMax)} a day. The API line rises steadily; the own-GPU line starts higher and rises slowly.`}
+          aria-label={`Monthly cost against model calls per day, up to ${compactCount(xMax)} a day. The API line rises steadily; the own-GPU line starts higher and rises slowly.`}
           onPointerMove={onMove}
           onPointerLeave={() => setHover(null)}
         >
@@ -291,7 +318,7 @@ export default function CostCalculator() {
             y={H - 1}
             textAnchor="end"
           >
-            requests per day
+            calls per day
           </text>
           <line
             className="you"
@@ -350,7 +377,7 @@ export default function CostCalculator() {
               left: Math.min(Math.max(sx(hp.x), 90), width - 90),
             }}
           >
-            <strong>{count.format(hp.x)} requests a day</strong>
+            <strong>{count.format(hp.x)} calls a day</strong>
             <span>
               <i className="swatch before" /> API: {money.format(hp.before)}/mo
             </span>
@@ -364,7 +391,7 @@ export default function CostCalculator() {
 
       <div className="cost-legend" aria-hidden="true">
         <span>
-          <i className="swatch before" /> Every request to the API
+          <i className="swatch before" /> Every call to the API
         </span>
         <span>
           <i className="swatch after" /> Small model on own GPUs, rest on the
@@ -376,8 +403,8 @@ export default function CostCalculator() {
         <table>
           <thead>
             <tr>
-              <th>Requests per day</th>
-              <th>Every request to the API</th>
+              <th>Calls per day</th>
+              <th>Every call to the API</th>
               <th>Small model on own GPUs</th>
             </tr>
           </thead>
