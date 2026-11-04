@@ -13,6 +13,8 @@ const blog = defineCollection({
     updatedDate: z.coerce.date().optional(),
     heroImage: z.string().optional(),
     category: z.enum(['tech']).default('tech'),
+    // 'withering': the sakura branch ages as the reader scrolls
+    mood: z.enum(['withering']).optional(),
     // false keeps a post out of the chat's search index
     index: z.boolean().default(true),
   }),

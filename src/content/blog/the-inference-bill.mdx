@@ -3,17 +3,21 @@ title: 'The inference bill: how AI costs eat startup runway'
 description: 'Why model spend outgrows revenue at AI startups, from Character.AI’s bankruptcy to a typical startup stack, with a calculator and a 30-minute audit to run on your own numbers.'
 pubDate: '2026-11-04T18:00:00Z'
 category: 'tech'
+mood: 'withering'
 ---
 
 import CostCalculator from '../../components/blog/CostCalculator';
+import Graveyard from '../../components/blog/Graveyard.astro';
 
 For most AI startups, the model bill is the biggest cost nobody planned for. Salaries are budgeted a year ahead. Inference grows with every user, every agent step and every retry.
 
 It usually goes the same way. The prototype runs on the best frontier API, because quality matters and volume is tiny. Then usage grows, and the same model handles every task, simple ones included. The bill now scales with traffic rather than with value, and margins that looked like software start to look like services.
 
-Below are companies that hit this in public, an example startup stack, the habits that cause it, and what a founder can check this week.
+If nobody keeps it in check, it comes for you. That is not a guess: below are three startups it happened to, then a longer list, each with a source.
 
-## A bankruptcy
+## Three startups that hit the wall
+
+### Character.AI: popular, and losing money on every user
 
 In October 2026, Character.AI filed for Chapter 11. It had millions of monthly users, and people spent hours a day talking to its characters. According to [404 Media's reading of the filing](https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/):
 
@@ -26,17 +30,23 @@ The filing also blames legal costs, but by 404 Media's reading the business did 
 
 Every conversation cost money to serve, and the product earned less per user than it cost to serve them. More users made the hole deeper, not shallower.
 
-## More public examples
+### AI Dungeon: the bill grew with every player
 
-Each comes from press reporting or a published report:
+AI Dungeon, from the startup Latitude, ran its stories on OpenAI's GPT models. [CNBC reported](https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html) that the more people played, the bigger the bill Latitude had to pay OpenAI. By the end of 2021, it had moved to a cheaper model from AI21 Labs.
 
-| Company | What happened | The numbers |
-|---|---|---|
-| [Stability AI](https://www.theregister.com/2024/04/03/stability_ai_bills/) | Cloud bills grew faster than revenue. It reportedly fell behind on payments to AWS, Google Cloud and CoreWeave, and the CEO resigned in March 2024. | About $99M a year in compute against about $11M of projected 2023 revenue. Cash reportedly down to about $4M by October 2023 (Forbes, via The Register). |
-| [GitHub Copilot](https://aibusiness.com/nlp/github-copilot-loses-20-a-month-per-user) | A flat $10 a month price, against per-query compute costs that grow with usage. | A reported average loss of about $20 per user per month, with heavy users costing up to $80 (WSJ, via AI Business, October 2023). |
-| [Fast-growing AI startups](https://openlinksw.com/data/html/bessemer-ventures-ai-2025-report-claude.html) | Bessemer's State of AI 2025 report splits AI companies into hypergrowth "Supernovas" and steadier "Shooting Stars". | Supernovas often run at about 25% gross margin and Shooting Stars at about 60%, against the 75–80% typical of SaaS. |
+This one survived, because it changed models before the bill decided for it. Most teams only make that switch once it is urgent.
 
-In each case, revenue grew with the number of users, model cost grew with usage, and usage per user kept rising.
+### Stability AI: compute nine times its revenue
+
+The company behind Stable Diffusion was on track for about $99M a year in compute against about $11M of revenue in 2023. It reportedly fell behind on payments to AWS, Google Cloud and CoreWeave, cash dropped to about $4M by October 2023, and the CEO resigned in March 2024 ([The Register, summarising Forbes](https://www.theregister.com/2024/04/03/stability_ai_bills/)).
+
+## They are not the only ones
+
+These three are not all. The list below is every case I could check against named reporting, from small startups to OpenAI and Uber. Each links to its source.
+
+<Graveyard />
+
+For a longer list, TechCrunch keeps a [running AI graveyard](https://techcrunch.com/2026/10/24/the-ai-graveyard-a-running-list-of-projects-and-startups-that-didnt-make-it/). Across the industry, Bessemer's State of AI 2025 report puts fast-growing AI startups at about 25% gross margin, and steadier ones at about 60%, against the 75–80% typical of SaaS ([summary](https://openlinksw.com/data/html/bessemer-ventures-ai-2025-report-claude.html)).
 
 Checkr went the other way. It moved its hardest background-check classification task from GPT-4 to a fine-tuned Llama-3-8B. Accuracy on that task rose from 81.8% to 90%, inference cost fell about 5×, and response time dropped from about 15 seconds to about 0.15.
 
@@ -110,6 +120,7 @@ That is the work I do: per-task cost audits, fine-tuning small open models again
 
 ## Sources
 
+- [CNBC: ChatGPT and generative AI are booming, but at a very expensive price](https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html) (March 2023, on AI Dungeon)
 - [404 Media: Character.ai's bankruptcy documents show the economics of AI don't work](https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/) (October 2026)
 - [CNBC: Character.ai files for Chapter 11 bankruptcy, citing costs and litigation](https://www.cnbc.com/2026/10/13/character-ai-chapter-11-disney-bid.html) (October 2026)
 - [The Register: Stability AI reportedly ran out of cash to pay its cloud bills](https://www.theregister.com/2024/04/03/stability_ai_bills/) (April 2024, summarising Forbes)

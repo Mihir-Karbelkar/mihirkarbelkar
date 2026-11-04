@@ -403,3 +403,129 @@ html.is-touring * {
     display: none;
   }
 }
+/* Withering: posts with mood 'withering'. BlogPost.astro sets html.is-withering
+   and --decay (0 at the top of the page, 1 near the end). Blossoms fall first,
+   then leaves dry and drop, the wood darkens and a moon comes up. */
+.sakura.is-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.sakura.is-fixed .sakura-branch {
+  top: 64px;
+  right: -36px;
+}
+html.is-withering main {
+  position: relative;
+  z-index: 1;
+}
+html.is-withering {
+  --dry: #9a6a33;
+  --dead-wood: #2b2320;
+  --veil: #2b2320;
+  --dusk: #e4cdb4;
+  --moon: #f1e3c4;
+  background: color-mix(
+    in srgb,
+    var(--bg),
+    var(--dusk) calc(var(--decay, 0) * 32%)
+  );
+}
+html.is-withering[data-theme='dark'] {
+  --dry: #8a6440;
+  --dead-wood: #5a5262;
+  --veil: #07050a;
+  --dusk: #0f0b14;
+  --moon: #f3e6c8;
+}
+html.is-withering .sakura-wood path {
+  fill: color-mix(
+    in srgb,
+    var(--branch),
+    var(--dead-wood) calc(var(--decay, 0) * 75%)
+  );
+}
+html.is-withering .sakura-stem {
+  stroke: color-mix(
+    in srgb,
+    var(--branch),
+    var(--dead-wood) calc(var(--decay, 0) * 75%)
+  );
+}
+html.is-withering .sakura-flower {
+  opacity: clamp(0, calc(1 - (var(--decay, 0) - var(--t)) * 6), 1);
+  transition: opacity 0.35s ease;
+}
+html.is-withering .sakura-leaf,
+html.is-withering .sakura-leaf.is-under {
+  fill: color-mix(
+    in srgb,
+    var(--leaf),
+    var(--dry) calc(clamp(0, (var(--decay, 0) - 0.15) * 2.4, 1) * 100%)
+  );
+  opacity: clamp(0, calc(1 - (var(--decay, 0) - var(--t)) * 7), 1);
+  translate: 0 calc(clamp(0, (var(--decay, 0) - var(--t)) * 7, 1) * 40px);
+  transition:
+    opacity 0.35s ease,
+    translate 0.6s ease;
+}
+html.is-withering .sakura-vein {
+  opacity: calc(0.85 - var(--decay, 0) * 0.85);
+}
+html.is-withering .sakura-petal {
+  background: color-mix(
+    in srgb,
+    var(--petal),
+    var(--dry) calc(clamp(0, var(--decay, 0) * 1.6, 1) * 100%)
+  );
+}
+.wither-moon {
+  position: absolute;
+  top: 84px;
+  left: max(16px, 6vw);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  box-shadow: inset -14px 6px 0 0 var(--moon);
+  opacity: clamp(0, calc((var(--decay, 0) - 0.55) * 3), 0.9);
+  filter: drop-shadow(
+    0 0 14px color-mix(in srgb, var(--moon) 60%, transparent)
+  );
+}
+.wither-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 42%,
+    transparent 62%,
+    color-mix(in srgb, var(--veil) calc(var(--decay, 0) * 16%), transparent)
+      100%
+  );
+}
+@media (max-width: 900px) {
+  /* text runs edge to edge here, so keep the corners clear */
+  .wither-veil {
+    display: none;
+  }
+}
+html:not(.is-withering) .wither-veil,
+html:not(.is-withering) .wither-moon {
+  display: none;
+}
+@media (max-width: 700px) {
+  .sakura.is-fixed .sakura-branch {
+    top: 56px;
+    opacity: 0.4;
+  }
+  .wither-moon {
+    display: none;
+  }
+}
+@media print {
+  .wither-veil,
+  .wither-moon {
+    display: none;
+  }
+}

@@ -1,0 +1,106 @@
+---
+// Timeline of companies hurt by model and compute costs. Every entry is
+// backed by the linked reporting; keep it that way when adding rows.
+type Entry = {
+  when: string;
+  company: string;
+  outcome: string;
+  reason: string;
+  source: string;
+  href: string;
+};
+const entries: Entry[] = [
+  {
+    when: 'End of 2021',
+    company: 'Latitude (AI Dungeon)',
+    outcome: 'Switched models',
+    reason:
+      'The more people played, the bigger the OpenAI bill. It moved to a cheaper model from AI21 Labs.',
+    source: 'CNBC',
+    href: 'https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html',
+  },
+  {
+    when: 'Oct 2023',
+    company: 'GitHub Copilot',
+    outcome: 'Losing money per user',
+    reason:
+      'A reported average loss of about $20 per user a month on a $10 plan.',
+    source: 'AI Business, citing the WSJ',
+    href: 'https://aibusiness.com/nlp/github-copilot-loses-20-a-month-per-user',
+  },
+  {
+    when: 'Mar 2024',
+    company: 'Stability AI',
+    outcome: 'Cash crunch, CEO resigned',
+    reason:
+      'About $99M a year in compute against about $11M of revenue, and behind on its cloud bills.',
+    source: 'The Register',
+    href: 'https://www.theregister.com/2024/04/03/stability_ai_bills/',
+  },
+  {
+    when: 'Mar 2024',
+    company: 'Inflection AI',
+    outcome: 'Team went to Microsoft',
+    reason:
+      'Could not find a business model for its Pi chatbot. Microsoft hired most of the staff and paid about $650M to license the models.',
+    source: 'Verdict, citing The Information',
+    href: 'https://www.verdict.co.uk/microsoft-to-pay-inflection-650m-after-taking-majority-of-staff/',
+  },
+  {
+    when: 'Jun 2024',
+    company: 'Adept',
+    outcome: 'Founders went to Amazon',
+    reason:
+      'Building its own foundation models would have meant constant fundraising. Amazon hired the founders and licensed the technology.',
+    source: 'TechCrunch',
+    href: 'https://techcrunch.com/2024/06/28/amazon-hires-founders-away-from-ai-startup-adept',
+  },
+  {
+    when: 'Mar 2026',
+    company: 'Sora (OpenAI)',
+    outcome: 'Shut down',
+    reason:
+      'About $1M a day to run, per the WSJ, while users fell below 500,000. Closed six months after launch.',
+    source: 'TechCrunch',
+    href: 'https://techcrunch.com/2026/03/29/why-openai-really-shut-down-sora/',
+  },
+  {
+    when: 'Apr 2026',
+    company: 'Uber',
+    outcome: 'Annual budget gone in four months',
+    reason:
+      'AI coding tools used up the 2026 budget by April. Uber now caps spend at $1,500 per employee per tool each month.',
+    source: 'TechCrunch',
+    href: 'https://techcrunch.com/2026/06/02/uber-caps-employee-ai-spending-after-blowing-through-budget-in-four-months/',
+  },
+  {
+    when: 'Oct 2026',
+    company: 'Character.AI',
+    outcome: 'Chapter 11',
+    reason:
+      'Compute cost about $10M a month in 2025. Revenue peaked at $5.3M a month.',
+    source: '404 Media',
+    href: 'https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/',
+  },
+];
+---
+
+<ol class="graveyard" aria-label="Companies hurt by model and compute costs">
+  {
+    entries.map((e) => (
+      <li class="graveyard-item">
+        <span class="graveyard-when">{e.when}</span>
+        <div class="graveyard-card">
+          <div class="graveyard-head">
+            <strong>{e.company}</strong>
+            <span class="graveyard-outcome">{e.outcome}</span>
+          </div>
+          <p>{e.reason}</p>
+          <a href={e.href} rel="noopener" target="_blank">
+            Source: {e.source}
+          </a>
+        </div>
+      </li>
+    ))
+  }
+</ol>

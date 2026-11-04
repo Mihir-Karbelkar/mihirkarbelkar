@@ -2412,3 +2412,68 @@ button:focus-visible {
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--primary);
 }
+
+/* Graveyard timeline (blog). */
+.graveyard {
+  list-style: none;
+  padding: 0 !important;
+  margin: 28px 0;
+  border-left: 2px solid var(--line);
+}
+.graveyard-item {
+  position: relative;
+  padding: 0 0 22px 24px;
+  margin: 0 !important;
+}
+.graveyard-item::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--muted);
+}
+.graveyard-when {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.graveyard-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  padding: 14px 16px;
+}
+.graveyard-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+.graveyard-head strong {
+  color: var(--ink);
+  font-size: 17px;
+}
+.graveyard-outcome {
+  font-size: 13px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: var(--bg);
+}
+.graveyard-card p {
+  margin: 8px 0 6px;
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+}
+.graveyard-card a {
+  font-size: 14px;
+}

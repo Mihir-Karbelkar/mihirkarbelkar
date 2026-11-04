@@ -2,6 +2,13 @@
 // Decorative sakura branch with a few drifting petals. Colours come from
 // --branch / --blossom / --petal / --leaf / --stamen so it follows the theme;
 // motion is off under prefers-reduced-motion.
+// `fixed` pins it to the viewport (used by posts with mood: 'withering', where
+// --decay from 0 to 1 dries the leaves and drops the blossoms; see fx.css).
+// --t on each part is the decay at which it starts to go.
+interface Props {
+  fixed?: boolean;
+}
+const { fixed = false } = Astro.props;
 type Placed = [x: number, y: number, scale: number, rotate: number];
 // Clustered at twig nodes, as cherry blossoms grow.
 const blooms: Placed[] = [
@@ -54,7 +61,8 @@ const petals = [
 ];
 ---
 
-<div class="sakura" aria-hidden="true">
+<div class:list={['sakura', { 'is-fixed': fixed }]} aria-hidden="true">
+  {fixed && <div class="wither-moon" />}
   <svg class="sakura-branch" viewBox="0 0 320 200" fill="none">
     <defs>
       <radialGradient
@@ -125,17 +133,45 @@ const petals = [
       <path d="M116 114C96 119 72 117 48 104C70 113 94 115 112 110Z" />
     </g>
     {
-      leaves.map(([x, y, r, s, under]) => (
+      leaves.map(([x, y, r, s, under], i) => (
         <use
           href="#sakura-leaf"
           class:list={['sakura-leaf', { 'is-under': under }]}
+          style={`--t:${(0.62 + i * 0.05).toFixed(2)}`}
           transform={`translate(${x} ${y}) rotate(${r}) scale(${s})`}
         />
       ))
     }
-    {buds.map((b) => <use href="#sakura-bud" transform={at(b)} />)}
-    {halfOpen.map((b) => <use href="#sakura-half" transform={at(b)} />)}
-    {blooms.map((b) => <use href="#sakura-bloom" transform={at(b)} />)}
+    {
+      buds.map((b, i) => (
+        <use
+          href="#sakura-bud"
+          class="sakura-flower"
+          style={`--t:${(0.12 + i * 0.1).toFixed(2)}`}
+          transform={at(b)}
+        />
+      ))
+    }
+    {
+      halfOpen.map((b, i) => (
+        <use
+          href="#sakura-half"
+          class="sakura-flower"
+          style={`--t:${(0.1 + i * 0.15).toFixed(2)}`}
+          transform={at(b)}
+        />
+      ))
+    }
+    {
+      blooms.map((b, i) => (
+        <use
+          href="#sakura-bloom"
+          class="sakura-flower"
+          style={`--t:${(0.05 + ((i * 5) % 12) * 0.04).toFixed(2)}`}
+          transform={at(b)}
+        />
+      ))
+    }
   </svg>
   <div class="sakura-petals">
     {
