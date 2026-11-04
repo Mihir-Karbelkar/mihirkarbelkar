@@ -15,7 +15,7 @@ const choices: { value: Answer; label: string }[] = [
 /** The docked button: sends the answers by email. */
 const SEND = 'Send me your answers';
 /** The floating button: takes the reader to the questions. */
-const FIND = 'Find where you need help';
+const FIND = 'Find your AI cost leaks';
 
 /**
  * The interactive audit. Its email button floats at the bottom of the screen
