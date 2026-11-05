@@ -47,6 +47,10 @@ Configure the schedules in Google Calendar as follows:
 
 The published 15-minute schedule is owned by `mihirkarbelkar@gmail.com` and already has these availability, buffer, notice, booking-window, Meet and form settings. Its public short link is `https://calendar.app.google/skxiEYCaVHsPYRgE8`.
 
+## Analytics
+
+PostHog product and web analytics load from the shared portfolio layout, covering every public page. The browser SDK captures page views, page leaves and standard interaction autocapture; anonymous visitors do not get person profiles, and session recording is disabled. The published US Cloud project token and ingestion host are defined once in `src/config/analytics.ts`. Override them at build time with `PUBLIC_POSTHOG_KEY` and `PUBLIC_POSTHOG_HOST` when moving the site to another PostHog project or region. PostHog project tokens are write-only client keys and are safe to expose in browser code.
+
 ## Optional hosted inference and email
 
 Copy `.dev.vars.example` to `.dev.vars` for local Cloudflare development. In production, store secrets with Wrangler or the Cloudflare dashboard. Do not commit `.dev.vars` or actual keys.

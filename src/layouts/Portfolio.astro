@@ -35,6 +35,9 @@ interface Props {
     <Footer />
     {site.chat.enabled && <ChatBar client:only="react" {...chat} />}
     <script>
+      import '../lib/posthog';
+    </script>
+    <script>
       // Sections fade in as they enter the viewport (hidden only once JS runs).
       const sections = document.querySelectorAll('[data-reveal]');
       if ('IntersectionObserver' in window) {
