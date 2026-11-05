@@ -66,11 +66,13 @@ The 140-unit runs were good for ranking ideas. Only whole-book runs could approv
 
 ## Chaining books
 
-Each later book trains a fresh LoRA on top of the previous book's merged weights, with the KL anchor pointing at the previous model and a little replay of earlier books. Across four chained variants, book-1 retention after books 2 and 3 stayed between **0.94 and 0.99**. The best held 0.979 after book 2 and 0.989 after book 3. My earlier recipe managed 0.86–0.89.
+Each later book trains a fresh LoRA on top of the previous book's merged weights, with the KL anchor pointing at the previous model and a little replay of earlier books. Across four rehearsal chains (see the caveat below), book-1 retention after books 2 and 3 stayed between **0.94 and 0.99**. The best held 0.979 after book 2 and 0.989 after book 3. My earlier recipe managed 0.86–0.89.
 
 One caveat from the ledger: in those rehearsal chains, books 2 and 3 came from the same source as book 1. They show retention under more training, but they understate the cost of a genuinely new book.
 
 General skills were the harder half of chaining. The drops accumulated by roughly 0.4–1.7 points per axis per book. Anchoring KL to the clean base instead of the previous model did not help. Fewer epochs did not help either: drift was not proportional to steps. That stayed the open problem.
+
+Later I ran the real test: two genuinely new books chained on top of the final book-1 model. Of the book-1 questions it answered correctly, it still answered **0.93** correctly after book 2 and **0.87** after book 3; book 2 kept 0.89 after book 3. General skills held this time: after book 3, IFEval 71.90, GSM8K strict 82.64 and MMLU 73.15, against base 70.61 / 80.44 / 73.85. So the honest retention figure for new material is 0.87–0.93, short of the 0.95 I was aiming for. The rehearsal chains had flattered it, exactly as the caveat warned.
 
 ## The bugs that nearly fooled me
 

@@ -22,9 +22,9 @@
         "Data pipeline: Q&A and trap-question generation with open teacher models on vLLM, deduplication, and contamination checks against benchmark test sets.",
         "Evaluation with lm-evaluation-harness, custom exams and LLM-as-judge."
       ],
-      "outcome": "The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. In chained runs, book-1 retention held at 0.94–0.99. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs with their own seeds.",
-      "metric": "0.94–0.99",
-      "metricLabel": "Book-1 retention across three books",
+      "outcome": "The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. Across a real three-book sequence, it kept 93% of book-1 answers after book 2 and 87% after book 3, with general benchmarks within 0.7 points of base. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs with their own seeds.",
+      "metric": "93% → 87%",
+      "metricLabel": "Book-1 answers kept after books 2 and 3",
       "tags": [
         "Qwen2.5-7B",
         "LoRA",

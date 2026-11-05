@@ -106,7 +106,7 @@
       "heading": "A little about me.",
       "paragraphs": [
         "I fine-tune and evaluate open-weight LLMs for teams that need a model to know their domain without losing its general skills.",
-        "Recent client work: I taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. In chained runs, book-1 retention held at 0.94–0.99. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs."
+        "Recent client work: I taught Qwen2.5-7B a series of fact books in another language, one book at a time, with a fresh LoRA per book and a KL anchor. The model answers from the books, rejects false-premise questions, and after the first book scored at or above base on IFEval and GSM8K and within 0.7 points on MMLU. When two genuinely new books were added, it kept 93% of book 1's answers after the second and 87% after the third. It was delivered as a frozen, hash-verified package the client re-runs on their own GPUs."
       ],
       "toolsLabel": "Some of the tools I work with",
       "tools": [
