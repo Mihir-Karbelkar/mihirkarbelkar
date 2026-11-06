@@ -1,5 +1,6 @@
 {
   "featured": [
+    "revolut-ai-cost-optimisation",
     "knowledge-injection",
     "site-qa-models",
     "public-markets-agents"
@@ -42,6 +43,38 @@
       }
     },
     {
+      "slug": "revolut-ai-cost-optimisation",
+      "title": "Reducing AI costs by 90% for Revolut",
+      "category": "AI infrastructure / cost optimisation",
+      "summary": "A Revolut AI cost-optimisation engagement delivered a 90% reduction in AI costs.",
+      "problem": "AI operating costs can become a substantial recurring expense. The goal of this Revolut engagement was to reduce that expense.",
+      "approach": [
+        "Focused on reducing the cost of AI workloads rather than treating the existing bill as fixed.",
+        "The specific architecture changes, workload mix and commercial details are not disclosed publicly."
+      ],
+      "outcome": "The engagement achieved a 90% reduction in AI costs. This is a result from that work, not a savings guarantee for another system. I discuss the broader framework for assessing inference costs in The Inference Bill.",
+      "metric": "90%",
+      "metricLabel": "Reduction in AI costs",
+      "tags": [
+        "AI cost optimisation",
+        "Inference economics",
+        "Production AI"
+      ],
+      "tone": "blue",
+      "status": "Professional work",
+      "kind": "professional",
+      "links": [
+        {
+          "label": "Read The Inference Bill",
+          "href": "/blog/the-inference-bill"
+        },
+        {
+          "label": "Book a consultation",
+          "href": "/book"
+        }
+      ]
+    },
+    {
       "slug": "site-qa-models",
       "title": "15M and 30M QA models that run in the browser",
       "category": "Models / trained from scratch",
@@ -56,7 +89,13 @@
       "reflection": "They are experiments, not production assistants: on this site’s own questions Ant 15M answers 9 of 24 correctly and shows a wrong answer about as often, so they are not on the site yet.",
       "metric": "21 MB",
       "metricLabel": "Ant 15M, int8, runs on WASM",
-      "tags": ["PyTorch", "Mamba2", "ONNX", "WASM", "onnxruntime-web"],
+      "tags": [
+        "PyTorch",
+        "Mamba2",
+        "ONNX",
+        "WASM",
+        "onnxruntime-web"
+      ],
       "tone": "mint",
       "status": "Public models",
       "kind": "project",
@@ -91,7 +130,13 @@
       "outcome": "I lead the engineering of these systems, from the agents and guardrails to the orchestration library and the data ingestion behind them.",
       "metric": "14 tables",
       "metricLabel": "Queried by guarded SQL agents",
-      "tags": ["SQL agents", "RAG", "Pinecone", "ClickHouse", "Go"],
+      "tags": [
+        "SQL agents",
+        "RAG",
+        "Pinecone",
+        "ClickHouse",
+        "Go"
+      ],
       "tone": "blue",
       "status": "Current work",
       "kind": "professional"
@@ -111,7 +156,12 @@
       "reflection": "A lower loss and a better answer are different checks. Source-word overlap can help me inspect an answer, but it cannot establish that the answer addresses the question.",
       "metric": "LoRA + evaluation",
       "metricLabel": "Training and answer checks",
-      "tags": ["Qwen", "LoRA", "PyTorch", "Evaluation"],
+      "tags": [
+        "Qwen",
+        "LoRA",
+        "PyTorch",
+        "Evaluation"
+      ],
       "tone": "lavender",
       "status": "Experiment",
       "kind": "experiment",
@@ -136,7 +186,12 @@
       "reflection": "A similarity score is not a confidence estimate, and a plausible narration is not an observation. I make those distinctions visible in the experiment.",
       "metric": "Observe / act / dream",
       "metricLabel": "An inspectable experiment",
-      "tags": ["V-JEPA 2", "Python", "Simulation", "Local models"],
+      "tags": [
+        "V-JEPA 2",
+        "Python",
+        "Simulation",
+        "Local models"
+      ],
       "tone": "mint",
       "status": "Experiment",
       "kind": "experiment",
@@ -163,7 +218,13 @@
       "outcome": "Fleet capacity went from 8–10 to 100 concurrent robots on the same 4-core / 16 GB hardware.",
       "metric": "100 robots",
       "metricLabel": "Concurrent, on the same hardware",
-      "tags": ["Python", "FastAPI", "Celery", "Redis", "PostgreSQL"],
+      "tags": [
+        "Python",
+        "FastAPI",
+        "Celery",
+        "Redis",
+        "PostgreSQL"
+      ],
       "tone": "peach",
       "status": "Professional work",
       "kind": "professional"
@@ -182,7 +243,12 @@
       "outcome": "The app served 900K+ bill views a day, and its frontend bundles became 90% smaller.",
       "metric": "900K+",
       "metricLabel": "Bill views a day",
-      "tags": ["Node.js", "Kubernetes", "React 18", "Microfrontends"],
+      "tags": [
+        "Node.js",
+        "Kubernetes",
+        "React 18",
+        "Microfrontends"
+      ],
       "tone": "mint",
       "status": "Professional work",
       "kind": "professional"
