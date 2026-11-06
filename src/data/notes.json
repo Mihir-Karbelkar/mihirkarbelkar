@@ -8,6 +8,14 @@
     "external": false
   },
   {
+    "title": "Revolut's self-hosted AI: the reported 90% cost reduction",
+    "summary": "What Revolut's move to self-hosted GLM reveals about inference cost, GPU utilisation and the limits of headline savings.",
+    "detail": "An independent analysis of Revolut's publicly reported numbers, with links to its conference talk, limitations and practical lessons for AI teams. Not client work.",
+    "href": "/blog/revolut-self-hosted-ai-costs",
+    "label": "Read the case study",
+    "external": false
+  },
+  {
     "title": "Teaching a 7B model new books without breaking it",
     "summary": "Fine-tuning Qwen2.5-7B on a series of fact books without losing its general skills.",
     "detail": "What kept the general skills: how far the weights move, a KL anchor, near-miss traps. And the bugs that nearly fooled me.",
