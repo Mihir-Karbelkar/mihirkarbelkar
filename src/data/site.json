@@ -52,7 +52,9 @@
   ],
   "home": {
     "eyebrow": "Open to contract",
-    "headline": ["LLM fine-tuning & AI engineer."],
+    "headline": [
+      "LLM fine-tuning & AI engineer."
+    ],
     "body": "I fine-tune and evaluate open-weight LLMs for teams that need a model to know their domain without losing its general skills.",
     "supporting": "Open to contract work in fine-tuning, evals and training-data pipelines.",
     "primaryAction": "See my work",
@@ -76,9 +78,9 @@
           "tone": "sage"
         },
         {
-          "title": "Helped run an app that serves 900K+ bill views a day.",
-          "label": "Razorpay / platform",
-          "href": "/projects/high-scale-platforms",
+          "title": "Reduced AI costs by 90% on Revolut work.",
+          "label": "Revolut / AI cost optimisation",
+          "href": "/projects/revolut-ai-cost-optimisation",
           "art": "maths",
           "tone": "blue"
         }
@@ -87,7 +89,7 @@
     "work": {
       "eyebrow": "Selected work",
       "heading": "Recent work.",
-      "body": "Fine-tuning and evaluation, models that run in the browser, and LLM systems in production.",
+      "body": "Production AI cost optimisation, fine-tuning and evaluation, and models that run in the browser.",
       "readMore": "Read about the work"
     },
     "archive": {
@@ -119,8 +121,8 @@
     },
     "contact": {
       "eyebrow": "Say hello",
-      "heading": "Need a model that knows your domain?",
-      "body": "Open to contract work in fine-tuning, evals and training-data pipelines.",
+      "heading": "Spending too much on AI?",
+      "body": "Let's review your inference costs, quality requirements and where cheaper architectures could work.",
       "github": "Find me on GitHub",
       "linkedin": "LinkedIn",
       "calendar": "Book a conversation",
@@ -135,9 +137,13 @@
     "services": {
       "eyebrow": "Services",
       "heading": "What I can do for your team.",
-      "body": "Contract work, in order of focus.",
+      "body": "I work with teams to reduce AI operating costs and build systems that meet their quality requirements.",
       "cta": "Book a consultation",
       "items": [
+        {
+          "title": "AI cost optimisation & inference",
+          "body": "Audit model spend by task, benchmark less expensive alternatives, and improve routing or hosting where it makes economic sense."
+        },
         {
           "title": "LLM fine-tuning & evaluation",
           "body": "Fine-tuning, continual learning, domain adaptation and evaluation of open-weight models."
@@ -183,7 +189,13 @@
       {
         "target": "#work",
         "label": "Selected work",
-        "keywords": ["work", "projects", "project", "portfolio", "case studies"]
+        "keywords": [
+          "work",
+          "projects",
+          "project",
+          "portfolio",
+          "case studies"
+        ]
       },
       {
         "target": "#services",
@@ -215,22 +227,43 @@
       {
         "target": "#experience",
         "label": "Interfaces & platforms",
-        "keywords": ["platforms", "archive", "background work"]
+        "keywords": [
+          "platforms",
+          "archive",
+          "background work"
+        ]
       },
       {
         "target": "#notes",
         "label": "Notes",
-        "keywords": ["notes", "writing", "maths", "math", "blog"]
+        "keywords": [
+          "notes",
+          "writing",
+          "maths",
+          "math",
+          "blog"
+        ]
       },
       {
         "target": "#about",
         "label": "About",
-        "keywords": ["about", "about you", "bio", "yourself", "who are you"]
+        "keywords": [
+          "about",
+          "about you",
+          "bio",
+          "yourself",
+          "who are you"
+        ]
       },
       {
         "target": "#skills",
         "label": "Tools",
-        "keywords": ["skills", "tools", "stack", "tech stack"]
+        "keywords": [
+          "skills",
+          "tools",
+          "stack",
+          "tech stack"
+        ]
       },
       {
         "target": "#contact",
