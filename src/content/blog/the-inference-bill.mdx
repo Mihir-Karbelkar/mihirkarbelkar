@@ -52,6 +52,14 @@ For a longer list, TechCrunch keeps a [running AI graveyard](https://techcrunch.
 
 Checkr went the other way. It moved its hardest background-check classification task from GPT-4 to a fine-tuned Llama-3-8B. Accuracy on that task rose from 81.8% to 90%, inference cost fell about 5×, and response time dropped from about 15 seconds to about 0.15.
 
+## Revolut: when self-hosting changes the economics
+
+A useful real-world example comes from [Revolut's AI infrastructure team](/blog/revolut-self-hosted-ai-costs). At AI Engineer NYC in October 2026, David Abitbol reported that the company had made self-hosted GLM its default coding model for roughly 2,000 engineers, using 56 Nvidia B200 GPUs. He put its blended inference cost at about **$0.30 per million tokens**, and said its invoice was around **one tenth** of what it had previously spent on Anthropic and OpenAI.
+
+That is an approximately **90% reduction in reported inference expenditure**, not a verified 90% reduction in fully loaded operating costs. Revolut did not publish a complete accounting for hardware, cloud, engineering staff and monitoring, and the result depends on its workload and utilisation. Claude Code and Codex remain available for exceptions.
+
+The more interesting engineering lesson is that simply hosting the weights was not enough. Revolut reported lowering time to first token from 14.26 to 1.68 seconds while requests per second increased, **without adding GPUs**. Serving configuration, quantisation, KV-cache capacity and context management mattered. I broke down the economics and limits of this example in the [Revolut case study](/blog/revolut-self-hosted-ai-costs).
+
 ## Why the bill grows
 
 It is usually down to how the system is built, not what the provider charges. Four habits cause most of it:
@@ -121,6 +129,9 @@ Choose a time below. Google Calendar shows availability in your local time zone 
 <BookingEmbed />
 
 ## Sources
+
+- [AI Engineer NYC: Shipping like a startup, regulated like a bank](https://ai.engineer/nyc/2026/talks/revolut) (October 2026, David Abitbol's conference talk and transcript)
+- [Trending Topics: Revolut cuts AI coding costs 90% with an open-weight model](https://www.trendingtopics.eu/revolut-glm-open-weight-coding-costs/) (November 2026)
 
 - [CNBC: ChatGPT and generative AI are booming, but at a very expensive price](https://www.cnbc.com/2023/03/13/chatgpt-and-generative-ai-are-booming-but-at-a-very-expensive-price.html) (March 2023, on AI Dungeon)
 - [404 Media: Character.ai's bankruptcy documents show the economics of AI don't work](https://www.404media.co/character-ais-bankruptcy-documents-show-the-economics-of-ai-dont-work/) (October 2026)
