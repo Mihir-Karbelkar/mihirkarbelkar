@@ -1,0 +1,61 @@
+---
+title: "Revolut's 90% AI coding cost reduction: the self-hosting economics"
+description: "An independent analysis of Revolut's reported self-hosted GLM deployment, its 56 B200 GPUs, token costs, latency improvements, and what the headline 90% does not establish."
+pubDate: '2026-11-06T12:00:00Z'
+category: 'tech'
+mood: 'withering'
+---
+
+Revolut says its AI coding inference bill is now around **one tenth** of what it previously paid Anthropic and OpenAI. That is an important result, but the reason is more interesting than the headline: it made a self-hosted open-weight model the default, kept frontier models for exceptions, and tuned serving performance on a fixed GPU fleet.
+
+This is **my independent analysis of Revolut's published account**, not a project I worked on. The numbers come from David Abitbol, Revolut's AI operations and infrastructure lead, at [AI Engineer NYC on October 13, 2026](https://ai.engineer/nyc/2026/talks/revolut), and [Trending Topics' November 3 report](https://www.trendingtopics.eu/revolut-glm-open-weight-coding-costs/). They are company-reported figures, not an independently audited cost study.
+
+## What Revolut reported
+
+| Measure | Reported figure |
+| --- | --- |
+| Engineers served | About 2,000 |
+| Default coding model | Self-hosted GLM, with GLM 5.3 described in the talk |
+| Inference hardware | 56 Nvidia B200 GPUs |
+| Blended inference cost | About $0.30 per million tokens |
+| Compared with previous provider bill | Roughly one tenth |
+| Time to first token during migration | 14.26 seconds |
+| Time to first token after tuning | 1.68 seconds |
+| Requests per second | 76% higher during the same tuning period |
+
+Revolut also reported improvements in coding time and lead time, but the before-and-after comparison does **not** isolate the effect of changing models from other changes, including removing token spending caps. Claude Code and Codex remain available for exceptional tasks rather than being entirely replaced.
+
+## Why hosting alone was not the answer
+
+A self-hosted model is not automatically cheaper. You take on GPUs, utilisation risk, deployment, reliability, security, observability and engineering time. What made the story compelling was the work to increase useful inference output from the hardware already allocated.
+
+Abitbol's talk describes several levers:
+
+1. **Tune against real traffic.** The same GPU count handled more requests while time to first token fell sharply. Buying extra GPUs before identifying the bottleneck would have hidden opportunities.
+2. **Right-size context and KV cache.** Reserving memory for a maximum context length can reduce concurrency, even if most real requests are shorter.
+3. **Choose precision and tensor parallelism with serving capacity in mind.** Quantisation reduces memory pressure, but fitting weights in fewer GPUs does not necessarily leave enough capacity for the KV cache.
+4. **Exploit repeated prompts.** Coding assistants often reuse repository instructions and similar context. Cache-hit rates can materially change effective throughput.
+5. **Route exceptions.** Keep strong hosted models for jobs the default model cannot handle well, such as image understanding or particularly difficult tasks.
+
+These are engineering decisions, not a universal recipe. The optimal combination depends on workload, hardware, quality requirements and traffic patterns.
+
+## Does the 90% include every cost?
+
+**No complete total-cost comparison was published.** Abitbol reported a blended token price and an invoice around one tenth of the prior Anthropic/OpenAI spend. The public account does not establish whether the same percentage saving remains after counting GPU acquisition or rental, cloud, staffing, monitoring, downtime, and ongoing model and inference maintenance.
+
+There is also no reason to assume Revolut's reported $0.30 per million tokens is a price a smaller team can reproduce. Its roughly 2,000 engineers provide substantial demand, and utilisation is central to the economics. A lightly used dedicated cluster can cost *more* than an API.
+
+That distinction matters if you're deciding whether to migrate: compare **total cost per accepted task at your quality and latency target**, not just sticker price per token.
+
+## How I would evaluate the same decision for another team
+
+First, attribute real token and infrastructure spend to specific production tasks. Next, establish an eval set from actual inputs, define acceptable failure rates and latency, and benchmark a cheaper API, a routed hybrid, and a self-hosted model. Estimate utilisation and all-in hosting cost at today's traffic and at plausible growth levels. Only migrate the workloads that pass both the quality gate and the financial break-even point.
+
+My broader article, [The Inference Bill](/blog/the-inference-bill), explains the API-versus-GPU trade-off, common sources of token waste and a calculator for exploring the crossover. Revolut is evidence that the upside can be substantial at the right scale, **not** evidence that every company can save 90%.
+
+If your team has a growing AI bill, [book a consultation](/book). We can inspect your workloads, design the comparison and find out whether self-hosting, routing or a simpler hosted model would actually lower your costs.
+
+## Sources
+
+- [David Abitbol, “Shipping like a startup, regulated like a bank,” AI Engineer NYC](https://ai.engineer/nyc/2026/talks/revolut), October 13, 2026. Conference summary and timestamped transcript.
+- [Trending Topics, “Revolut Cuts A.I. Coding Costs 90% With a Chinese Open-Weight Model”](https://www.trendingtopics.eu/revolut-glm-open-weight-coding-costs/), November 3, 2026.
