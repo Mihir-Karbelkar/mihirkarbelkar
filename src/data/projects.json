@@ -1,6 +1,5 @@
 {
   "featured": [
-    "revolut-ai-cost-optimisation",
     "knowledge-injection",
     "site-qa-models",
     "public-markets-agents"
@@ -41,38 +40,6 @@
         "name": "lora",
         "caption": "A fresh LoRA adapter per book on top of the base weights."
       }
-    },
-    {
-      "slug": "revolut-ai-cost-optimisation",
-      "title": "Reducing AI costs by 90% for Revolut",
-      "category": "AI infrastructure / cost optimisation",
-      "summary": "A Revolut AI cost-optimisation engagement delivered a 90% reduction in AI costs.",
-      "problem": "AI operating costs can become a substantial recurring expense. The goal of this Revolut engagement was to reduce that expense.",
-      "approach": [
-        "Focused on reducing the cost of AI workloads rather than treating the existing bill as fixed.",
-        "The specific architecture changes, workload mix and commercial details are not disclosed publicly."
-      ],
-      "outcome": "The engagement achieved a 90% reduction in AI costs. This is a result from that work, not a savings guarantee for another system. I discuss the broader framework for assessing inference costs in The Inference Bill.",
-      "metric": "90%",
-      "metricLabel": "Reduction in AI costs",
-      "tags": [
-        "AI cost optimisation",
-        "Inference economics",
-        "Production AI"
-      ],
-      "tone": "blue",
-      "status": "Professional work",
-      "kind": "professional",
-      "links": [
-        {
-          "label": "Read The Inference Bill",
-          "href": "/blog/the-inference-bill"
-        },
-        {
-          "label": "Book a consultation",
-          "href": "/book"
-        }
-      ]
     },
     {
       "slug": "site-qa-models",
