@@ -78,9 +78,9 @@
           "tone": "sage"
         },
         {
-          "title": "Reduced AI costs by 90% on Revolut work.",
-          "label": "Revolut / AI cost optimisation",
-          "href": "/projects/revolut-ai-cost-optimisation",
+          "title": "Helped run an app that serves 900K+ bill views a day.",
+          "label": "Razorpay / platform",
+          "href": "/projects/high-scale-platforms",
           "art": "maths",
           "tone": "blue"
         }
@@ -89,7 +89,7 @@
     "work": {
       "eyebrow": "Selected work",
       "heading": "Recent work.",
-      "body": "Production AI cost optimisation, fine-tuning and evaluation, and models that run in the browser.",
+      "body": "Fine-tuning and evaluation, models that run in the browser, and LLM systems in production.",
       "readMore": "Read about the work"
     },
     "archive": {
@@ -121,8 +121,8 @@
     },
     "contact": {
       "eyebrow": "Say hello",
-      "heading": "Spending too much on AI?",
-      "body": "Let's review your inference costs, quality requirements and where cheaper architectures could work.",
+      "heading": "Need a model that knows your domain?",
+      "body": "Open to contract work in fine-tuning, evals and training-data pipelines.",
       "github": "Find me on GitHub",
       "linkedin": "LinkedIn",
       "calendar": "Book a conversation",
@@ -137,13 +137,9 @@
     "services": {
       "eyebrow": "Services",
       "heading": "What I can do for your team.",
-      "body": "I work with teams to reduce AI operating costs and build systems that meet their quality requirements.",
+      "body": "Contract work, in order of focus.",
       "cta": "Book a consultation",
       "items": [
-        {
-          "title": "AI cost optimisation & inference",
-          "body": "Audit model spend by task, benchmark less expensive alternatives, and improve routing or hosting where it makes economic sense."
-        },
         {
           "title": "LLM fine-tuning & evaluation",
           "body": "Fine-tuning, continual learning, domain adaptation and evaluation of open-weight models."
